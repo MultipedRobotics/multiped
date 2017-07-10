@@ -1,9 +1,15 @@
 #!/usr/bin/env python
+
 ##############################################
 # The MIT License (MIT)
 # Copyright (c) 2016 Kevin Walchko
 # see LICENSE for full details
 ##############################################
+# Simple robot that you can drive with a PS4 joystick
+#
+# It is meant to run on a raspberry pi and if linux isn't detected, then some
+# sensors are not loaded.
+
 from __future__ import print_function
 from __future__ import division
 from quadruped import Engine
@@ -18,6 +24,17 @@ import time
 
 class SimpleQuadruped(object):
 	def __init__(self, data):
+		"""
+		Constructor.
+		Engine - commands the leg servos to move
+		gait - Ideally there are several types of gaits for different
+		       walking/running situations. The gaits need to know:
+		       - how high to pick up a leg
+		       - what the neutral leg position is (where is the foot
+		         located when just standing?)
+		js - joystick (works on linux and macOS)
+		imu - inertial measurement unit (must be on linux)
+		"""
 		self.robot = Engine(data)
 		netural = self.robot.getFoot0(0)
 		self.gait = {
@@ -31,6 +48,9 @@ class SimpleQuadruped(object):
 		self.js = Joystick()
 
 	def run(self):
+		"""
+		A loop that doesn't end and allows you to drive the robot
+		"""
 		while True:
 			if self.js.valid:
 				ps4 = self.js.get()
@@ -62,8 +82,8 @@ class SimpleQuadruped(object):
 
 
 def run():
-	# angles are always [min, max]
-	# xl-320
+	# bulk - use bulk or sync writing on the xl-320 servos
+	# uncomment and change the serial port as necessary
 	test = {
 		# 'serialPort': '/dev/tty.usbserial-AL034G2K',  # sparkfun usb-serial
 		'write': 'bulk'

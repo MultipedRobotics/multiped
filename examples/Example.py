@@ -8,7 +8,7 @@ from __future__ import print_function
 from __future__ import division
 from quadruped import Engine
 from quadruped import DiscreteRippleGait
-from quadruped import Joystick
+from js import Joystick
 from nxp_imu import IMU
 import platform
 import time

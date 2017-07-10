@@ -14,17 +14,24 @@ Quadruped
 
 My robot software.
 
+* `YouTube <https://www.youtube.com/watch?v=kH2hlxUfCNg>`_
+* `Vimeo <https://player.vimeo.com/video/194676675>`_
+
 Documentation
 -------------------
 
 **Note:** This re-write is still very early and not fully running yet, just
 parts.
 
-The documentation can be found `here <docs/Markdown>`_.
-
-
 Install
 -----------
+
+linux
+~~~~~~~~
+
+You will also need::
+
+	pip install ds4drv
 
 pip
 ~~~~~
@@ -69,10 +76,11 @@ Here is *sort* of the layout of the code:
 		- servos[3]
 			- angle
 			- setServoLimits()
-			- bulkWrite() - change to sync
+			- bulkWrite()
+			- syncWrite()
 		- coxa, femur, tibia
-		- fk()
-		- ik()
+		- fk() - forward kinematics
+		- ik() - inverse kinematics
 		- moveFoot(x,y,z)
 		- moveFootAngle(a,b,c)
 

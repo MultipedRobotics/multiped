@@ -11,7 +11,7 @@ from quadruped import DiscreteRippleGait
 from quadruped import Joystick
 from nxp_imu import IMU
 import platform
-# import time
+import time
 # from ahrs import AHRS  # attitude and heading reference system
 ##########################
 
@@ -57,7 +57,8 @@ class SimpleQuadruped(object):
 			mov = self.gait['crawl'].command(cmd)
 			if mov:
 				self.robot.move(mov)
-			# time.sleep(0.1)
+			else:
+				time.sleep(1)
 
 
 def run():

@@ -2,6 +2,7 @@ language: python
 sudo: false
 python:
   - "2.7"
+  - "3.6"
 # command to install dependencies
 # https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
 # addons:
@@ -11,7 +12,7 @@ python:
 #             - sox
 install:
     - pip install -U pip setuptools
-    - pip install -U pyxl320 quaternions
+    - pip install -U -r requirements.txt
 # command to run tests
 # script: cd tests && nosetests -v *.py
 # script: nosetests -v -w test/

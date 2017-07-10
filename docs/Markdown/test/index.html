@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<h1 id="bill-of-materials">Bill of Materials</h1>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">#!/usr/bin python</span>
+
+<span class="co"># get stuff</span>
+<span class="im">import</span> os
+
+x <span class="op">=</span> <span class="dv">3</span><span class="op">+</span><span class="dv">4</span>
+ls <span class="op">=</span> os.ls
+<span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">9</span>):
+    <span class="cf">if</span> i<span class="op">%</span><span class="dv">4</span> <span class="op">==</span> <span class="dv">0</span>:
+        <span class="bu">print</span>(<span class="st">&#39;ls:&#39;</span>, ls)</code></pre></div>
+<p><span class="math inline">\(v(t) = v_0 + \frac{1}{2}at^2\)</span></p>
+<p><span class="math inline">\(\gamma = \frac{1}{\sqrt{1 - v^2/c^2}}\)</span></p>
+<p><span class="math inline">\(\exists x \forall y (Rxy \equiv Ryx)\)</span></p>
+<div class="figure">
+<img src="pics/system_layout.png" alt="system layout" />
+<p class="caption">system layout</p>
+</div>
+<h3 id="raspberry-pi">Raspberry Pi</h3>
+<p>I am currently using a 1.2 GHz quad core <a href="https://www.adafruit.com/products/3055">RPi 3</a> (ARMv8) as the main board running the lite version of Raspbian. It has on-board:</p>
+<ul>
+<li>802.11n Wifi</li>
+<li>Bluetooth 4.1 BLE</li>
+</ul>
+<p>However, I have done a little testing and it looks like the Pi Zero <strong>might</strong> be powerful enough to do the job too. When I get more time, I will investigate it more.</p>
+<h3 id="pi-camera">Pi Camera</h3>
+<p><a href="https://www.adafruit.com/products/3099">PiCamera</a> is used to stream images.</p>
+<h3 id="d-models">3D Models</h3>
+<p>The 3d printer models (stl format) come from the following sources:</p>
+<ul>
+<li><a href="https://github.com/mogillc/nico">Legs</a> which are the coxa, femur, and tibia</li>
+<li>Misc brackets I made using <a href="http://www.openscad.org/">OpenScad</a></li>
+</ul>
+<h3 id="cost">Cost</h3>
+<p>Here is a parts list of <strong>key components</strong> that I am using. I am not listing wires, bread boards, cables, etc. Also note, I have rounded up the costs (i.e., $4.95 =&gt; $5). Also, lot of the body is 3d printed, the costs for that are not shown here.</p>
+<table style="width:33%;">
+<colgroup>
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Part</th>
+<th>Source</th>
+<th>Number</th>
+<th>Item Cost</th>
+<th>Sum</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>RPi v3</td>
+<td><a href="https://www.adafruit.com">Adafruit</a></td>
+<td>1</td>
+<td>$40</td>
+<td>$40</td>
+<td>Main board, has wifi and bluetooth already</td>
+</tr>
+<tr class="even">
+<td>Pi Camera</td>
+<td><a href="https://www.adafruit.com">Adafruit</a></td>
+<td>1</td>
+<td>$30</td>
+<td>$30</td>
+<td>8 Mpixel</td>
+</tr>
+<tr class="odd">
+<td>5V, 5A Buck Converter (D24V22F5)</td>
+<td><a href="https://www.pololu.com">Pololu</a></td>
+<td>1</td>
+<td>$10</td>
+<td>$10</td>
+<td>For powering the RPi</td>
+</tr>
+<tr class="even">
+<td>7.5V, 2.4A Buck Converter (D24V22F7)</td>
+<td><a href="https://www.pololu.com">Pololu</a></td>
+<td>1</td>
+<td>$10</td>
+<td>$10</td>
+<td>For powering the xl-320</td>
+</tr>
+<tr class="odd">
+<td>Dynamixel xl-320 smart servo</td>
+<td><a href="https://www.robotshop.com">RobotShop</a></td>
+<td>12</td>
+<td>$22</td>
+<td>$264</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>PS4 Controller</td>
+<td><a href="http://www.walmart.com">Walmart</a></td>
+<td>1</td>
+<td>$54</td>
+<td>$54</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Micro SD (32 GB)</td>
+<td><a href="http://www.walmart.com">Walmart</a></td>
+<td>1</td>
+<td>$12</td>
+<td>$12</td>
+<td>Raspbian</td>
+</tr>
+<tr class="even">
+<td>74LS241</td>
+<td></td>
+<td>1</td>
+<td>$1</td>
+<td>$1</td>
+<td>Used to convert the RPi's RS232 into a RS485 port</td>
+</tr>
+<tr class="odd">
+<td>Small signal MOSFET</td>
+<td></td>
+<td>1</td>
+<td>$1</td>
+<td></td>
+<td>Used for 3.3V to 5V conversion</td>
+</tr>
+<tr class="even">
+<td>12V, 5A Wall Power Adaptor</td>
+<td><a href="https://www.pololu.com">Pololu</a></td>
+<td>1</td>
+<td>$15</td>
+<td>$15</td>
+<td>So I don't have to always run off batteries</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p align="center">
+<pre><code>&lt;a rel=&quot;license&quot; href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;
+    &lt;img alt=&quot;Creative Commons License&quot;  src=&quot;https://i.creativecommons.org/l/by-sa/4.0/88x31.png&quot; /&gt;
+&lt;/a&gt;
+&lt;br /&gt;This work is licensed under a &lt;a rel=&quot;license&quot; href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.</code></pre>
+</p>
+<h1 id="history">History</h1>
+<p>Originally, this used toy RC servos (9 g's), they didn't work that great.</p>
+<p><img src="pics/rc-spider-1.jpg" /> <img src="pics/rc-spider-2.jpg" /></p>
+<hr />
+<p align="center">
+<pre><code>&lt;a rel=&quot;license&quot; href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;
+    &lt;img alt=&quot;Creative Commons License&quot;  src=&quot;https://i.creativecommons.org/l/by-sa/4.0/88x31.png&quot; /&gt;
+&lt;/a&gt;
+&lt;br /&gt;This work is licensed under a &lt;a rel=&quot;license&quot; href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.</code></pre>
+</p>
+<p>Name: mcp23017 Info: Configures the MCP23017 I2C GPIO expander Load: dtoverlay=mcp23017,<param>=<val> Params: gpiopin Gpio pin connected to the INTA output of the MCP23017 (default: 4)</p>
+<pre><code>    addr                    I2C address of the MCP23017 (default: 0x20)</code></pre>
+<p>Name: i2s-gpio28-31 Info: move I2S function block to GPIO 28 to 31 Load: dtoverlay=i2s-gpio28-31 Params: <None></p>
+<p>Name: i2c1-bcm2708 Info: Enable the i2c_bcm2708 driver for the i2c1 bus Load: dtoverlay=i2c1-bcm2708,<param>=<val> Params: sda1_pin GPIO pin for SDA1 (2 or 44 - default 2) scl1_pin GPIO pin for SCL1 (3 or 45 - default 3) pin_func Alternative pin function (4 (alt0), 6 (alt2) - default 4)</p>
+<p>Name: i2c-rtc Info: Adds support for a number of I2C Real Time Clock devices Load: dtoverlay=i2c-rtc,<param>=<val> Params: ds1307 Select the DS1307 device</p>
+<pre><code>    ds1339                  Select the DS1339 device
+
+    ds3231                  Select the DS3231 device
+
+    mcp7940x                Select the MCP7940x device
+
+    mcp7941x                Select the MCP7941x device
+
+    pcf2127                 Select the PCF2127 device
+
+    pcf8523                 Select the PCF8523 device
+
+    pcf8563                 Select the PCF8563 device
+
+    trickle-resistor-ohms   Resistor value for trickle charge (DS1339-only)
+
+    wakeup-source           Specify that the RTC can be used as a wakeup
+                            source</code></pre>
+<p>Name: i2c-pwm-pca9685a Info: Adds support for an NXP PCA9685A I2C PWM controller on i2c_arm Load: dtoverlay=i2c-pwm-pca9685a,<param>=<val> Params: addr I2C address of PCA9685A (default 0x40)</p>
+<p>Name: i2c-mux Info: Adds support for a number of I2C bus multiplexers on i2c_arm Load: dtoverlay=i2c-mux,<param>=<val> Params: pca9542 Select the NXP PCA9542 device</p>
+<pre><code>    pca9545                 Select the NXP PCA9545 device
+
+    pca9548                 Select the NXP PCA9548 device
+
+    addr                    Change I2C address of the device (default 0x70)</code></pre>
+<p>Name: i2c-gpio Info: Adds support for software i2c controller on gpio pins Load: dtoverlay=i2c-gpio,<param>=<val> Params: i2c_gpio_sda GPIO used for I2C data (default &quot;23&quot;)</p>
+<pre><code>    i2c_gpio_scl            GPIO used for I2C clock (default &quot;24&quot;)
+
+    i2c_gpio_delay_us       Clock delay in microseconds
+                            (default &quot;2&quot; = ~100kHz)</code></pre>
+<h1 id="documentation">Documentation</h1>
+<p><strong>This is still a work in progress</strong></p>
+<p>This documentation is broken up into two types:</p>
+<ul>
+<li>Static markdown files</li>
+<li>Interactive python files (Jupyter notebooks)</li>
+</ul>
+<p>Since the software is written in python, iPhython (or now <a href="http://jupyter.org/">Jupyter</a>) is used for interactive documentation. Take a look at the <a href="https://github.com/walchko/WalkingEye/tree/master/docs/ipython">docs</a> folder. The ipython files are where some of the development (e.g., gait, forward/inverse kinematics, etc) takes place before it is tranferred into the python code.</p>
+<p>When viewing the notebooks on <code>github.com</code>, they are static, but if you download them and have Jupyter installed, they are interactive and pretty cool.</p>
+<h2 id="index">Index</h2>
+<ul>
+<li><a href="./software.md">Software</a></li>
+<li><a href="./bom.md">Hardware</a></li>
+<li><a href="./history.md">History</a></li>
+</ul>
+<hr />
+<p align="center">
+<pre><code>&lt;a rel=&quot;license&quot; href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;
+    &lt;img alt=&quot;Creative Commons License&quot;  src=&quot;https://i.creativecommons.org/l/by-sa/4.0/88x31.png&quot; /&gt;
+&lt;/a&gt;
+&lt;br /&gt;This work is licensed under a &lt;a rel=&quot;license&quot; href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.</code></pre>
+</p>
+<h1 id="software">Software</h1>
+<h2 id="pygecko">PyGecko</h2>
+<div class="figure">
+<img src="pics/Spiderbot_Processes.png" alt="Spiderbot_Processes" />
+<p class="caption">Spiderbot_Processes</p>
+</div>
+<p>This uses <a href="https://github.com/walchko/pygecko">PyGecko</a> (or <a href="http://www.ros.org">ROS</a> if you write the interface). PyGecko is a simple ROS like system written in python so it should run on anything python runs on.</p>
+<pre><code>pip install pygecko</code></pre>
+<p>Follow the other installation instructions for pygecko, will requires <a href="http://zeromq.org/">ZeroMQ</a> and some other libraries to be installed to work.</p>
+<p>Since pygecko (like ROS) is based on the idea of many simple/modular processes, there is a <code>launch.py</code> file you run which will launch all of the necessary processes to get the robot running. If you don't need or want everything, you can just comment out what you don't need.</p>
+<h2 id="pyxl320">pyXL320</h2>
+<p>This software requires <a href="https://pypi.python.org/pypi/pyxl320">pyxl320</a> to work with the smart servos. You can install it with:</p>
+<pre><code>pip install pyxl320</code></pre>
+<p>Since all of the leg servos are on the same RS845 bus, you will need to use <code>set_id</code> to assign an <em>id</em> number to each servo <strong>BEFORE</strong> you hook them all together. To see how to use it, type:</p>
+<pre><code>set_id --help</code></pre>
+<h2 id="other-external-libraries">Other External Libraries</h2>
+<pre><code>pip install adafruit-lsm303</code></pre>
+<h2 id="tests">Tests</h2>
+<p><code>nose</code> is used for unit tests ... just run <code>nosetests -vs *.py</code>.</p>
+<h2 id="low-level-quadruped-driver">Low Level Quadruped Driver</h2>
+<div class="figure">
+<img src="pics/spiderbot_classes.png" alt="spiderbot classes" />
+<p class="caption">spiderbot classes</p>
+</div>
+<p>The class diagram only shows the main classes and important functions, there is more. If you look in the <code>quadruped</code> folder, it contains the low level driver:</p>
+<ul>
+<li>Robot.py - main code to get things going ... adapt this to your needs.</li>
+<li>Quadruped.py - basic wrapper around leg and gait algorithms</li>
+<li>Leg.py - forward/reverse kinematics</li>
+<li>Gait.py - syncronization of how the 4 legs walk</li>
+<li>Servo.py - talks to the XL-320 smart servos</li>
+<li>ahrs - tilt compensated compass which gives roll, pitch, heading</li>
+</ul>
+<hr />
+<p align="center">
+<pre><code>&lt;a rel=&quot;license&quot; href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;
+    &lt;img alt=&quot;Creative Commons License&quot;  src=&quot;https://i.creativecommons.org/l/by-sa/4.0/88x31.png&quot; /&gt;
+&lt;/a&gt;
+&lt;br /&gt;This work is licensed under a &lt;a rel=&quot;license&quot; href=&quot;http://creativecommons.org/licenses/by-sa/4.0/&quot;&gt;Creative Commons Attribution-ShareAlike 4.0 International License&lt;/a&gt;.</code></pre>
+</p>
+</body>
+</html>

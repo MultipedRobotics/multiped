@@ -1,5 +1,5 @@
 
-.. image:: https://github.com/MomsFriendlyRobotCompany/pygecko/raw/master/pics/quadruped.jpg
+.. image:: https://raw.githubusercontent.com/walchko/quadruped/master/pics/spiderbot_dev.JPG
 	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
 
 Quadruped

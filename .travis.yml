@@ -1,0 +1,18 @@
+language: python
+sudo: false
+python:
+  - "2.7"
+# command to install dependencies
+# https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
+# addons:
+#     apt:
+#         packages:
+#             - libzmq3-dev
+#             - sox
+install:
+    - pip install -U pip setuptools
+    - pip install -U pyxl320 quaternions
+# command to run tests
+# script: cd tests && nosetests -v *.py
+# script: nosetests -v -w test/
+script: true

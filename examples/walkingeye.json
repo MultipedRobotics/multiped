@@ -1,0 +1,10 @@
+{
+	"serialPort": "/dev/tty.usbserial-AL034G2K",
+	"legLengths": {
+		"coxaLength": 45,
+		"femurLength": 55,
+		"tibiaLength": 104
+	},
+	"legAngleLimits": [[-90, 90], [-90, 90], [-150, 0]],
+	"legOffset": [150, 150, 240]
+}

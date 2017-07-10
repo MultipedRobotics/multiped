@@ -1,0 +1,12 @@
+Thumbs.db
+*.pyc
+old
+__pycache__
+.AppleDouble
+.DS_Store
+._*
+.ipynb_checkpoints
+build
+dist
+*.egg-info
+.eggs

@@ -1,0 +1,7 @@
+nxp_imu
+pyxl320
+simplejson
+pyserial
+numpy
+build_utils
+mcp3208

@@ -4,7 +4,7 @@ from __future__ import print_function, division
 from quadruped import Engine
 from quadruped import DiscreteRippleGait
 from math import pi
-# import time
+import time
 
 
 class Test(object):

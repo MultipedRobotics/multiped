@@ -4,30 +4,20 @@
 # Copyright (c) 2016 Kevin Walchko
 # see LICENSE for full details
 ##############################################
-
 from __future__ import print_function
 from __future__ import division
-# import multiprocessing as mp
-# from math import pi
 from quadruped import Engine
 from quadruped import DiscreteRippleGait
-from js import Joystick
+from quadruped import Joystick
 from nxp_imu import IMU
 import platform
 # import time
 # from ahrs import AHRS  # attitude and heading reference system
-
 ##########################
 
-"""
-This is a simple demo that walks in a pre-defined path
-"""
 
-
-# class SimpleQuadruped(mp.Process):
 class SimpleQuadruped(object):
 	def __init__(self, data):
-		# mp.Process.__init__(self)
 		self.robot = Engine(data)
 		netural = self.robot.getFoot0(0)
 		self.gait = {
@@ -74,7 +64,7 @@ def run():
 	# angles are always [min, max]
 	# xl-320
 	test = {
-		'serialPort': '/dev/tty.usbserial-AL034G2K',  # sparkfun usb-serial
+		# 'serialPort': '/dev/tty.usbserial-AL034G2K',  # sparkfun usb-serial
 		'write': 'bulk'
 	}
 

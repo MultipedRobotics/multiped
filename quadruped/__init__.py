@@ -10,6 +10,7 @@ from .Engine import Engine
 from .Gait import DiscreteRippleGait
 from .Leg import Leg, LegException
 from .Servo import Servo
+from .js import Joystick
 # from Sit import Sit
 
 __author__ = 'Kevin J. Walchko'

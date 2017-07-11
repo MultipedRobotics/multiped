@@ -8,4 +8,4 @@ Some of the software you will need.
 
 ## Python
 
-  pip install -U -r requirements
+  pip install -U -r requirements.txt

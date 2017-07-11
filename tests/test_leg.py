@@ -9,9 +9,11 @@ from quadruped.Leg import Leg
 from quadruped.Servo import Servo
 
 
+ser = ServoSerial('test_port', fake=True)
+Servo.ser = ser
+
+
 def test_fk_ik():
-	ser = ServoSerial('test_port', fake=True)
-	Servo.ser = ser
 	leg = Leg([0, 1, 2])
 
 	angles = [0, 45, -145]
@@ -43,16 +45,9 @@ def printError(pts, pts2, angles, angles2):
 
 
 def test_full_fk_ik():
-	length = {
-		'coxaLength': 26,
-		'femurLength': 42,
-		'tibiaLength': 63
-	}
 	channels = [0, 1, 2]
-	serial = ServoSerial('test_port', fake=True)
 	limits = [[-90, 90], [-90, 90], [-180, 0]]
-	offset = [150, 150, 150]
-	leg = Leg(length, channels, serial, limits, offset)
+	leg = Leg(channels)
 
 	for i in range(1, 3):
 		print('------------------------------------------------')
@@ -130,24 +125,14 @@ def test_full_fk_ik():
 # 	print('1 2 3: {:.2f} {:.2f} {:.2f}'.format(t[0,3],t[1,3],t[2,3]))
 
 def test_fk_ik2():
-	length = {
-		'coxaLength': 26,
-		'femurLength': 42,
-		'tibiaLength': 63
-	}
 	channels = [0, 1, 2]
-	limits = [[-90, 90], [-90, 90], [-180, 0]]
-	offsets = [150, 150, 150+90]
-	leg = Leg(length, channels, ServoSerial('test_port', fake=True), limits, offsets)
+	leg = Leg(channels)
 
 	angles = [0, -90, 0]
-	# angles = [0, 45, -145]
-	# angles = [0, 0, 0]
 
 	pts = leg.fk(*angles)
 	angles2 = leg.ik(*pts)
 	pts2 = leg.fk(*angles2)
-	# angles2 = [r2d(a), r2d(b), r2d(c)]
 	print('angles (orig):', angles, 'deg')
 	print('pts from fk(orig): {:.2f} {:.2f} {:.2f} mm'.format(*pts))
 	print('angles2 from ik(pts): {:.2f} {:.2f} {:.2f} deg'.format(*angles2))
@@ -160,26 +145,13 @@ def test_fk_ik2():
 
 
 def test_full_fk_ik2():
-	length = {
-		'coxaLength': 26,
-		'femurLength': 42,
-		'tibiaLength': 63
-	}
 	channels = [0, 1, 2]
-	serial = ServoSerial('test_port', fake=True)
-	limits = [[-90, 90], [-90, 90], [-180, 0]]
-	offset = [150, 150, 150+90]
-	leg = Leg(length, channels, serial, limits, offset)
-
-	# servorange = [[-90, 90], [-90, 90], [-180, 0]]
-	# for s in range(0, 3):
-	# 	leg.servos[s].setServoRangeAngle(*servorange[s])
+	leg = Leg(channels)
 
 	delta = 15
 	for a in range(-45, 45, delta):
 		for b in range(-45, 90, delta):
 			for g in range(-160, 0, delta):
-				print('------------------------------------------------')
 				angles = [a, b, g]
 				pts = leg.fk(*angles)
 				angles2 = leg.ik(*pts)

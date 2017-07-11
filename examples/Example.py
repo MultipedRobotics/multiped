@@ -16,6 +16,8 @@ from quadruped import Engine
 from quadruped import DiscreteRippleGait
 from js import Joystick
 from nxp_imu import IMU
+from mcp3208 import MCP3208
+from ins_nav import AHRS
 import platform
 import time
 # from ahrs import AHRS  # attitude and heading reference system
@@ -23,6 +25,10 @@ import time
 
 
 class SimpleQuadruped(object):
+	imu = None
+	adc = None
+	ir = [0]*8
+
 	def __init__(self, data):
 		"""
 		Constructor.
@@ -40,12 +46,13 @@ class SimpleQuadruped(object):
 		self.gait = {
 			'crawl': DiscreteRippleGait(45.0, netural)
 		}
+
 		if platform.system() == 'Linux':
 			self.imu = IMU()
-		else:
-			self.imu = None
+			self.adc = MCP3208()
 
 		self.js = Joystick()
+		self.ahrs = AHRS()
 
 	def run(self):
 		"""
@@ -63,15 +70,22 @@ class SimpleQuadruped(object):
 			# read ahrs
 			if self.imu:
 				a, m, g = self.imu.read()
-				# roll, pitch, heading = d
-				# if (-90.0 > roll > 90.0) or (-90.0 > pitch > 90.0):
-				# 	print('Crap we flipped!!!')
-				# 	cmd = (0, 0, 0)
-				print('imu', a, m, g)
+				roll, pitch, heading = self.ahrs.getOrientation(a, m)
+
+				if (-90.0 > roll > 90.0) or (-90.0 > pitch > 90.0):
+					print('Crap we flipped!!!')
+					cmd = (0, 0, 0)
+			else:
+				roll, pitch, heading = (0.0, 0.0, 0.0)
+
+			if self.adc:
+				for i in range(8):
+					self.ir[i] = self.adc.read(i)
 
 			print('***********************************')
 			# print('* rest {:.2f} {:.2f} {:.2f}'.format(*leg))
-			# print('ahrs[deg]: roll {:.2f} pitch: {:.2f} yaw: {:.2f}'.format(d[0], d[1], d[2]))
+			print('imu', a, m, g)
+			print('ahrs[deg]: roll {:.2f} pitch: {:.2f} yaw: {:.2f}'.format(roll, pitch, heading))
 			print('* cmd {:.2f} {:.2f} {:.2f}'.format(*cmd))
 			# print('***********************************')
 			mov = self.gait['crawl'].command(cmd)

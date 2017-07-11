@@ -18,7 +18,7 @@ try:
 	# brew install sdl2
 	# pip install PySDL2
 	import sdl2
-except:
+except ImportError:
 	print('You must install SLD2 library')
 	exit()
 
@@ -97,12 +97,12 @@ class Joystick(object):
 		# left axis
 		x = sdl2.SDL_JoystickGetAxis(js, 0) / 32768
 		y = sdl2.SDL_JoystickGetAxis(js, 1) / 32768
-		ps4['leftStick'] = [x, y]
+		ps4['leftStick'] = [-x, -y]
 
 		# right axis
 		x = sdl2.SDL_JoystickGetAxis(js, 2) / 32768
 		y = sdl2.SDL_JoystickGetAxis(js, 5) / 32768
-		ps4['rightStick'] = [x, y]
+		ps4['rightStick'] = [-x, -y]
 
 		# # other axes
 		# ps4.axes.L2 = sdl2.SDL_JoystickGetAxis(js, 3) / 32768

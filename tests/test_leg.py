@@ -29,7 +29,7 @@ def test_fk_ik():
 	# print('diff:', np.linalg.norm(np.array(angles) - np.array(angles2)))
 	print('diff [mm]: {:.2f}'.format(np.linalg.norm(pts - pts2)))
 	# time.sleep(1)
-	assert(np.linalg.norm(np.array(angles) - np.array(angles2)) < 0.00001)
+	assert (np.linalg.norm(np.array(angles) - np.array(angles2)) < 0.00001)
 
 
 def printError(pts, pts2, angles, angles2):

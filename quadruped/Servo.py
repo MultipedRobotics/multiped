@@ -93,8 +93,8 @@ class ServoBase(object):
 	def write(self):
 		if self.bulkServoWrite:
 			self.bulkWrite()
-		elif self.syncServoWrite(self.ser):
-			self.syncWrite(self.ser)
+		elif self.syncServoWrite:
+			self.syncWrite()
 		else:
 			raise Exception('ServoBase::write() not bulk or sync')
 

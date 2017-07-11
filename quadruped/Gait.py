@@ -85,7 +85,7 @@ class Gait(object):
 
 		return self.oneCycle(x, y, rz)
 
-	def oneCycle(x, y, rz):
+	def oneCycle(slef, x, y, rz):
 		print('*** wrong function! ***')
 		return None
 

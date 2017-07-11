@@ -50,7 +50,7 @@ def getSingle(ID, ser):
 		ans = ans[0]
 		ID, angle = getInfo(ans)
 
-	return ID, angle
+	return angle
 
 
 def main():
@@ -68,7 +68,7 @@ def main():
 
 	# as more servos add up, I might need to increase the cnt number???
 	for i in ids:
-		ID, angle = getSingle(i, s)
+		angle = getSingle(i, s)
 		resp[i] = angle
 
 	cnt = 10
@@ -78,7 +78,7 @@ def main():
 			# search through and find servos w/o responses (i.e., None)
 			if v is None:
 				cnt += 1  # found a None
-				ID, angle = getSingle(k, s)
+				angle = getSingle(k, s)
 				resp[k] = angle
 
 	print('')

@@ -10,9 +10,6 @@ from __future__ import print_function
 from __future__ import division
 import numpy as np
 from math import cos, sin, sqrt, pi
-# from math import radians as d2r
-# from Servo import Servo
-# import time
 
 
 def rot_z_tuple(t, c):
@@ -42,7 +39,6 @@ def rot_z(t, c):
 		c[0]*sin(t)+c[1]*cos(t),
 		c[2]
 	])
-	# ans = np.array(rot_z_tuple(t, c))
 
 	return ans
 
@@ -64,8 +60,6 @@ class Gait(object):
 	def __init__(self, rest):
 		# the resting or idle position/orientation of a leg
 		self.rest = rest
-		# self.moveFoot = mf
-		# self.write = w
 
 	def command(self, cmd):
 		"""
@@ -161,89 +155,4 @@ class DiscreteRippleGait(Gait):
 
 			ret.append(footPos)  # 4 feet at index i: [index, legNum, footposition]
 
-# <<<<<<< HEAD:quadruped/Gait.py
 		return ret
-# =======
-# 			feet = footPos
-# 			# print('----------------------------')
-# 			for foot in feet:
-# 				legNum = foot[1]
-# 				ft = foot[2]
-# 				self.moveFoot(legNum, ft)
-# 				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *ft))
-#
-# 			# Servo.bulkWrite(Servo.ser)
-# 			# Servo.syncWrite(Servo.ser)
-# 			self.write()
-# 			time.sleep(0.1)
-# >>>>>>> master:quadruped/quadruped/Gait.py
-
-
-# class ContinousRippleGait(Gait):
-# 	alpha = 1.0
-#
-# 	def __init__(self, h, r):
-# 		Gait.__init__(self)
-# 		self.height = h
-# 		self.rest = r
-#
-# 	@staticmethod
-# 	def phi(x):
-# 		"""
-# 		The phase
-# 		"""
-# 		phi = 0.0
-# 		if x <= 3.0:
-# 			phi = 1/3*(3.0-x)
-# 		else:
-# 			phi = 1/9*(x-3)
-# 		return phi
-#
-# 	def z(self, x):
-# 		"""
-# 		Leg height
-#
-# 		duty cycle:
-# 			0-3: leg lifted
-# 			3-12: leg on ground
-# 			duty = (12-3)/12 = 0.75 = 75% a walking gait
-# 		"""
-# 		height = self.height
-# 		z = 0.0
-# 		if x <= 1:
-# 			z = height/1.0*x
-# 		elif x <= 2.0:
-# 			z = height
-# 		elif x <= 3.0:
-# 			z = -height/1.0*(x-2.0)+height
-# 		return z
-#
-# 	def eachLeg(self, index, cmd):
-# 		"""
-# 		interpolates the foot position of each leg
-# 		"""
-# 		rest = self.rest
-# 		i = (index*self.alpha) % 12
-# 		phi = self.phi(i)
-# 		z = self.z(i)
-#
-# 		# rotational commands -----------------------------------------------
-# 		angle = cmd['angle']/2-cmd['angle']*phi
-# 		rest_rot = rot_z(-angle, rest)
-# 		# rest_rot[2] = 0  # let linear handle z height
-#
-# 		# linear commands ----------------------------------------------------
-# 		linear = cmd['linear']
-# 		xx = linear[0]
-# 		yy = linear[1]
-#
-# 		# create new move command
-# 		move = np.array([
-# 			xx/2 - phi*xx,
-# 			yy/2 - phi*yy,
-# 			z
-# 		])
-#
-# 		# new foot position: newpos = rot + move ----------------------------
-# 		newpos = move + rest_rot
-# 		return newpos

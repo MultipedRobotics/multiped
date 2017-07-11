@@ -10,7 +10,6 @@ from __future__ import division
 import logging
 from pyxl320 import Packet
 from pyxl320.Packet import makeSyncAnglePacket
-# from pyxl320 import DummySerial
 from pyxl320 import xl320
 
 logger = logging.getLogger(__name__)
@@ -144,7 +143,7 @@ class Servo(ServoBase):
 		"""
 
 		# saturates the angle if it is outside of the limits
-		if self.minAngle > angle > self.maxAngle:
+		if self.minAngle > angle or angle > self.maxAngle:
 			# raise Exception('@angle.setter {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
 			print('@angle.setter error {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
 
@@ -197,28 +196,3 @@ class Servo(ServoBase):
 		self._offset = offset
 		self.minAngle = minAngle
 		self.maxAngle = maxAngle
-
-		# # pktmax, pktmin = Packet.makeServoLimits(self.ID, maxAngle, minAngle)
-		# angle = int(maxAngle/300.0*1023)
-		# pkt = Packet.makeWritePacket(self.ID, xl320.XL320_CCW_ANGLE_LIMIT, Packet.le(angle))
-		# ser.write(pkt)
-		# # # ser.read()
-		# angle = int(minAngle/300.0*1023)
-		# pkt = Packet.makeWritePacket(self.ID, xl320.XL320_CW_ANGLE_LIMIT, Packet.le(angle))
-		# ser.write(pkt)
-		# # ser.read()
-
-		# if 0:
-		# 	# Example: kinematics only allow a servo between -180 and 0
-		# 	# min -180
-		# 	# max 0
-		# 	# offset 240  <-- a real servo angle of 240 is a kinematic angle of 0
-		# 	# limits = [-180+240, 0+240] = [60, 240]  <-- these are real servo angles
-		# 	pkt = Packet.makeServoMinLimitPacket(self.ID, minAngle+self._offset)
-		# 	self.ser.sendPkt(pkt)
-		# 	pkt = Packet.makeServoMaxLimitPacket(self.ID, maxAngle+self._offset)
-		# 	self.ser.sendPkt(pkt)
-
-
-if __name__ == "__main__":
-	print('Hello space cowboy!')

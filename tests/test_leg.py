@@ -2,25 +2,17 @@
 
 from __future__ import print_function
 from __future__ import division
-import sys
 from pyxl320 import ServoSerial
 import numpy as np
 from math import sqrt
-
-sys.path.insert(0, '..')
 from quadruped.Leg import Leg
+from quadruped.Servo import Servo
 
 
 def test_fk_ik():
-	length = {
-		'coxaLength': 26,
-		'femurLength': 42,
-		'tibiaLength': 63
-	}
-	channels = [0, 1, 2]
-	limits = [[-90, 90], [-90, 90], [-180, 0]]
-	offsets = [150, 150, 150]
-	leg = Leg(length, channels, ServoSerial('test_port', fake=True), limits, offsets)
+	ser = ServoSerial('test_port', fake=True)
+	Servo.ser = ser
+	leg = Leg([0, 1, 2])
 
 	angles = [0, 45, -145]
 
@@ -35,7 +27,7 @@ def test_fk_ik():
 	# print('diff:', np.linalg.norm(np.array(angles) - np.array(angles2)))
 	print('diff [mm]: {:.2f}'.format(np.linalg.norm(pts - pts2)))
 	# time.sleep(1)
-	# assert(np.linalg.norm(np.array(angles) - np.array(angles2)) < 0.00001)
+	assert(np.linalg.norm(np.array(angles) - np.array(angles2)) < 0.00001)
 
 
 def printError(pts, pts2, angles, angles2):
@@ -216,13 +208,3 @@ def test_full_fk_ik2():
 				# 	print('Error(deg,mm): {:.2f} {:.2f}'.format(angle_error, pos_error))
 					# leg.move(*pts)
 					# time.sleep(0.1)
-
-
-if __name__ == "__main__":
-	print('run this with "nosetests -v test_leg.py"')
-	# main()
-	# test_fk_ik()
-	# test_full_fk_ik()
-	# test_DH()
-	# test_fk_ik2()
-	# test_full_fk_ik2()

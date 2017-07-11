@@ -10,7 +10,6 @@ from __future__ import print_function
 from __future__ import division
 from .Leg import Leg
 from pyxl320 import ServoSerial
-# from pyxl320 import DummySerial
 from .Servo import Servo
 from pyxl320 import Packet
 from pyxl320 import xl320

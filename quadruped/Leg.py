@@ -57,12 +57,9 @@ class Leg(object):
 			self.servos[i].setServoLimits(self.s_offsets[i], *self.s_limits[i])
 
 		self.sit_angles = self.convertRawAngles(*self.sit_raw)
-		# initAngles = [0, 0, -90+30]  # nico legs have a small offset
-		# initAngles = [0, 45, -90+30-45]  # nico legs have a small offset
 		initAngles = self.convertRawAngles(*self.stand_raw)
 		self.stand_angles = initAngles
 		self.foot0 = self.fk(*initAngles)  # rest/idle position of the foot/leg
-		# print('foot0', self.foot0)
 
 	def __del__(self):
 		pass
@@ -198,7 +195,3 @@ class Leg(object):
 	# def reset(self):
 	# 	# self.angles = self.resting_position
 	# 	self.move(*self.foot0)
-
-
-if __name__ == "__main__":
-	print('Hello cowboy!')

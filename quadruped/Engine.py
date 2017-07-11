@@ -22,11 +22,14 @@ class Engine(object):
 
 	This is the low level driver that can be executed w/o using pyGecko.
 	"""
-	def __init__(self, data={}):
+	def __init__(self, data=None):
 		"""
 		Sets up all 4 legs and servos. Also setups limits for angles and servo
 		pulses.
 		"""
+		if data is None:
+			data = {}
+			
 		if 'serialPort' in data:
 			try:
 				ser = ServoSerial(data['serialPort'])

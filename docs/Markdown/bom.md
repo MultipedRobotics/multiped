@@ -1,7 +1,5 @@
 # Bill of Materials
 
-![system layout](pics/system_layout.png)
-
 ## Raspberry Pi
 
 I am currently using a 1.2 GHz quad core [RPi 3](https://www.adafruit.com/products/3055)
@@ -22,7 +20,7 @@ The 3d printer models (stl format) come from the following sources:
 
 * [Legs](https://github.com/mogillc/nico) which are the coxa, femur, and tibia
 * Misc brackets I made using [OpenScad](http://www.openscad.org/)
-
+* [Rivets](http://www.robotis.us/rivet-set-rs-10/) to put the frame together with
 
 # Cost
 
@@ -36,12 +34,15 @@ not shown here.
 | RPi v3                              | [Adafruit](https://www.adafruit.com) | 1 | $40 | $40 | Main board, has wifi and bluetooth already |
 | Pi Camera                           | [Adafruit](https://www.adafruit.com) | 1 | $30 | $30 | 8 Mpixel |
 | 5V, 5A Buck Converter (D24V22F5)    | [Pololu](https://www.pololu.com) | 1 | $10 | $10 | For powering the RPi |
-| 7.5V, 2.4A Buck Converter (D24V22F7)| [Pololu](https://www.pololu.com) | 1 | $10 | $10 | For powering the xl-320 |
+| Matek 7.2V, 5A buck converter       | [Amazon](https://www.amazon.com) | 1 | $15 | $15 | For powering the xl-320 |
 | Dynamixel xl-320 smart servo        | [RobotShop](https://www.robotshop.com) | 12 | $22 | $264 |  |
+| Rivets for xl-320                   | [Robotus.us](http://www.robotis.us/rivet-set-rs-10/) | 1 | $6 | $6 | There are about 250 in a bag|
 | PS4 Controller                      | [Walmart](http://www.walmart.com) | 1 | $54 | $54 | |
-| Micro SD (32 GB)                    | [Walmart](http://www.walmart.com) | 1 | $12 | $12 | Raspbian |
-| 74LS241                             |                                   | 1 | $1 | $1 | Used to convert the RPi's RS232 into a RS485 port |
-| Small signal MOSFET                 |                                  | 1 | $1  |    | Used for 3.3V to 5V conversion |
+| Micro SD (16 GB)                    | [Walmart](http://www.walmart.com) | 1 | $7  | $7  | Raspbian |
+| 74LS126                             |                                   | 1 | $1 | $1 | Used talk with the xl-320 |
+| MCP3208 12b 8 ch SPI ADC            |                                   | 1 | $4 | $4 | | 
+| NXP IMU                             | [Adafruit](https://www.adafruit.com/product/3463) | 1 | $14 | $14 | |
+| USB-serial port 5V logic            | [Sparkfun](https://www.sparkfun.com/products/9716) | 1 | $14 | $14 | Make sure it is a real FTDI with 5V logic |
 | 12V, 5A Wall Power Adaptor          | [Pololu](https://www.pololu.com) | 1 | $15 | $15 | So I don't have to always run off batteries |
 
 

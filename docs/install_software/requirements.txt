@@ -1,0 +1,7 @@
+wheel
+pip
+setuptools
+opencvutils
+mcp3208
+nxp_imu
+ins_nav

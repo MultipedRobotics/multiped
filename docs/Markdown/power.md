@@ -1,7 +1,5 @@
 # Power System
 
-![system layout](pics/system_layout.png)
-
 ## Voltage Converters
 
 The main power is sized at 12V to provide xx W of power. Several highly
@@ -14,17 +12,18 @@ efficient buck converters are used to to translate the 12V into either
 
 ## Power Budget
 
-| Part          | Voltage (V) | Current (mA) | Power (W) |
-|---            |---          |---           |---        |
-| RPi           | 5           | 2000         | 10        |
-| Pi Camera     |             |              |           |
-| 5V Converter  | 7.5         |              |           |
-| 7.5V Converter| 12          |              |           |
-| xl-320 (x12)  | 7.5         | 1000         | 7.5 (xx)  |
-| IMU           | 3.3         | x            |           |
-| Audio Amp     | 5           | 600          | 3         |
+| Part          | Voltage In (V) | Current (mA) | Power (W) |
+|---------------|----------------|--------------|-----------|
+| RPi           | 5              | 2000         | 10        |
+| Pi Camera     | 3.3            | 250          | 0.825     |
+| 5V Converter  | 5              | 5000         | 2.5 @ 90% |
+| 7.2V Converter| 7.2            | 5000         | 3.6 @ 90% |
+| xl-320 (x12)  | 7.2            | 1000         | 7.2 (86.4)|
+| IMU           | 3.3            | 2.7 + 1      | 0.007     |
+| Audio Amp     | 5              | 600          | 3         |
 
-
+**Note:** The currents are worst cases. The servos and RPi are not expected to 
+continously pull this much current.
 
 ---
 

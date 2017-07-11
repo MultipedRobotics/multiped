@@ -62,16 +62,26 @@ Layout
 
 Here is *sort* of the layout of the code:
 
-- Quadruped (*see examples folders*):
-	- Engine(serial)
-	- AHRS() - tilt compensated compass
-	- IMU() - NXP IMU from Adafruit
-	- MCP3208() - ADC for IR and whatever else
-	- Gait:
-		- command() - plans all feet through 1 gait cycle (12 steps)
-		- eachLeg(x,y,z)
-
-- Engine({serial}): - handles movement hardware
+- SimpleQuadruped(data) (*see examples folders*):
+	- class members
+		- imu: inertial measurement unit
+		- adc: analog to digital controller
+		- ir: an array of ir sensor readings
+		- ahrs: tilt compensated compass
+		- js: joystick input
+		- camera: pi camera
+	- class methods:
+		- Engine
+		- Gait
+- Gait:
+	- Gait calculates the foot positions for 1 cycle of a movement
+	- command() - plans all feet through 1 gait cycle (12 steps)
+	- eachLeg(x,y,z)
+	
+- Engine:
+	- Engine takes the output from Gait and calculates the servo joint positions
+	  for each time stop and each leg in the cycle. It then sends the command to
+	  move the servos at the end of the time step.
 	- legs[4]
 		- servos[3]
 			- angle
@@ -81,8 +91,8 @@ Here is *sort* of the layout of the code:
 		- coxa, femur, tibia
 		- fk() - forward kinematics
 		- ik() - inverse kinematics
-		- moveFoot(x,y,z)
-		- moveFootAngle(a,b,c)
+		- moveFoot(x,y,z) - for inverse kinematics
+		- moveFootAngle(a,b,c) - for forward kinematics
 
 The example quadruped (in the examples folder), takes a dictionary. Currently
 it takes::
@@ -95,10 +105,18 @@ it takes::
 If you don't pass it a serial port, then it falls back to a simulated serial
 port (which does nothing) which is useful for testing.
 
+Building and Documentation
+----------------------------
+
+Details for how to build the robot and other information are in the ``docs`` folder in the `git repo <https://github.com/MomsFriendlyRobotCompany/quadruped/tree/master/docs>`_
+
 Tools
 ---------
 
 This directory contains several tools for the robot:
+
+- get_leg_angles.py: prints out the joint angles for all 4 legs
+- get_leg_info.py: prints out servo information for all 12 servos on the robot
 
 Change Log
 -------------

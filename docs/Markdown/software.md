@@ -1,22 +1,6 @@
 # Software
 
-## PyGecko
-
-![Spiderbot_Processes](pics/Spiderbot_Processes.png)
-
-This uses [PyGecko](https://github.com/walchko/pygecko)
-(or [ROS](http://www.ros.org) if you write the interface). PyGecko is a simple ROS like system
-written in python so it should run on anything python runs on.
-
-	pip install pygecko
-
-Follow the other installation instructions for pygecko, will requires
-[ZeroMQ](http://zeromq.org/) and some other libraries to be installed to work.
-
-Since pygecko (like ROS) is based on the idea of many simple/modular processes, there is
-a `launch.py` file you run which will launch all of the necessary processes to get the 
-robot running. If you don't need or want everything, you can just comment out what you
-don't need.
+Go to the install_software folder and follow the directions.
 
 ## pyXL320
 
@@ -30,28 +14,19 @@ Since all of the leg servos are on the same RS845 bus, you will need to use
 together. To see how to use it, type:
 
 	set_id --help
-	
-## Other External Libraries
-
-	pip install adafruit-lsm303
 
 ## Tests
 
 `nose` is used for unit tests ... just run `nosetests -vs *.py`.
 
-## Low Level Quadruped Driver
+## Quadruped Driver
 
-![spiderbot classes](pics/spiderbot_classes.png)
-
-The class diagram only shows the main classes and important functions, there is more.
 If you look in the `quadruped` folder, it contains the low level driver:
 
-* Robot.py - main code to get things going ... adapt this to your needs.
-* Quadruped.py - basic wrapper around leg and gait algorithms
-* Leg.py - forward/reverse kinematics
-* Gait.py - syncronization of how the 4 legs walk
+* SimpleQuadruped.py - basic wrapper around leg and gait algorithms
+* Leg.py - forward/reverse kinematics and contains an array of servos for each joint
+* Gait.py - syncronization of how the 4 legs walk and is basically a planner
 * Servo.py - talks to the XL-320 smart servos
-* ahrs - tilt compensated compass which gives roll, pitch, heading
 
 ---
 

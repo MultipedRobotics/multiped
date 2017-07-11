@@ -1,0 +1,9 @@
+---
+engines:
+ pylint:
+   enabled: true
+   python_version: 2, 3
+exclude_paths:
+  - docs/
+  - hardware/
+  - tests/**/*

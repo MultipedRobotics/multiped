@@ -8,7 +8,7 @@ from math import cos
 # from math import sin
 # from math import sqrt
 from math import pi
-from Gait import rot_z
+from .Gait import rot_z
 
 
 class RobotTransform(object):

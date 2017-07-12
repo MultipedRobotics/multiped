@@ -18,6 +18,7 @@ from js import Joystick
 from nxp_imu import IMU
 from mcp3208 import MCP3208
 from ins_nav import AHRS
+from quadruped.misc_gaits import CircularGait, ImpatientGait
 import platform
 import time
 # from ahrs import AHRS  # attitude and heading reference system
@@ -42,9 +43,11 @@ class SimpleQuadruped(object):
 		imu - inertial measurement unit (must be on linux)
 		"""
 		self.robot = Engine(data)
-		netural = self.robot.getFoot0(0)
+		neutral = self.robot.getFoot0(0)
 		self.gait = {
-			'crawl': DiscreteRippleGait(45.0, netural)
+			'crawl': DiscreteRippleGait(45.0, neutral),
+			'circle_tap': CircularGait(45.0, neutral),
+			'impatient_tap': ImpatientGait(45.0, neutral)
 		}
 
 		if platform.system() == 'Linux':
@@ -76,6 +79,7 @@ class SimpleQuadruped(object):
 					print('Crap we flipped!!!')
 					cmd = (0, 0, 0)
 			else:
+				a, m, g = 0, 0, 0
 				roll, pitch, heading = (0.0, 0.0, 0.0)
 
 			if self.adc:
@@ -88,7 +92,8 @@ class SimpleQuadruped(object):
 			print('ahrs[deg]: roll {:.2f} pitch: {:.2f} yaw: {:.2f}'.format(roll, pitch, heading))
 			print('* cmd {:.2f} {:.2f} {:.2f}'.format(*cmd))
 			# print('***********************************')
-			mov = self.gait['crawl'].command(cmd)
+
+			mov = self.gait['impatient_tap'].command(cmd)
 			if mov:
 				self.robot.move(mov)
 			else:

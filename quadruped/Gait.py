@@ -142,7 +142,7 @@ class DiscreteRippleGait(Gait):
 			for legNum in [0, 2, 1, 3]:  # order them diagonally
 				# rcmd = self.calcRotatedOffset(cmd, legNum)
 				rcmd = rot_z_tuple(self.frame[legNum], cmd)
-				index = (i + self.legOffset[legNum]) % 12
+				index = (i + self.legOffset[legNum]) % self.steps
 				pos = self.eachLeg(index, rcmd)  # move each leg appropriately
 				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
 				# if legNum == 0: print('New  [{}](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(i, pos[0], pos[1], pos[2]))

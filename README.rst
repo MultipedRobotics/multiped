@@ -77,7 +77,7 @@ Here is *sort* of the layout of the code:
 	- Gait calculates the foot positions for 1 cycle of a movement
 	- command() - plans all feet through 1 gait cycle (12 steps)
 	- eachLeg(x,y,z)
-	
+
 - Engine:
 	- Engine takes the output from Gait and calculates the servo joint positions
 	  for each time stop and each leg in the cycle. It then sends the command to
@@ -116,7 +116,80 @@ Tools
 This directory contains several tools for the robot:
 
 - get_leg_angles.py: prints out the joint angles for all 4 legs
+
+.. code-block:: bash
+
+	$ ./get_leg_angles.py /dev/tty.usbserial-AL034G2K
+	Opened /dev/tty.usbserial-AL034G2K @ 1000000
+
+	Servos: 1 - 12
+	All angles are in degrees
+	         Leg 1 |         Leg 2 |         Leg 3 |         Leg 4 |
+	   ID | Angle  |   ID | Angle  |   ID | Angle  |   ID | Angle  |
+	-----------------------------------------------------------------
+	    1 | 149.56 |    4 | 149.56 |    7 | 149.56 |   10 | 149.56
+	    2 | 239.88 |    5 | 271.55 |    8 | 269.79 |   11 | 270.38
+	    3 |  99.41 |    6 | 100.29 |    9 | 100.00 |   12 |  99.41
+	-----------------------------------------------------------------
+
 - get_leg_info.py: prints out servo information for all 12 servos on the robot
+
+.. code-block:: bash
+
+	$ ./get_leg_info.py /dev/tty.usbserial-AL034G2K
+	Opened /dev/tty.usbserial-AL034G2K @ 1000000
+
+	Servos: 1 - 12
+	--------------------------------------------------
+	Servo: 1  		HW Error: 0
+	Position [deg]: 149.6  Load:   0.0% CCW
+	Voltage [V]  7.0     Temperature [F]:  80.6
+	--------------------------------------------------
+	Servo: 2  		HW Error: 0
+	Position [deg]: 239.6  Load:   0.0% CCW
+	Voltage [V]  7.2     Temperature [F]:  80.6
+	--------------------------------------------------
+	Servo: 3  		HW Error: 0
+	Position [deg]:  99.4  Load:   0.0% CCW
+	Voltage [V]  7.2     Temperature [F]:  82.4
+	--------------------------------------------------
+	Servo: 4  		HW Error: 0
+	Position [deg]: 149.6  Load:   0.0% CCW
+	Voltage [V]  7.3     Temperature [F]:  80.6
+	--------------------------------------------------
+	Servo: 5  		HW Error: 0
+	Position [deg]: 271.6  Load:   0.0% CCW
+	Voltage [V]  7.2     Temperature [F]:  80.6
+	--------------------------------------------------
+	Servo: 6  		HW Error: 0
+	Position [deg]: 100.3  Load:   0.0% CCW
+	Voltage [V]  7.4     Temperature [F]:  82.4
+	--------------------------------------------------
+	Servo: 7  		HW Error: 0
+	Position [deg]: 149.6  Load:   0.0% CCW
+	Voltage [V]  7.2     Temperature [F]:  80.6
+	--------------------------------------------------
+	Servo: 8  		HW Error: 0
+	Position [deg]: 269.8  Load:   0.0% CCW
+	Voltage [V]  7.1     Temperature [F]:  78.8
+	--------------------------------------------------
+	Servo: 9  		HW Error: 0
+	Position [deg]:  99.4  Load:   0.8% CCW
+	Voltage [V]  7.2     Temperature [F]:  82.4
+	--------------------------------------------------
+	Servo: 10  		HW Error: 0
+	Position [deg]: 149.9  Load:   0.0% CCW
+	Voltage [V]  7.1     Temperature [F]:  80.6
+	--------------------------------------------------
+	Servo: 11  		HW Error: 0
+	Position [deg]: 270.1  Load:   0.0% CCW
+	Voltage [V]  7.2     Temperature [F]:  80.6
+	--------------------------------------------------
+	Servo: 12  		HW Error: 0
+	Position [deg]:  99.4  Load:   0.0% CCW
+	Voltage [V]  7.1     Temperature [F]:  84.2
+	--------------------------------------------------
+
 
 Change Log
 -------------

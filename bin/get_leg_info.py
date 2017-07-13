@@ -13,7 +13,7 @@ import argparse
 import simplejson as json
 from serial import SerialException
 import sys
-from packetDecoder import PacketDecoder
+from quadruped.packetDecoder import PacketDecoder
 
 
 def writeToFile(data, filename='data.json'):

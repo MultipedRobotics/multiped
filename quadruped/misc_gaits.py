@@ -11,9 +11,10 @@ class CircularGait(Gait):
 	"""
 	steps = 0
 
-	def __init__(self, h, r, order=(0, 1, 2, 3)):
+	def __init__(self, h, r, order=(0, 2, 1, 3)):
 		Gait.__init__(self, r)
 		self.order = order
+		self.legOffset = [0, 3, 6, 9]
 		# self.phi = [9/9, 6/9, 3/9, 0/9, 1/9, 2/9, 3/9, 4/9, 5/9, 6/9, 7/9, 8/9]  # foot pos in gait sequence
 		maxl = h  # lifting higher gives me errors
 		minl = maxl/2
@@ -35,12 +36,13 @@ class CircularGait(Gait):
 	def pre_calc(self):
 		ret = []  # 4 leg foot positions for the entire 12 count cycle is returned
 
-		for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
+		for i in range(self.steps):  # iteration, there are 12 steps in gait cycle
 			footPos = []
+			print('-'*20)
 			for legNum in self.order:  # order them diagonally
 				index = (i + self.legOffset[legNum]) % self.steps
 				pos = self.eachLeg(index)  # move each leg appropriately
-				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
+				print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
 				# if legNum == 0: print('New  [{}](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(i, pos[0], pos[1], pos[2]))
 				footPos.append([index, legNum, pos])  # all in leg frame
 

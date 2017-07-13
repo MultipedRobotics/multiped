@@ -105,10 +105,19 @@ it takes::
 If you don't pass it a serial port, then it falls back to a simulated serial
 port (which does nothing) which is useful for testing.
 
+Bulk Writing
+--------------
+
+Normally, you would send an individual command to each servo and get a response
+back from it. That creates a lot of back an forth communications. Instead,
+this uses a bulk write to send commands to all 12 servos at once with no reply.
+This results in smoother motion and greatly reduced data transmission.
+
 Building and Documentation
 ----------------------------
 
-Details for how to build the robot and other information are in the ``docs`` folder in the `git repo <https://github.com/MomsFriendlyRobotCompany/quadruped/tree/master/docs>`_
+Details for how to build the robot and other information are in the ``docs`` folder
+in the `git repo <https://github.com/MomsFriendlyRobotCompany/quadruped/tree/master/docs>`_
 
 Tools
 ---------

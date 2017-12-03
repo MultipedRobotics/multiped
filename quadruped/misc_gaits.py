@@ -1,6 +1,6 @@
 from __future__ import print_function
 from __future__ import division
-import numpy as np
+# import numpy as np
 # from math import cos, sin, sqrt, pi
 from .Gait import Gait
 
@@ -29,7 +29,12 @@ class CircularGait(Gait):
 		# if cmd is not None:
 		# 	raise Exception("CircularGait::eachLeg cmd not None")
 
-		newpos = self.rest + np.array([0.0, 0.0, self.z[index]])
+		# newpos = self.rest + np.array([0.0, 0.0, self.z[index]])
+		newpos = [0]*3
+		newpos[0] = self.rest[0] + 0.0
+		newpos[1] = self.rest[1] + 0.0
+		newpos[2] = self.rest[2] + self.z[index]
+
 		# print('New  [](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(newpos[0], newpos[1], newpos[2]))
 		return newpos
 
@@ -83,18 +88,23 @@ class ImpatientGait(Gait):
 		# if cmd is not None:
 		# 	raise Exception("CircularGait::eachLeg cmd not None")
 
-		rest = self.rest
-		i = index
+		# rest = self.rest
+		# i = index
 
 		# create new move command
-		move = np.array([
-			0.0,
-			0.0,
-			self.z[i]
-		])
+		# move = np.array([
+		# 	0.0,
+		# 	0.0,
+		# 	self.z[i]
+		# ])
 
 		# new foot position: newpos = rot + move ----------------------------
-		newpos = move + rest
+		# newpos = move + rest
+		newpos = [0]*3
+		newpos[0] = self.rest[0] + 0.0
+		newpos[1] = self.rest[1] + 0.0
+		newpos[2] = self.rest[2] + self.z[index]
+
 		# print('New  [](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(newpos[0], newpos[1], newpos[2]))
 		return newpos
 

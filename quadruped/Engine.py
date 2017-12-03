@@ -29,7 +29,7 @@ class Engine(object):
 		"""
 		if data is None:
 			data = {}
-			
+
 		if 'serialPort' in data:
 			try:
 				ser = ServoSerial(data['serialPort'])

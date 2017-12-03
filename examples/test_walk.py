@@ -89,8 +89,8 @@ class Test(Robot):
 		]
 
 		# pick a gait to use
-		# crawl = self.gaits['crawl']
-		crawl = self.gaits['circle_tap']
+		crawl = self.gaits['crawl']
+		# crawl = self.gaits['circle_tap']
 		# crawl = self.gaits['impatient_tap']
 
 		for cmd in path:

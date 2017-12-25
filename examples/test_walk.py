@@ -106,8 +106,9 @@ class Test(Robot):
 
 def main():
 	data = {
-		'serialPort': '/dev/tty.usbserial-AL034G2K',  # sparkfun usb-serial
-		'write': 'bulk'
+		#'serialPort': '/dev/tty.usbserial-AL034G2K',  # sparkfun usb-serial
+		'serialPort': '/dev/ttyUSB0',
+                'write': 'bulk'
 	}
 
 	gaits = {

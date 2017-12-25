@@ -21,7 +21,6 @@ from ins_nav import AHRS
 from quadruped.misc_gaits import CircularGait, ImpatientGait
 import platform
 import time
-# from ahrs import AHRS  # attitude and heading reference system
 ##########################
 
 

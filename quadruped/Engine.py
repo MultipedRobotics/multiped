@@ -20,7 +20,7 @@ class Engine(object):
 	"""
 	change name to Hardware???
 
-	This is the low level driver that can be executed w/o using pyGecko.
+	This is the low level driver.
 	"""
 	def __init__(self, data=None):
 		"""
@@ -29,7 +29,7 @@ class Engine(object):
 		"""
 		if data is None:
 			data = {}
-			
+
 		if 'serialPort' in data:
 			try:
 				ser = ServoSerial(data['serialPort'])

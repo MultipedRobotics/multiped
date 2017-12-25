@@ -7,7 +7,8 @@ from .Gait import Gait
 
 class CircularGait(Gait):
 	"""
-
+	Raises one leg at a time and taps the legs in a circular pattern ... it does
+	not walk, this is just for fun
 	"""
 	steps = 0
 
@@ -60,7 +61,7 @@ class CircularGait(Gait):
 
 class ImpatientGait(Gait):
 	"""
-
+	Raises one leg and taps its foot impatiently ... for fun
 	"""
 	steps = 0
 

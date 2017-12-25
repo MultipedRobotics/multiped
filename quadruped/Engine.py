@@ -30,6 +30,8 @@ class Engine(object):
 		if data is None:
 			data = {}
 
+		# determine serial port
+		# default to fake serial port
 		if 'serialPort' in data:
 			try:
 				ser = ServoSerial(data['serialPort'])
@@ -46,6 +48,8 @@ class Engine(object):
 		ser.open()
 		Servo.ser = ser  # set static serial port, not sure I like this
 
+		# determine serial comm type: sync or bulk
+		# default to bulk
 		if 'write' in data:
 			method = data['write']
 			if method == 'sync':
@@ -54,6 +58,9 @@ class Engine(object):
 			elif method == 'bulk':
 				Servo.bulkServoWrite = True
 				print('*** using bulk write ***')
+		else:
+			Servo.bulkServoWrite = True
+			print('*** using bulk write ***')
 
 		self.legs = []
 		for i in range(0, 4):  # 4 legs

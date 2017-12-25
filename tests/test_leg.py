@@ -12,6 +12,13 @@ from quadruped.Servo import Servo
 ser = ServoSerial('test_port', fake=True)
 Servo.ser = ser
 
+def norm(a):
+	return sqrt(a[0]**2 + a[1]**2 + a[2]**2)
+
+def sub(a, b):
+	c = (a[0] - b[0], a[1] - b[1], a[2] - b[2])
+	return norm(c)
+
 
 def test_fk_ik():
 	leg = Leg([0, 1, 2])
@@ -27,9 +34,9 @@ def test_fk_ik():
 	print('angles2 from ik(pts): {:.2f} {:.2f} {:.2f} deg'.format(*angles2))
 	print('pts2 from fk(angle2): {:.2f} {:.2f} {:.2f} mm'.format(*pts2))
 	# print('diff:', np.linalg.norm(np.array(angles) - np.array(angles2)))
-	print('diff [mm]: {:.2f}'.format(np.linalg.norm(pts - pts2)))
+	print('diff [mm]: {:.2f}'.format(norm(sub(pts, pts2))))
 	# time.sleep(1)
-	assert (np.linalg.norm(np.array(angles) - np.array(angles2)) < 0.00001)
+	assert (norm(sub(angles, angles2)) < 0.00001)
 
 
 def printError(pts, pts2, angles, angles2):
@@ -39,7 +46,7 @@ def printError(pts, pts2, angles, angles2):
 	print('pts from fk(orig): {:.2f} {:.2f} {:.2f}'.format(*pts))
 	print('pts2 from fk(angle2): {:.2f} {:.2f} {:.2f}'.format(*pts2))
 	# print('diff:', np.linalg.norm(np.array(angles) - np.array(angles2)))
-	print('diff [mm]: {:.2f}'.format(np.linalg.norm(pts - pts2)))
+	print('diff [mm]: {:.2f}'.format(norm(sub(pts, pts2))))
 	print('\nExiting\n')
 	print('****************************************************')
 
@@ -61,8 +68,8 @@ def test_full_fk_ik():
 			angles2 = leg.ik(*pts)
 			pts2 = leg.fk(*angles2)
 
-			angle_error = np.linalg.norm(np.array(angles) - np.array(angles2))
-			pos_error = np.linalg.norm(pts - pts2)
+			angle_error = norm(sub(angles, angles2))
+			pos_error = norm(sub(pts, pts2))
 			# print(angle_error, pos_error)
 
 			if angle_error > 0.0001:
@@ -138,8 +145,8 @@ def test_fk_ik2():
 	print('angles2 from ik(pts): {:.2f} {:.2f} {:.2f} deg'.format(*angles2))
 	print('pts2 from fk(angle2): {:.2f} {:.2f} {:.2f} mm'.format(*pts2))
 	# print('diff:', np.linalg.norm(np.array(angles) - np.array(angles2)))
-	print('diff [mm]: {:.2f}'.format(np.linalg.norm(pts - pts2)))
-	print('diff [deg]: {:.2f}'.format(sqrt((angles[0]-angles2[0])**2+(angles[1]-angles2[1])**2+(angles[2]-angles2[2])**2)))
+	print('diff [mm]: {:.2f}'.format(norm(sub(pts, pts2))))
+	print('diff [deg]: {:.2f}'.format(norm(sub(angles, angles2))))
 	# time.sleep(1)
 	# assert(np.linalg.norm(np.array(angles) - np.array(angles2)) < 0.00001)
 
@@ -160,7 +167,7 @@ def test_full_fk_ik2():
 					continue
 				pts2 = leg.fk(*angles2)
 
-				angle_error = np.linalg.norm(np.array(angles) - np.array(angles2))
+				angle_error = norm(sub(angles, angles2))
 				pos_error = np.linalg.norm(pts - pts2)
 				# print(angle_error, pos_error)
 

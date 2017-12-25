@@ -1,6 +1,7 @@
 
 .. image:: https://raw.githubusercontent.com/walchko/quadruped/master/pics/spiderbot_dev.JPG
 	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
+	:width: 75%
 
 Quadruped
 ============================

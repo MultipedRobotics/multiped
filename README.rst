@@ -21,18 +21,8 @@ My robot software.
 Documentation
 -------------------
 
-**Note:** This re-write is still very early and not fully running yet, just
-parts.
-
 Install
 -----------
-
-linux
-~~~~~~~~
-
-You will also need::
-
-	pip install ds4drv
 
 pip
 ~~~~~
@@ -63,15 +53,8 @@ Layout
 
 Here is *sort* of the layout of the code:
 
-- SimpleQuadruped(data) (*see examples folders*):
-	- class members
-		- imu: inertial measurement unit
-		- adc: analog to digital controller
-		- ir: an array of ir sensor readings
-		- ahrs: tilt compensated compass
-		- js: joystick input
-		- camera: pi camera
-	- class methods:
+- Robot(data)
+  - Takes a dict of setup values: {'serialPort': /dev/something, 'write': 'bulk'}
 		- Engine
 		- Gait
 - Gait:
@@ -104,7 +87,7 @@ it takes::
 	}
 
 If you don't pass it a serial port, then it falls back to a simulated serial
-port (which does nothing) which is useful for testing.
+port which does nothing but is useful for testing.
 
 Bulk Writing
 --------------
@@ -205,8 +188,9 @@ Change Log
 -------------
 
 ============ ======= ============================
-2017-Jul-07  0.4.1   broke out into package and published to PyPi
-2016-Aug-10  0.0.1   init
+2017-12-25   0.5.0   Clean up and reorg, removed unnecessary libraries
+2017-06-07   0.4.1   broke out into package and published to PyPi
+2016-08-10   0.0.1   init
 ============ ======= ============================
 
 

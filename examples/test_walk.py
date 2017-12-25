@@ -8,13 +8,15 @@ from math import pi
 import time
 
 # sensor robot -------
-from nxp_imu import IMU
-from mcp3208 import MCP3208
+# from nxp_imu import IMU
+# from mcp3208 import MCP3208
 # from ins_nav import AHRS
-import platform
+# import platform
 
 
 class Robot(object):
+	gaits = {}
+
 	def __init__(self, data, gaits=None):
 		"""
 		Constructor.
@@ -39,15 +41,15 @@ class Robot(object):
 				self.gaits[k] = v(45.0, neutral)
 
 
-class SensorRobot(Robot):
-	def __init__(self, data):
-		Robot.__init__(self, data)
-		if platform.system() == 'Linux':
-			self.imu = IMU()
-			self.adc = MCP3208()
-
-		# self.js = Joystick()
-		# self.ahrs = AHRS()
+# class SensorRobot(Robot):
+# 	def __init__(self, data):
+# 		Robot.__init__(self, data)
+# 		# if platform.system() == 'Linux':
+# 		# 	self.imu = IMU()
+# 		# 	self.adc = MCP3208()
+#
+# 		# self.js = Joystick()
+# 		# self.ahrs = AHRS()
 
 
 class Test(Robot):
@@ -87,9 +89,9 @@ class Test(Robot):
 		]
 
 		# pick a gait to use
-		# crawl = self.gaits['crawl']
+		crawl = self.gaits['crawl']
 		# crawl = self.gaits['circle_tap']
-		crawl = self.gaits['impatient_tap']
+		# crawl = self.gaits['impatient_tap']
 
 		for cmd in path:
 

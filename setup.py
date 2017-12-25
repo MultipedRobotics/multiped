@@ -35,13 +35,10 @@ setup(
 		'Topic :: Software Development :: Libraries :: Python Modules'
 	],
 	install_requires=[
-		'nxp_imu',
 		'pyxl320',
 		'simplejson',
 		'pyserial',
-		'numpy',
-		'build_utils',
-		'mcp3208'
+		'build_utils'
 	],
 	url="https://github.com/MomsFriendlyRobotCompany/{}".format(PACKAGE_NAME),
 	long_description=README,

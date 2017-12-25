@@ -7,7 +7,7 @@
 
 from __future__ import print_function
 from __future__ import division
-import numpy as np
+# import numpy as np
 from math import sin, cos, acos, atan2, sqrt, pi, fabs
 from math import radians as d2r
 from math import degrees as r2d
@@ -91,7 +91,8 @@ class Leg(object):
 			Lf*sin(b) + Lt*sin(b + g)
 		]
 
-		return np.array(foot)
+		# return np.array(foot)
+		return foot
 
 	def ik(self, x, y, z):
 		"""

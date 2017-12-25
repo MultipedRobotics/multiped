@@ -8,7 +8,7 @@
 
 from __future__ import print_function
 from __future__ import division
-import numpy as np
+# import numpy as np
 from math import cos, sin, sqrt, pi
 
 
@@ -34,11 +34,17 @@ def rot_z(t, c):
 	c - [x,y,z]
 	return - [x,y,z] numpy array rotated about z-axis
 	"""
-	ans = np.array([
+	# ans = np.array([
+	# 	c[0]*cos(t)-c[1]*sin(t),
+	# 	c[0]*sin(t)+c[1]*cos(t),
+	# 	c[2]
+	# ])
+
+	ans = [
 		c[0]*cos(t)-c[1]*sin(t),
 		c[0]*sin(t)+c[1]*cos(t),
 		c[2]
-	])
+	]
 
 	return ans
 
@@ -121,14 +127,24 @@ class DiscreteRippleGait(Gait):
 		rest_rot = rot_z(-angle, rest)
 
 		# create new move command
-		move = np.array([
+		# move = np.array([
+		# 	xx/2 - phi*xx,
+		# 	yy/2 - phi*yy,
+		# 	self.z[i]
+		# ])
+		move = [
 			xx/2 - phi*xx,
 			yy/2 - phi*yy,
 			self.z[i]
-		])
+		]
 
 		# new foot position: newpos = rot + move ----------------------------
-		newpos = move + rest_rot
+		# newpos = move + rest_rot
+		newpos = [0]*3
+		newpos[0] = move[0] + rest_rot[0]
+		newpos[1] = move[1] + rest_rot[1]
+		newpos[2] = move[2] + rest_rot[2]
+
 		# print('New  [](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(newpos[0], newpos[1], newpos[2]))
 		return newpos
 
@@ -154,5 +170,7 @@ class DiscreteRippleGait(Gait):
 			# feet = corr.rotateFeetCorrected(footPos, c)
 
 			ret.append(footPos)  # 4 feet at index i: [index, legNum, footposition]
+			# print('4 feet at index i: [index, legNum, footposition]')
+			# print('ret', ret)
 
 		return ret

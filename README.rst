@@ -18,8 +18,20 @@ My robot software.
 * `YouTube <https://www.youtube.com/watch?v=kH2hlxUfCNg>`_
 * `Vimeo <https://player.vimeo.com/video/194676675>`_
 
+Current State
+----------------
+
 .. image:: pics/spider.jpg
 	:width: 75%
+
+- Processor: Pi Zero W
+- Language: python
+
+ToDo:
+
+- design/build boards instead of the jumpers connecting wires
+- design the head structure to hold electronics and LCD
+
 
 Documentation
 -------------------

@@ -1,10 +1,13 @@
-# OpenSCAD
+<img src="openscad-logo.png" width="100%"/>
 
 These models were created by me (Kevin Walchko). Since OpenSCAD is setup like
 a programming language, you can adjust the parameters of some of the parts to
 you liking.
 
+# macOS Install
 
+Do not use `brew` to install, there are issues with the Qt library that are a
+pain-in-the-ass! Best to just get it from the website: http://www.openscad.org/downloads.html
 
 ## License:
 

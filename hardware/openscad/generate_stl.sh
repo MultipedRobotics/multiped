@@ -3,16 +3,15 @@
 binary="/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
 
 # this fisrt and only argument is the definition of the stl export, it defines the $fn variable in openscad
-if [ -z "$1" ]
-  then
+if [[ -z "$1" ]]; then
     fn=90
     echo "No argument supplied -> fn=$fn"
   else
     fn=$1
 fi
 
-echo "Generating parts with fn=$fn"
-scadArg="\$fn=$fn"
+echo "Generating parts with fn=${fn}"
+scadArg="\$fn=${fn}"
 
 # create the stl folder if it does not exist
 mkdir -p stl;

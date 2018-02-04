@@ -18,6 +18,8 @@ My robot software.
 * `YouTube <https://www.youtube.com/watch?v=kH2hlxUfCNg>`_
 * `Vimeo <https://player.vimeo.com/video/194676675>`_
 
+![](pics/spider.jpg)
+
 Documentation
 -------------------
 

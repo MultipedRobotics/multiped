@@ -20,7 +20,7 @@ This are still being developed. If they are not current, github is able to rende
 
 ## Middle Plate
 
-![](pics/middle_plate.png)
+![](pics/main_plate.png)
 
 ## Bottom Plate
 

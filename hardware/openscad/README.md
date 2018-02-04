@@ -16,15 +16,15 @@ This are still being developed. If they are not current, github is able to rende
 
 ## Top Plate
 
-![](pics/top-plate.png)
+![](pics/top_plate.png)
 
 ## Middle Plate
 
-![](pics/middle-plate.png)
+![](pics/middle_plate.png)
 
 ## Bottom Plate
 
-![](pics/base-plate.png)
+![](pics/base_plate.png)
 
 ## Pulley
 
@@ -32,7 +32,7 @@ This are still being developed. If they are not current, github is able to rende
 
 ## Servo Bracket
 
-![](pics/servo-bracket.png)
+![](pics/u_frame.png)
 
 # macOS Install
 

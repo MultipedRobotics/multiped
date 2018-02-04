@@ -1,29 +1,29 @@
 #!/bin/bash
 
-binary="/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
+BINARY="/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
 
 # this fisrt and only argument is the definition of the stl export, it defines the $fn variable in openscad
-if [[ -z "$1" ]]; then
-    fn=90
-    echo "No argument supplied -> fn=$fn"
+if [[ "$#" -eq 0 ]]; then
+    ARG="\$fn=90"
+    echo "No argument supplied, using: fn=${ARG}"
   else
-    fn=$1
+    ARG="\$fn=$1"
 fi
 
-echo "Generating parts with fn=${fn}"
-scadArg="\$fn=${fn}"
+echo "Generating parts with ${ARG}"
 
-# create the stl folder if it does not exist
-mkdir -p stl;
-
-# list all scad file in folder
-scadFileAvailable=$(find . -name "*.scad" -maxdepth 1)
+# clear out old STL files
+if [[ -d "./stl" ]]; then
+    rm -fr ./stl
+    mkdir stl
+fi
 
 # generate all filename.scad files and output stls in ./stl/filename.stl
-for i in $scadFileAvailable; do
-  scadFilename=${i#*/}
-  filename=${scadFilename%.scad}
-  stlFilename="stl/$filename.stl"
-  echo "Generating $filename..."
-  $binary -o $stlFilename $scadFilename -D $scadArg
+for SCAD in *.scad; do
+  if [[ "${SCAD}" != "parts.scad" && "${SCAD}" != "common.scad" && "${SCAD}" != "misc.scad" ]]; then
+      FNAME=${SCAD%.scad}
+      echo "> Processing file: ${SCAD}"
+      ${BINARY} -o stl/${FNAME}.stl ${SCAD} -D ${ARG}
+      ${BINARY} -o pics/${FNAME}.png ${SCAD} --imgsize=640,480 --viewall
+  fi
 done

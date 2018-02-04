@@ -1,10 +1,38 @@
 <a href="http://www.openscad.org/downloads.html">
-<img src="openscad-logo.png" width="100%"/>
+<img src="pics/openscad-logo.png" width="100%"/>
 </a>
 
 These models were created by me (Kevin Walchko). Since OpenSCAD is setup like
 a programming language, you can adjust the parameters of some of the parts to
 you liking.
+
+# Hardware
+
+This are still being developed. If they are not current, github is able to render the stl files and show the current version.
+
+## To Do
+
+- Need to design the head, which holds the pi and other electronics
+
+## Top Plate
+
+![](pics/top-plate.png)
+
+## Middle Plate
+
+![](pics/middle-plate.png)
+
+## Bottom Plate
+
+![](pics/base-plate.png)
+
+## Pulley
+
+![](pics/pulley.png)
+
+## Servo Bracket
+
+![](pics/servo-bracket.png)
 
 # macOS Install
 

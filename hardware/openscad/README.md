@@ -1,4 +1,6 @@
+<a href="http://www.openscad.org/downloads.html">
 <img src="openscad-logo.png" width="100%"/>
+</a>
 
 These models were created by me (Kevin Walchko). Since OpenSCAD is setup like
 a programming language, you can adjust the parameters of some of the parts to

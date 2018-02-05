@@ -108,7 +108,7 @@ difference()
         translate([-PiHoleX,PiHoleY,PiSizeZ/2])
             cylinder(r=PiCornerRad,h=PiSizeZ,center=true);
         }
- 
+
     // Corner screw holes
     PiPCBhole(-PiHoleX,-PiHoleY);
     PiPCBhole(PiHoleX,-PiHoleY);
@@ -123,7 +123,7 @@ difference()
         translate([Xcount*2.54,PiHoleY+Ycount*1.27,PiSizeZ/2])
             cylinder(h=2*PiSizeZ,d=1.2,center=true);
     }
-    
+
 PiComponent(PiSOCX,PiSOCY,PiSOCsizeX,PiSOCsizeY,PiSOCsizeZ,"Black");   // Processor
 PiComponent(PiSDX,PiSDY,PiSDsizeX,PiSOCsizeY,PiSOCsizeZ,"Silver");   // SD card
 PiComponent(PiHDMIX,PiHDMIY,PiHDMIsizeX,PiHDMIsizeY,PiHDMIsizeZ,"Silver");   // HDMI
@@ -148,10 +148,10 @@ Program from here
 */
 
 // Input variables
-ShowPiZero = true;
-//ShowPiZero = false;
-ShowTestPads = true;
-// ShowTestPads = false;
+//ShowPiZero = true;
+ShowPiZero = false;
+//ShowTestPads = true;
+ShowTestPads = false;
 
 // Overall definition
 $fn=60;

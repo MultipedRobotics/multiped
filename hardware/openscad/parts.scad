@@ -3,6 +3,7 @@ use <pulley.scad>
 use <u_frame.scad>
 use <base_plate.scad>
 use <top_plate.scad>
+use <head.scad>
 $fn=45;
 
 include <pi-zero/files/PiZero_1.2.scad>;
@@ -36,8 +37,8 @@ module board(){
             PiPCBhole(PiHoleX,PiHoleY);
             PiPCBhole(-PiHoleX,PiHoleY);
         }
-        translate([-3,-10,-3]) imu();
-        translate([-25,-10,-3]) amp();
+//        translate([-3,-10,-3]) imu();
+//        translate([-25,-10,-3]) amp();
     }
 }
 
@@ -70,11 +71,10 @@ module lcd(){
     
 
 module head(){
-    board();
-    
-    translate([0,0,5]) PiZeroBody();
-    
-    translate([0,0,10]) lcd();
+    // washer offset
+    translate([0,0,3]) PiZeroBody();
+    // header height + board thickness
+    translate([0,0,9+2]) lcd();
 }
 
 /*
@@ -87,34 +87,59 @@ color("SkyBlue", 1) {
     //neck();
     translate([0,0,10]) PiZeroBody();
 }*/
-//head();
+
 //PiZeroBody();
 
-module hindge(dia){
-    difference(){
-        cylinder(dia,d=6,center=true);
-        translate([0,0,0]) cylinder(5,d=7,center=true);
-        translate([0,0,12]) cylinder(5,d=7,center=true);
-        translate([0,0,-12]) cylinder(5,d=7,center=true);
-        cylinder(dia+2,d=3,center=true);
-    }
-}
+//module hindge(dia){
+//    difference(){
+//        cylinder(dia,d=6,center=true);
+//        translate([0,0,0]) cylinder(5,d=7,center=true);
+//        translate([0,0,12]) cylinder(5,d=7,center=true);
+//        translate([0,0,-12]) cylinder(5,d=7,center=true);
+//        cylinder(dia+2,d=3,center=true);
+//    }
+//}
 
-module Base(dia=40){
-    union(){
-        difference(){
-            cube([dia,dia,10], center=true);
-            cylinder(20,d=20,center=true);
-            translate([0,dia/2-3,5])
-            rotate([0,90,0])
-            cylinder(dia+2,d=3,center=true);
-            
-            translate([0,-(dia/2-3),5])
-            rotate([0,90,0])
-            cylinder(dia+2,d=3,center=true);
-        }
-        translate([0,(dia/2-3),5]) rotate([0,90,0]) hindge(dia);
-        translate([0,-(dia/2-3),5]) rotate([0,90,0]) hindge(dia);
-    }
-}
-Base(40);
+//module Base(dia=40){
+//    union(){
+//        difference(){
+//            cube([dia,dia,10], center=true);
+//            cylinder(20,d=20,center=true);
+//            translate([0,dia/2-3,5])
+//            rotate([0,90,0])
+//            cylinder(dia+2,d=3,center=true);
+//            
+//            translate([0,-(dia/2-3),5])
+//            rotate([0,90,0])
+//            cylinder(dia+2,d=3,center=true);
+//        }
+//        translate([0,(dia/2-3),5]) rotate([0,90,0]) hindge(dia);
+//        translate([0,-(dia/2-3),5]) rotate([0,90,0]) hindge(dia);
+//    }
+//}
+
+//module Base(dia=40, h=10){
+//    translate([0,0,0]) union(){
+//        // pi zero mounting holes
+//        rotate([0, 90, 0]) translate([-65/2-20-5,0,0]) board();
+//        // circular base
+//        difference(){
+//            cylinder(h,d=dia, center=false); // hub
+//            cylinder(2*h,d=20,center=false); // wire pass through
+//            translate([0,0,-1]) cylinder(h/2+1,d=3*20/2,center=false); // inner rim
+//        }
+//        // support pilar - left
+//        translate([0,15,h/2]) rotate([0,0,-90]) difference(){
+//            cylinder(40,d=10);
+//            translate([-2,1,19]) cube([15,5,25]);
+//        }
+//        // support pilar - right
+//        translate([0,-15,h/2]) difference(){
+//            cylinder(40,d=10);
+//            translate([1,-2,19]) cube([5,15,25]);
+//        }
+//    }
+//}
+//rotate([0, 90, 0]) translate([-65/2-20-5,0,3]) rotate([0, 0, 180]) head();
+//HeadMount();
+//top_plate();

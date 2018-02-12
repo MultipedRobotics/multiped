@@ -7,6 +7,7 @@ module neck(outer=40, inner=25, len=70){
             ch = outer/3;
             cylinder(ch,r1=outer/2, r2=inner/2, center=false);
             translate([0,0,len-ch]) cylinder(ch,r1=inner/2, r2=outer/2, center=false);
+            translate([0,0,len]) cylinder(4,d=29, center=false);
             cylinder(len, d=inner, center=false);
         }
         cylinder(len*5, d=20, center=true);

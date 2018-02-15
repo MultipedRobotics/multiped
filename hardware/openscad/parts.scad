@@ -4,6 +4,7 @@ use <u_frame.scad>
 use <base_plate.scad>
 use <top_plate.scad>
 use <head.scad>
+use <face_plate.scad>
 $fn=45;
 
 include <pi-zero/files/PiZero_1.2.scad>;

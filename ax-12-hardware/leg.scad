@@ -23,14 +23,14 @@ module tibia(){
 }
 
 module M3(t){
-    dia = 3.3;
-    sdia = 5;
+    dia = 3.5;
+    sdia = 6;
     cylinder(3*t, d=dia, center=true);  // M2
     translate([0,0,2]) cylinder(3*t, d=sdia, center=false);  // screw driver
 }
 
 module M2(t){
-    dia = 2.3;
+    dia = 2.5;
     sdia = 4;
     cylinder(3*t, d=dia, center=true);  // M2
     translate([0,0,2]) cylinder(3*t, d=sdia, center=false);  // screw driver
@@ -77,8 +77,40 @@ module femur(L){
     }
 }
 
-//femur(70);
-rotate([0,0,0]) tibia();
+module femur2(L){
+    thick = 40;
+//    difference(){
+//        union(){
+//            translate([L/2,0,0]) pulley(thick=thick);
+//            translate([-L/2,0,0]) pulley(thick=thick);
+            linear_extrude(height=thick)
+//                rotate_extrude(angle=30, convexity = 20)
+    {
+                    rotate([0,0,90]) difference(){
+                        resize([L,L/2]) circle(d=L/3);
+                        translate([0,0,0]) resize([1.2*L,L/3]) circle(d=L/3);
+                        translate([-L/2,0,0]) square([2*L,L/2]);
+                    }
+                }
+//            }
+//        }
+//        translate([L/2,0,0]) holes(thick);
+//        translate([-L/2,0,0]) holes(thick);
+//    }
+//    hull(){
+//        translate([0,0,0]) circle(d=40);
+//        translate([L,0,0]) circle(d=10);
+//    }
+    
+    
+}
+
+
+
+
+
+femur2(90);
+//rotate([0,0,0]) tibia();
 //translate([40,-5,0]) rotate([0,90,-90]) ax12();
 
 module hex(side,t){

@@ -109,7 +109,7 @@ module femur2(L){
 
 
 
-femur2(90);
+//femur2(90);
 //rotate([0,0,0]) tibia();
 //translate([40,-5,0]) rotate([0,90,-90]) ax12();
 
@@ -130,3 +130,41 @@ module hex(side,t){
 }
 
 //hex(5,3);
+
+module spar(L){
+//    difference(){
+//        linear_extrude(5){
+            hull(){
+                circle(d=1.25*40);
+                translate([2.25*40/4,0,0]) square(35, center=true);
+            }
+//        }
+//        translate([2.25*40/4+6,0,0]) cube([26,21,12], center=true);
+//    }
+//    color("gray") translate([2.25*40/4+15,0,-12]) rotate([0,0,-90]) ax12();
+}
+
+module base(D){
+    difference(){
+        union(){
+            circle(d=.75*D);
+            L=D/8;
+            rotate([0,0,0]) translate([L,0,0])  spar(D);
+            rotate([0,0,90]) translate([L,0,0]) spar(D);
+            rotate([0,0,180]) translate([L,0,0]) spar(D);
+            rotate([0,0,270]) translate([L,0,0]) spar(D);
+        }
+        circle(d=20);  // cable hole
+        rotate([0,0,0])  translate([35/2+2.25*40/4,0,0]) square([26,21],center=true);
+        rotate([0,0,90])  translate([35/2+2.25*40/4,0,0]) square([26,21],center=true);
+        rotate([0,0,180])  translate([35/2+2.25*40/4,0,0]) square([26,21],center=true);
+        rotate([0,0,270])  translate([35/2+2.25*40/4,0,0]) square([26,21],center=true);
+    }
+}
+
+base(100);
+
+
+
+
+

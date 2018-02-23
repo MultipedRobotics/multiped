@@ -136,7 +136,7 @@ module spar(L){
 //        linear_extrude(5){
             hull(){
                 circle(d=1.25*40);
-                translate([2.25*40/4,0,0]) square(35, center=true);
+                translate([2.25*40/3-3,0,0]) square(35, center=true);
             }
 //        }
 //        translate([2.25*40/4+6,0,0]) cube([26,21,12], center=true);
@@ -144,25 +144,74 @@ module spar(L){
 //    color("gray") translate([2.25*40/4+15,0,-12]) rotate([0,0,-90]) ax12();
 }
 
+
+module rpi3(){
+    // sort of center mass
+    translate([-3-88.5/2,-2-56/2,0]) import("rpi3.STL");
+}
+
+
+module rpi_holes(){
+    x = 58/2;
+    y = 49/2;
+    d = 2.5;
+    translate([x,y,0]) circle(d=d);
+    translate([-x,-y,0]) circle(d=d);
+    translate([x,-y,0]) circle(d=d);
+    translate([-x,y,0]) circle(d=d);
+}
+
+module servo_mnt(){
+    d = 2.5;
+    w = 22; // center servo
+    l = 35; // center servo
+    s = 38.5-2.5;
+//    translate([s,0,0]) circle(d=w+1);
+    translate([32,-20,0]) square([20,40],center=false);
+    translate([2.5,-w/2,0])square([l,w],center=false);
+    // bottom holes
+    translate([0,8,0]) circle(d=d);
+    translate([0,-8,0]) circle(d=d);
+    
+    // right holes
+    translate([5.5,-27/2,0]) circle(d=d);
+    translate([5.5+8,-27/2,0]) circle(d=d);
+    translate([5.5+16,-27/2,0]) circle(d=d);
+    translate([5.5+24,-27/2,0]) circle(d=d);
+    
+    // left holes
+    translate([5.5,27/2,0]) circle(d=d);
+    translate([5.5+8,27/2,0]) circle(d=d);
+    translate([5.5+16,27/2,0]) circle(d=d);
+    translate([5.5+24,27/2,0]) circle(d=d);
+}
+
 module base(D){
-    difference(){
-        union(){
-            circle(d=.75*D);
-            L=D/8;
-            rotate([0,0,0]) translate([L,0,0])  spar(D);
-            rotate([0,0,90]) translate([L,0,0]) spar(D);
-            rotate([0,0,180]) translate([L,0,0]) spar(D);
-            rotate([0,0,270]) translate([L,0,0]) spar(D);
+    linear_extrude(4){
+        spar_len = 30;
+        difference(){
+            union(){
+                circle(d=.75*D);
+                rotate([0,0,0]) translate([spar_len,0,0])  spar(D);
+                rotate([0,0,90]) translate([spar_len,0,0]) spar(D);
+                rotate([0,0,180]) translate([spar_len,0,0]) spar(D);
+                rotate([0,0,270]) translate([spar_len,0,0]) spar(D);
+            }
+            circle(d=20);  // cable hole
+            servo = 35/2+2.25*40/2;
+            rotate([0,0,0])  translate([servo/2,0,0]) servo_mnt();
+            rotate([0,0,90])  translate([servo/2,0,0]) servo_mnt();
+            rotate([0,0,180])  translate([servo/2,0,0]) servo_mnt();
+            rotate([0,0,270])  translate([servo/2,0,0]) servo_mnt();
+            
+            rpi_holes();
         }
-        circle(d=20);  // cable hole
-        rotate([0,0,0])  translate([35/2+2.25*40/4,0,0]) square([26,21],center=true);
-        rotate([0,0,90])  translate([35/2+2.25*40/4,0,0]) square([26,21],center=true);
-        rotate([0,0,180])  translate([35/2+2.25*40/4,0,0]) square([26,21],center=true);
-        rotate([0,0,270])  translate([35/2+2.25*40/4,0,0]) square([26,21],center=true);
     }
 }
 
-base(100);
+base(135);
+color("gray") translate([2.25*40/4+30,0.5,-12]) rotate([0,0,-90]) ax12();
+color("teal") translate([12,0,10]) rpi3();
 
 
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 ##############################################
 # The MIT License (MIT)
 # Copyright (c) 2016 Kevin Walchko
@@ -37,7 +36,8 @@ class Engine(object):
 				ser = ServoSerial(data['serialPort'])
 				print('Using servo serial port: {}'.format(data['serialPort']))
 
-			except:
+			except Exception as e:
+				print(e)
 				print('bye ...')
 				exit(1)
 		else:

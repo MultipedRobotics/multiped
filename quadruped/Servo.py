@@ -122,7 +122,8 @@ class Servo(ServoBase):
 
 	def __init__(self, ID):
 		"""
-		limits [angle, angle] - [optional] set the angular limits of the servo to avoid collision
+		limits [angle, angle] - [optional] set the angular limits of the servo
+		to avoid collision
 		"""
 		ServoBase.__init__(self)
 		self.ID = ID

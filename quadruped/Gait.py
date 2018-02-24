@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 ##############################################
 # The MIT License (MIT)
 # Copyright (c) 2016 Kevin Walchko

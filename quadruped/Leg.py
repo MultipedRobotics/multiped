@@ -189,8 +189,8 @@ class Leg(object):
 			for servo, angle in zip(self.servos, (a, b, c)):
 				servo.angle = angle
 
-		except:
-			print('Leg::moveFootAngles() error')
+		except Exception as e:
+			print('Leg::moveFootAngles() error:', e)
 			raise
 
 	# def reset(self):

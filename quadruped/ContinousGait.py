@@ -1,3 +1,8 @@
+##############################################
+# The MIT License (MIT)
+# Copyright (c) 2016 Kevin Walchko
+# see LICENSE for full details
+##############################################
 # from .Gait import Gait
 # from .Gait import rot_z
 # import numpy as np

@@ -29,12 +29,13 @@ class Robot(object):
 		Constructor.
 		Engine - commands the leg servos to move
 		gait - Ideally there are several types of gaits for different
-		       walking/running situations. If you don't give it an dict
-			   of gaits, then the default is just the standard DiscreteRippleGait.
-			   The gaits need to know:
-		       - how high to pick up a leg
-		       - what the neutral leg position is (where is the foot
-		         located when just standing?)
+				walking/running situations. If you don't give it an dict
+				of gaits, then the default is just the standard
+				DiscreteRippleGait.
+			The gaits need to know:
+			- how high to pick up a leg
+			- what the neutral leg position is (where is the foot
+				located when just standing?)
 		"""
 		self.robot = Engine(data)
 		neutral = self.robot.getFoot0(0)

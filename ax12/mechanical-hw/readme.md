@@ -28,3 +28,9 @@ I saw [this](https://github.com/adammck/hexapod) design by Adam McKaig and
 drew some ideas from it.
 
 ![](pics/adammck-hexapod.jpg)
+
+# Tools
+
+![](pics/openscad-logo.png)
+
+I use [OpenSCAD](http://www.openscad.org/) which is a free solid modeler.

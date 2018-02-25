@@ -64,7 +64,13 @@ module base(D){
 }
 
 module top(){
+	thick = 4;
     base(135);
+    neck = 15;
+    difference(){
+        translate([0,0,neck/2+thick/2]) cylinder(neck, d2=30, d1=55, center=true);
+        translate([0,0,neck/2+thick/2]) cylinder(2*neck,d=20, center=true);
+    }
 }
 
 module bottom(){

@@ -17,10 +17,11 @@ module rpi_base(){
     d = 3.5;
     h=20;
     thick = 3;
-    translate([0,0,11.5]) union(){
+    /* translate([0,0,11.5]) union(){ */
+    union(){
         difference(){
 //            translate([0,0,0]) cube([2*x+10+30,2*y+10,thick], center=true);
-            translate([0,0,0]) cylinder(thick, d=85, center=true);
+            translate([0,0,0]) cylinder(thick, d=90, center=true);
             // mounting holes
             translate([x,y,-10]) cylinder(h,d=d);
             translate([-x,-y,-10]) cylinder(h,d=d);
@@ -28,10 +29,14 @@ module rpi_base(){
             translate([-x,y,-10]) cylinder(h,d=d);
             cylinder(10, d=20, center=true);
         }
-        neck = 10;
+        /* neck = 10;
         difference(){
             translate([0,0,-neck/2-thick/2]) cylinder(neck, d1=30, d2=50, center=true);
             translate([0,0,-neck/2-thick/2]) cylinder(2*neck,d=20, center=true);
-        }
+        } */
     }
+}
+
+module head(){
+	rpi_base();
 }

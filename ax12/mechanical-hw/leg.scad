@@ -71,7 +71,7 @@ module femur(L){
 //////////////////////////////////////////////////////
 module pulleyHole(){
     cylinder(20, d=8.5, center=true);  // hub
-    translate([0,0,2]) cylinder(20, d=11);  // 3mm?
+    translate([0,0,3]) cylinder(20, d=11);  // 3mm?
 }
 
 module tibiaSupt(L, thick){
@@ -100,7 +100,7 @@ module tibia(L=85){
     color("SkyBlue") union(){
         translate([0,21,0]) rotate([-90,180,0]) tibiaSupt(L, thick);
         translate([0,-21,0]) rotate([90,0,0]) tibiaSupt(L, thick);
-        /* cube([L/3,40,10], center=true); */
+
         difference(){
             cube([L/3+10,42,10], center=true);
             translate([-L/3/2-5,0,0]) scale([.5,1,1]) sphere(d=43);
@@ -110,23 +110,16 @@ module tibia(L=85){
 }
 
 module fullLeg(){
-    translate([42,0,0]){
+    translate([42,30,0]){
         rotate([0,0,0])  femur();
 
         translate([127,-3,0]){
         tibia();
         translate([57,-2.75,-.5]) rotate([0,-90,90]) ax12();
         }
-        rotate([0,-90,0]) translate([0,0,-265]) rotate([0,0,90]) tarsus();
+        rotate([0,-90,0]) translate([0,-2,-212]) rotate([90,0,0]) f3();
+        rotate([0,-90,0]) translate([0,-2,-265]) rotate([0,0,90]) tarsus();
     }
 }
 
-
-
-/* rotate([0,-90,90]) ax12();
-translate([80,3.5,0]) rotate([90,0,0]) rotate([0,-90,0]) tarsus(); */
-
-/* tarsus(); */
-
 fullLeg();
-/* f3(); */

@@ -21,3 +21,10 @@ has 4 legs, but the parts are expensive, so cut me some slack.
 - Femur: blue
 - Tibia: yellow
 - Tarsus: green
+
+# Ideas
+
+I saw [this](https://github.com/adammck/hexapod) design by Adam McKaig and
+drew some ideas from it.
+
+![](pics/adammck-hexapod.jpg)

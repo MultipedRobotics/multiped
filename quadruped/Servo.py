@@ -8,9 +8,10 @@
 from __future__ import print_function
 from __future__ import division
 import logging
-from pyxl320 import Packet
-from pyxl320.Packet import makeSyncAnglePacket
-from pyxl320 import xl320
+# from pyxl320 import Packet
+# from pyxl320.Packet import makeSyncAnglePacket
+# from pyxl320 import xl320
+import pyservos
 
 logger = logging.getLogger(__name__)
 

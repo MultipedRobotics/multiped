@@ -34,19 +34,19 @@ rotate([0,0,-45]) rotate([90,0,0]) translate([-15,20,85/2-3]){
 	translate([30,5,0]) rotate([90,0,0]) cylinder(25,d=6);
 }
 
-rotate([0,0,-45]) rotate([90,0,0]) translate([0,20,85/2]) picamera();
-
-color("SkyBlue") rotate([0,0,45]) head();
+//rotate([0,0,-45]) rotate([90,0,0]) translate([0,20,85/2]) picamera();
+//
+//color("SkyBlue") rotate([0,0,45]) head();
 
 /* rotate([0,0,45]) rotate([0,90,0]) rotate_extrude($fn=200) translate([65/2,0,0]) square([10,3]); // circle(d=10); */
 h = 30;
 /* rotate([0,0,45]) translate([0,85/2-2.5,0]) scale([2,.5,1]) cylinder(h,d=10);
 rotate([0,0,45]) translate([0,85/2-2.5-10,h]) cube([20,30,5], center=true); */
 
-color("ForestGreen") rotate([0,0,45]) translate([11,0,10]) rpi3();
+//color("ForestGreen") rotate([0,0,45]) translate([11,0,10]) rpi3();
 
 
-/* color("SkyBlue") top(); */
+color("SkyBlue") top();
 /* color("gray") translate([2.25*40/4+30,0.5,-12]) rotate([0,0,-90]) ax12();
 color("gray") rotate([0,0,90]) translate([2.25*40/4+30,0.5,-12]) rotate([0,0,-90]) ax12();
 color("gray") rotate([0,0,180]) translate([2.25*40/4+30,0.5,-12]) rotate([0,0,-90]) ax12();

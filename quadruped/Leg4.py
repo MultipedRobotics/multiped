@@ -30,7 +30,7 @@ data = {    # [ length, (limits), offset]
 	'tibia': [84, [-90,90], 150],
 	'tarsus': [98, [-90,90], 150],
 	'stand': [0, -110, -40, 90],
-	'sit': []
+	'sit': [0,90,90,90]
 }
 
 
@@ -151,7 +151,7 @@ class Leg4(object):
 	All joint angles returned are in degrees: (t1, t2, t3, t4)
 	"""
 	def cosinelaw(a,b,c):
-		# cosline law only used by this function
+		# cosine law only used by this function
 		# cos(g) = (a^2+b^2-c^2)/2ab
 		return acos((a**2+b**2-c**2)/(2*a*b))
 

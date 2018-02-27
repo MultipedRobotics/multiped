@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ##############################################
 # The MIT License (MIT)
 # Copyright (c) 2016 Kevin Walchko
@@ -16,27 +15,58 @@ from .Servo import Servo
 # from pyxl320 import xl320
 import time
 
+# class Servo(object):
+# 	_angle = 0.0  # current angle
+# 	_offset = 150.0  # angle offset default, see above for explaination
+# 	minAngle = -150.0
+# 	maxAngle = 150.0
+# 	ID = 0
+#
+# 	def __init__(self, ID, min, max, offset):
+# 		pass
+#
+# 	@property
+# 	def angle(self):
+# 		"""
+# 		Returns the current servo angle
+# 		"""
+# 		return self._angle
+#
+# 	@angle.setter
+# 	def angle(self, angle):
+# 		"""
+# 		Sets the servo angle and clamps it between [limitMinAngle, limitMaxAngle].
+# 		"""
+#
+# 		# saturates the angle if it is outside of the limits
+# 		if self.minAngle > angle or angle > self.maxAngle:
+# 			# raise Exception('@angle.setter {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
+# 			print('@angle.setter error {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
+#
+# 			if self.minAngle > angle:
+# 				angle = self.minAngle
+# 			elif self.maxAngle < angle:
+# 				angle = self.maxAngle
+
 
 class Engine(object):
-	"""
-	change name to Hardware???
+	sync = []
 
-	This is the low level driver.
-	"""
-	def __init__(self, data):
+	def __init__(self, data, servoType):
 		"""
-		Sets up all 4 legs and servos. Also setups limits for angles and servo
-		pulses.
+		data: serial port to use, if none, then use dummy port
+		kind: AX12 or XL320
 		"""
-		# if data is None:
-		# 	# data = {}
-		# 	raise Exception('ERROR: Engine(), you must give data')
+
+		# # check for missing data
+		# if 'servos per leg' not in data:
+		# 	raise Exception('Engine() needs to know number of servos per leg')
 
 		# determine serial port
 		# default to fake serial port
 		if 'serialPort' in data:
 			try:
-				ser = ServoSerial(data['serialPort'])
+				self.serial = ServoSerial(data['serialPort'])
 				print('Using servo serial port: {}'.format(data['serialPort']))
 
 			except Exception as e:
@@ -45,94 +75,60 @@ class Engine(object):
 				exit(1)
 		else:
 			print('*** Using dummy serial port!!! ***')
-			ser = ServoSerial('dummy')
+			self.serial = ServoSerial('dummy')
 			# raise Exception('No serial port given')
 
-		ser.open()
-		Servo.ser = ser  # set static serial port, not sure I like this
+		self.packet = Packet(kind)
+		# pkt = ax.makeServoPacket(1, 158.6)  # move servo 1 to 158.6 degrees
 
-		# determine serial comm type: sync or bulk
-		# default to bulk
-		if 'write' in data:
-			method = data['write']
-			if method == 'sync':
-				Servo.syncServoWrite = True  # FIXME: this is broken
-				print('*** using sync write ***')
-			elif method == 'bulk':
-				Servo.bulkServoWrite = True
-				print('*** using bulk write ***')
-		else:
-			Servo.bulkServoWrite = True
-			print('*** using bulk write ***')
+		# angle offsets to line up with fk
+		# self.legs = []
 
-		self.legs = []
-		num_legs = data['number legs']
-		spl = data['servos on leg']
-		for i in range(0, num_legs):  # 4 legs
-			channel = i*spl  # x servos per leg
-			if spl == 3:
-				self.legs.append(
-					Leg3([channel+1, channel+2, channel+3])
-				)
-			elif spl == 4:
-				self.legs.append(
-					Leg4([channel+1, channel+2, channel+3, channel+4])
-				)
-			else:
-				raise Exception('Engine() invalid number of servos per leg:', spl)
+		# spl = data['servos per leg']
+		# for i in range(0, 4):  # 4 legs
+		# 	channel = i*spl  # x servos per leg
+		# 	if spl == 3:
+		# 		self.legs.append(
+		# 			Leg3([channel+1, channel+2, channel+3])
+		# 		)
+		# 	elif spl == 4:
+		# 		self.legs.append(
+		# 			Leg4([channel+1, channel+2, channel+3, channel+4])
+		# 		)
+		# 	else:
+		# 		raise Exception('Engine() invalid number of servos per leg:', spl)
 
-		# TODO: FIXME
-		# better way?????
-		self.servoWrite = self.legs[0].servos[0].write
+	# def push(self, ID, angle, speed=None):
+	# 	self.sync.append((ID, angle))
 
-		self.stand()
+	def moveLegsPosition(self, legs):
+		"""
+		this only does position
+		[   step 0          step 1         ...
+			[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0
+			[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg1
+			...
+		]
+		"""
+		# build bulk message
+		# FIXME: hard coded for 4 legs
+		for step in zip(*legs):  # servo angles for each leg at each step
+			data = [] # [id, lo, hi, id, lo, hi, ...]
+			# leg 0: 0 1 2 3
+			for i, leg in enumerate(step):  # step = [leg0, leg1, leg2, leg3]
+				for j, servo in enumerate(leg):  # leg = [servo0, servo1, servo2, servo3]
+					data.append(4*i+j)      # servo ID
+					a, b = angle2int(a[0])  # angle
+					data.append(a)
+					data.append(b)
 
-	def __del__(self):
-		"""
-		Leg kills (reboots) all servos on exit.
+			# FIXME: hard coded to AX
+			pkt = self.packet.makeSyncWritePacket(AX12.GOAL_POSITION, data)
+			self.serial.sendPkt(pkt)
+			time.sleep(.3)
 
-		Eventually will put the robot in sit pose.
-		"""
-		self.sit()
-		pkt = Packet.makeRebootPacket(???.BROADCAST_ADDR)
-		Servo.ser.write(pkt)
-		Servo.ser.write(pkt)
-		time.sleep(0.1)
-		Servo.ser.close()  # close static serial port
-
-	def sit(self):
-		"""
-		sequence to sit down nicely
-		"""
-		for leg in self.legs:
-			leg.sit()
-		self.servoWrite()  # FIXME: ugly
-		time.sleep(1)
-
-	def stand(self):
-		"""
-		sequence to stand up nicely
-		"""
-		for leg in self.legs:
-			leg.stand()
-		self.servoWrite()  # FIXME: ugly
-		time.sleep(1)
-
-	def getFoot0(self, i):
-		"""
-		rename getNeutral?
-		"""
-		return self.legs[i].foot0
-
-	def move(self, cycle):
-		"""
-		cycle - move of 4 legs through all steps
-		"""
-		for mov in cycle:
-			for leg in mov:
-				index = leg[1]
-				footPos = leg[2]
-				# print('Leg[{}]: {}'.format(index, footPos))
-				self.legs[index].moveFoot(*footPos)
-			self.servoWrite()  # FIXME: ugly
-			time.sleep(0.1)
+	# def write(self):
+	# 	# use self.sync to build packet
+	#
+	# 	ret = serial.sendPkt(pkt)
+	# 	# ret = serial.sendPkt(pkt)

@@ -9,6 +9,12 @@ from .Robot import Robot
 
 # do I put exceptions here?
 
+# gait - servo positions for one cycle
+# engine - talk to servos/packet/bulk/sync
+# servo - individual parameters for each servo
+# leg - fk/ik
+# robot - one of each above
+
 __author__ = 'Kevin J. Walchko'
 __license__ = 'MIT'
 __version__ = '0.5.0'

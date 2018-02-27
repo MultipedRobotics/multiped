@@ -10,7 +10,7 @@ class Servo(object):
 	maxAngle = 150.0
 	ID = 0
 
-	def __init__(self, ID):
+	def __init__(self, ID, min, max, offset):
 		pass
 
 	@property

@@ -68,7 +68,7 @@ class Leg4(object):
 		self.sit_angles = params['sit']
 		self.stand_angles = params['stand']
 
-		Servo.bulkServoWrite = True
+		# Servo.bulkServoWrite = True
 
 		# # angle offsets to line up with fk
 		# self.servos = []

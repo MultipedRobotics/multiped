@@ -10,13 +10,13 @@ PACKAGE_NAME = 'quadruped'
 BuildCommand.pkg = PACKAGE_NAME
 PublishCommand.pkg = PACKAGE_NAME
 PublishCommand.version = VERSION
-README = open('README.rst').read()
+README = open('../readme.rst').read()
 
 setup(
 	name=PACKAGE_NAME,
 	version=VERSION,
 	author="Kevin Walchko",
-	keywords=['framework', 'robotic', 'robot', 'sdl2', 'ps4', 'quadruped'],
+	keywords=['framework', 'robotic', 'robot', 'quadruped', 'ax-12', 'xl-320'],
 	author_email="walchko@users.noreply.github.com",
 	description="A python robotic driver for a quadruped robot",
 	license="MIT",
@@ -35,7 +35,7 @@ setup(
 		'Topic :: Software Development :: Libraries :: Python Modules'
 	],
 	install_requires=[
-		'pyxl320',
+		'pyservos',
 		'simplejson',
 		'pyserial',
 		'build_utils'

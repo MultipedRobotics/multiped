@@ -40,9 +40,9 @@ class Robot(object):
 		self.robot = Engine(data)
 		neutral = self.robot.getFoot0(0)
 
-		if gaits is None:
+		if gaits:
+			self.gait = gaits
+		else:
 			self.gait = {
 				'crawl': DiscreteRippleGait(45.0, neutral)
 			}
-		else:
-			self.gait = gaits

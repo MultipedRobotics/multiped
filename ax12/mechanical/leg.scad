@@ -122,4 +122,20 @@ module fullLeg(){
     }
 }
 
-fullLeg();
+//fullLeg();
+
+use <sternum.scad>;
+
+//translate([0,60,0]) femur_supt();
+
+difference(){
+    w = 35;
+    l = 80;
+    translate([-l/2, -w/2,0]) cube([l, w, 4]);
+    translate([-14,0,0]) rotate([0,0,180]) servo_mnt();
+    translate([14,0,0]) rotate([0,0,0]) servo_mnt();
+    translate([14-2.5,-32/2,2]) cube([40,32,5], center=false);
+    translate([-14+2.5,32/2,2]) rotate([0,0,180]) cube([40,32,5], center=false);
+}
+//translate([57,-2.75,-.5]) rotate([0,-90,90]) ax12();
+

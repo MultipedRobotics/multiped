@@ -24,7 +24,7 @@ class Robot(object):
 	This is a simple class that binds the others together. You could make it
 	a base class for something fancier.
 	"""
-	def __init__(self, data, gaits=None):
+	def __init__(self, data, legType, gaits=None):
 		"""
 		Constructor.
 		Engine - commands the leg servos to move
@@ -37,8 +37,25 @@ class Robot(object):
 			- what the neutral leg position is (where is the foot
 				located when just standing?)
 		"""
-		self.robot = Engine(data)
-		neutral = self.robot.getFoot0(0)
+		self.engine = Engine(data, spl)
+
+		# # angle offsets to line up with fk
+		# for i in range(0, 4):  # 4 legs
+		# 	channel = i*spl  # x servos per leg
+		# 	if spl == 3:
+		# 		self.legs.append(
+		# 			Leg3([channel+1, channel+2, channel+3])
+		# 		)
+		# 	elif spl == 4:
+		# 		self.legs.append(
+		# 			Leg4([channel+1, channel+2, channel+3, channel+4])
+		# 		)
+		# 	else:
+		# 		raise Exception('Robot() invalid number of servos per leg:', spl)
+
+		self.kinematics = legType(params)
+
+		neutral = self.kinematics.getFoot0(0)
 
 		if gaits:
 			self.gait = gaits

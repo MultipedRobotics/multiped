@@ -17,7 +17,7 @@ import time
 
 class Test(Robot):
 	def __init__(self, data, gaits=None):
-		Robot.__init__(self, data, gaits)
+		Robot.__init__(self, data, Leg4, gaits)
 
 	def run(self):
 		# predefined walking path
@@ -63,8 +63,9 @@ class Test(Robot):
 			# print('ahrs[deg]: roll {:.2f} pitch: {:.2f} yaw: {:.2f}'.format(d[0], d[1], d[2]))
 			print(' cmd {:.2f} {:.2f} {:.2f}'.format(*cmd))
 			# print('***********************************')
-			mov = crawl.command(cmd)
-			self.robot.move(mov)
+			mov = crawl.command(cmd)  # take command and return 4 foot locations
+			angles = self.kinematics.generateServoAngles(mov)
+			self.engine.move(angles)
 
 
 def main():
@@ -83,13 +84,19 @@ def main():
 	# length: how long is the link
 	# limits: min/max limits so we don't hit something
 	# offset: match servo frame and DH frame up
-	data = {    # [ length, (limits), offset]
+	data = {
+		# leg3/4
+		# [ length, (limits), offset]
 		'coxa': [28, [-45, 45], 150],
 		'femur': [90, [-90, 90], 150],
 		'tibia': [84, [-90, 90], 150],
 		'tarsus': [98, [-90, 90], 150],
+
+		# gait
 		'stand': [0, -110, -40, 90],
 		'sit': [0, 90, 90, 90],
+
+		# engine
 		'serialPort': '/dev/ttyUSB0',
 		'write': 'bulk'
 	}

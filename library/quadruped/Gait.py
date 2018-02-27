@@ -52,6 +52,13 @@ class Gait(object):
 	"""
 	Base class for gaits. Gait only plan all foot locations for 1 complete cycle
 	of the gait.
+
+	Like to add center of mass (CM) compensation, so we know the CM is always
+	inside the stability triangle.
+
+	Gait knows:
+	- how many legs
+	- leg stride (neutral position)
 	"""
 	# these are the offsets of each leg
 	legOffset = [0, 6, 3, 9]
@@ -91,8 +98,7 @@ class Gait(object):
 		return self.oneCycle(x, y, rz)
 
 	def oneCycle(slef, x, y, rz):
-		print('*** wrong function! ***')
-		return None
+		raise Exception('*** Gait: wrong function, this is base class! ***')
 
 
 class DiscreteRippleGait(Gait):
@@ -148,6 +154,15 @@ class DiscreteRippleGait(Gait):
 		return newpos
 
 	def oneCycle(self, x, y, rz):
+		"""
+		direction of travel x, y (2D plane) or rotation about z-axis
+		Returns 1 complete cycle of where do the feet go for all 4 legs.
+		"""
+
+		# check if x, y, rz is same as last time commanded, if so, return
+		# the last cycle response, else, calculate a new response
+		# ???
+
 		scale = self.scale
 		cmd = (scale*x, scale*y, rz)
 		ret = []  # 4 leg foot positions for the entire 12 count cycle is returned

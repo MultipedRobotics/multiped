@@ -17,6 +17,46 @@ from .Servo import Servo
 # logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(level=logging.ERROR)
 
+class Servo(object):
+	"""
+	Servo hold the parameters of a servo, it doesn't talk to real servos. This
+	class does the conversion between DH angles to real servo angles
+	"""
+	# _angle = 0.0  # current angle
+	offset = 150.0  # angle offset default, see above for explaination
+	minAngle = -150.0
+	maxAngle = 150.0
+	# ID = 0
+
+	def __init__(self, minmax, offset):
+		self.offset = offset
+		self.minAngle = minmax[0]
+		self.maxAngle = minmax[1]
+
+	# @property
+	# def angle(self):
+	# 	"""
+	# 	Returns the current servo angle
+	# 	"""
+	# 	return self._angle
+
+	# @angle.setter
+	def DH2Servo(self, angle):
+		"""
+		Sets the servo angle and clamps it between [limitMinAngle, limitMaxAngle].
+		"""
+		# saturates the angle if it is outside of the limits
+		if self.minAngle > angle or angle > self.maxAngle:
+			# raise Exception('@angle.setter {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
+			print('@angle.setter error {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
+
+			if self.minAngle > angle:
+				angle = self.minAngle
+			elif self.maxAngle < angle:
+				angle = self.maxAngle
+
+		return angle-self.offset
+
 
 class LegException(Exception):
 	pass
@@ -36,6 +76,13 @@ class LegException(Exception):
 
 class Leg4(object):
 	"""
+	Leg class outputs the servo angles for some requested foot location (x,y,z)
+
+	Leg knows:
+	- leg dimensions
+	- number of servos and their parameters/limits
+	- fk/ik equations
+	- sit/stand sequence
 	"""
 	# these are fixed by the 3D printing, not changing
 	coxaLength = None
@@ -50,20 +97,19 @@ class Leg4(object):
 	sit_angles = None
 	stand_angles = None
 
-	def __init__(self, channels, params):
+	def __init__(self, params):
 		"""
 		Each leg has 4 servos/channels
 		"""
-		# TODO: sit/stand - do angles or pts. if angles, no IK errors
 
-		if not len(channels) == 4:
-			raise LegException('len(channels) != 4')
+		# if not len(channels) == 4:
+		# 	raise LegException('len(channels) != 4')
 
-		# setup kinematics
+		# setup kinematics and servos
+		self.servos = []
 		for seg in ['coxa', 'femur', 'tibia', 'tarsus']:
 			self.coxaLength = params[seg][0]
-			self.s_limits.append(params[seg][1])  # do i need to store these?
-			self.s_offsets.append(params[seg][2])  # do i need to store these?
+			self.servos.append(Servo(params[seg][1]), params[seg][2]))  # do i need to store these?
 
 		self.sit_angles = params['sit']
 		self.stand_angles = params['stand']
@@ -71,27 +117,38 @@ class Leg4(object):
 		# Servo.bulkServoWrite = True
 
 		# # angle offsets to line up with fk
-		# self.servos = []
-		# for i in range(0, 4):
-		# 	self.servos.append(Servo(channels[i]))
-		# 	self.servos[i].setServoLimits(self.s_offsets[i], *self.s_limits[i])
+		# spl = data['servos per leg']  # do better? if tarsus in params?
+		# for i in range(0, 4):  # 4 legs
+		# 	channel = i*spl  # x servos per leg
+		# 	if spl == 3:
+		# 		self.legs.append(
+		# 			Leg3([channel+1, channel+2, channel+3])
+		# 		)
+		# 	elif spl == 4:
+		# 		self.legs.append(
+		# 			Leg4([channel+1, channel+2, channel+3, channel+4])
+		# 		)
+		# 	else:
+		# 		raise Exception('Engine() invalid number of servos per leg:', spl)
 
 		# self.sit_angles = self.convertRawAngles(*self.sit_raw)
 		# initAngles = self.convertRawAngles(*self.stand_raw)
 		# self.stand_angles = initAngles
 		# self.foot0 = self.fk(*initAngles)  # rest/idle position of the foot/leg
-		self.foot0 = self.fk = self.stand_angles
+		# self.foot0 = self.fk = self.stand_angles
 
 	def __del__(self):
 		pass
 
 	def sit(self):
 		# TODO: animate this or slow down the motion so we don't break anything
-		self.moveFootAngles(*self.sit_angles)
+		# self.moveFootAngles(*self.sit_angles)
+		pass
 
 	def stand(self):
 		# TODO: animate this or slow down the motion so we don't break anything
-		self.moveFootAngles(*self.stand_angles)
+		# self.moveFootAngles(*self.stand_angles)
+		pass
 
 	# def convertRawAngles(self, a, b, c):
 	# 	return (a-self.s_offsets[0], b-self.s_offsets[1], c-self.s_offsets[2])
@@ -186,41 +243,92 @@ class Leg4(object):
 
 		return (t1, t2, t3, t4)
 
+	def generateServoAngles(self, footLoc):
+		"""
+		This is a bulk process and takes all of the foot locations for an entire
+		sequence of a gait cycle. It handles all legs at once.
+
+		footLoc: locations of feet from gait
+		[
+			[id, leg, pos], ...
+		]
+
+		[   step0      step1   ...
+			[(x,y,z), (x,y,z), ...] # leg0
+			[(x,y,z), (x,y,z), ...] # leg1
+			...
+		]
+
+		return
+		[   step 0          step 1         ...
+			[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0
+			[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg1
+			...
+		]
+		"""
+		# TODO: fix this to handle N legs, right now it only does 4
+
+		# angles = []
+		# for _ in len(footLoc)  # this is equal to the number of feet
+		# 	angles.append([])
+		angles = [[], [], [], []]
+
+		for a,b,c,d in zip(*footLoc):
+			# calculate the inverse DH angles
+			a = self.inverse(*a)
+			b = self.inverse(*b)
+			c = self.inverse(*c)
+			d = self.inverse(*d)
+
+			# correct DH for servo mounting and double check servo limits
+			angles[0].append(self.servos[0].DH2Servo(a))
+			angles[1].append(self.servos[1].DH2Servo(b))
+			angles[2].append(self.servos[2].DH2Servo(c))
+			angles[3].append(self.servos[3].DH2Servo(d))
+
+		return angles
+
 	def moveFoot(self, x, y, z):
 		"""
-		Attempts to move it's foot to coordinates [x,y,z]
+		generates servo angles to move the foot to coordinates [x,y,z]. This
+		is individual and not intended for walking, but something else.
 		"""
-		try:
-			# a, b, c = self.ik(x, y, z)  # inverse kinematics
-			# angles = [a, b, c]
-			angles = self.ik(x, y, z)  # inverse kinematics
-			# return angles
-			if angles is None:
-				print('something bad')
-				return
-			# print('angles: {:.2f} {:.2f} {:.2f}'.format(*angles))
-			for i, servo in enumerate(self.servos):
-				# print('i, servo:', i, servo)
-				angle = angles[i]
-				# print('servo {} angle {}'.format(i, angle))
-				servo.angle = angle
-			return angles
+		pass
 
-		except Exception as e:
-			print (e)
-			raise
+	def getNeutralPos(self):
+		return self.forward(*self.stand)
 
-	def moveFootAngles(self, a, b, c):
-		"""
-		Attempts to move it's foot to coordinates [x,y,z]
-		"""
-		try:
-			for servo, angle in zip(self.servos, (a, b, c)):
-				servo.angle = angle
-
-		except Exception as e:
-			print('Leg::moveFootAngles() error:', e)
-			raise
+	# 	try:
+	# 		# a, b, c = self.ik(x, y, z)  # inverse kinematics
+	# 		# angles = [a, b, c]
+	# 		angles = self.ik(x, y, z)  # inverse kinematics
+	# 		# return angles
+	# 		if angles is None:
+	# 			print('something bad')
+	# 			return
+	# 		# print('angles: {:.2f} {:.2f} {:.2f}'.format(*angles))
+	# 		for i, servo in enumerate(self.servos):
+	# 			# print('i, servo:', i, servo)
+	# 			angle = angles[i]
+	# 			# print('servo {} angle {}'.format(i, angle))
+	# 			servo.angle = angle
+	# 		return angles
+	#
+	# 	except Exception as e:
+	# 		print (e)
+	# 		raise
+	#
+	# def moveFootAngles(self, a, b, c):
+	# 	"""
+	# 	Attempts to move it's foot to coordinates [x,y,z]
+	# 	"""
+	# 	try:
+	# 		for servo, angle in zip(self.servos, (a, b, c)):
+	# 			servo.angle = angle
+	#
+	# 	except Exception as e:
+	# 		print('Leg::moveFootAngles() error:', e)
+	# 		raise
 
 	# def reset(self):
 	# 	# self.angles = self.resting_position

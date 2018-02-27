@@ -1,4 +1,6 @@
+$fn=50;
 
+use <common.scad>;
 
 module rpi_holes(){
     x = 58/2;
@@ -40,3 +42,22 @@ module rpi_base(){
 module head(){
 	rpi_base();
 }
+
+//head();
+module picamera(){
+    // sort of center mass
+    color("ForestGreen") translate([-25/2,0,0]) import("parts/pi-camera.stl");
+}
+
+translate([-20,0,10]) rotate([90,0,-90]) picamera();
+color("ForestGreen") rotate([0,0,0]) translate([40,0,10]) rpi3();
+linear_extrude(4) hull(){
+    circle(d=58,center=true);
+    translate([65,0,0]) square([40,70], center=true);
+}
+
+//difference(){
+//    cylinder(30,d=58, center=true);
+//    cylinder(30,d=55, center=true);
+//    translate([25,0,25]) sphere(50, center=true);
+//}

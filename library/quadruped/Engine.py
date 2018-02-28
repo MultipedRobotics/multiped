@@ -10,6 +10,7 @@ from .Leg3 import Leg3
 from .Leg4 import Leg4
 from pyservos import ServoSerial
 from pyservos import Packet, AX12, XL320
+from pyservos.packet import angle2int
 from .Servo import Servo
 # from pyxl320 import Packet
 # from pyxl320 import xl320
@@ -78,7 +79,7 @@ class Engine(object):
 			self.serial = ServoSerial('dummy')
 			# raise Exception('No serial port given')
 
-		self.packet = Packet(kind)
+		self.packet = Packet(servoType)
 		# pkt = ax.makeServoPacket(1, 158.6)  # move servo 1 to 158.6 degrees
 
 		# angle offsets to line up with fk
@@ -113,7 +114,7 @@ class Engine(object):
 		# build bulk message
 		# FIXME: hard coded for 4 legs
 		for step in zip(*legs):  # servo angles for each leg at each step
-			data = [] # [id, lo, hi, id, lo, hi, ...]
+			data = []  # [id, lo, hi, id, lo, hi, ...]
 			# leg 0: 0 1 2 3
 			for i, leg in enumerate(step):  # step = [leg0, leg1, leg2, leg3]
 				for j, servo in enumerate(leg):  # leg = [servo0, servo1, servo2, servo3]

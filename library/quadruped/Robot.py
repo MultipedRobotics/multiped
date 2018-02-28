@@ -14,6 +14,7 @@ from __future__ import print_function
 from __future__ import division
 from quadruped import Engine
 from quadruped import DiscreteRippleGait
+from pyservos import AX12
 # import platform
 # import time
 ##########################
@@ -37,7 +38,7 @@ class Robot(object):
 			- what the neutral leg position is (where is the foot
 				located when just standing?)
 		"""
-		self.engine = Engine(data, spl)
+		self.engine = Engine(data, AX12)
 
 		# # angle offsets to line up with fk
 		# for i in range(0, 4):  # 4 legs
@@ -53,9 +54,9 @@ class Robot(object):
 		# 	else:
 		# 		raise Exception('Robot() invalid number of servos per leg:', spl)
 
-		self.kinematics = legType(params)
+		self.kinematics = legType(data)
 
-		neutral = self.kinematics.getFoot0(0)
+		neutral = self.kinematics.getNeutralPos()
 
 		if gaits:
 			self.gait = gaits

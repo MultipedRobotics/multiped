@@ -17,6 +17,7 @@ from .Servo import Servo
 # logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(level=logging.ERROR)
 
+
 class Servo(object):
 	"""
 	Servo hold the parameters of a servo, it doesn't talk to real servos. This
@@ -109,7 +110,7 @@ class Leg4(object):
 		self.servos = []
 		for seg in ['coxa', 'femur', 'tibia', 'tarsus']:
 			self.coxaLength = params[seg][0]
-			self.servos.append(Servo(params[seg][1]), params[seg][2]))  # do i need to store these?
+			self.servos.append(Servo(params[seg][1], params[seg][2]))  # do i need to store these?
 
 		self.sit_angles = params['sit']
 		self.stand_angles = params['stand']
@@ -153,7 +154,7 @@ class Leg4(object):
 	# def convertRawAngles(self, a, b, c):
 	# 	return (a-self.s_offsets[0], b-self.s_offsets[1], c-self.s_offsets[2])
 
-	def fk(self, t1, t2, t3, t4, degrees=True):
+	def forward(self, t1, t2, t3, t4, degrees=True):
 		"""
 		Forward kinematics of the leg, note, default angles are all degrees.
 		The input angles are referenced to the DH frame arrangement.
@@ -273,7 +274,7 @@ class Leg4(object):
 		# 	angles.append([])
 		angles = [[], [], [], []]
 
-		for a,b,c,d in zip(*footLoc):
+		for a, b, c, d in zip(*footLoc):
 			# calculate the inverse DH angles
 			a = self.inverse(*a)
 			b = self.inverse(*b)
@@ -296,7 +297,7 @@ class Leg4(object):
 		pass
 
 	def getNeutralPos(self):
-		return self.forward(*self.stand)
+		return self.forward(*self.stand_angles)
 
 	# 	try:
 	# 		# a, b, c = self.ik(x, y, z)  # inverse kinematics

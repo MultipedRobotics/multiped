@@ -10,6 +10,7 @@ from __future__ import division
 from quadruped import Engine
 from quadruped import DiscreteRippleGait
 from quadruped import Robot
+from quadruped import Leg4
 # from misc_gaits import CircularGait, ImpatientGait
 from math import pi
 import time

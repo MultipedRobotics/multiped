@@ -8,5 +8,5 @@ use <common.scad>;
 //top();
 //rotate([180,0,0]) bottom();
 //femur_supt();
-//tibia();
-tarsus();
+tibia();
+//tarsus();

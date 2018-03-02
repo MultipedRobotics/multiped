@@ -102,9 +102,9 @@ module tibia(L=85){
         translate([0,-21,0]) rotate([90,0,0]) tibiaSupt(L, thick);
 
         difference(){
-            cube([L/3+10,42,10], center=true);
-            translate([-L/3/2-5,0,0]) scale([.5,1,1]) sphere(d=43);
-            translate([L/3/2+5,0,0]) scale([.5,1,1]) sphere(d=43);
+            cube([L/3,42,10], center=true);
+            translate([-L/3/2,0,0]) scale([.5,1,1]) sphere(d=45);
+            translate([L/3/2,0,0]) scale([.5,1,1]) sphere(d=45);
         }
     }
 }
@@ -138,4 +138,3 @@ difference(){
     translate([-14+2.5,32/2,2]) rotate([0,0,180]) cube([40,32,5], center=false);
 }
 //translate([57,-2.75,-.5]) rotate([0,-90,90]) ax12();
-

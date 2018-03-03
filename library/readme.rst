@@ -1,9 +1,4 @@
-
-.. image:: https://raw.githubusercontent.com/walchko/quadruped/master/pics/spiderbot_dev.JPG
-	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
-	:width: 75%
-
-Quadruped
+AX-12 and XL320 Quadruped
 ============================
 
 .. image:: https://img.shields.io/pypi/v/quadruped.svg
@@ -18,23 +13,14 @@ My robot software.
 * `YouTube <https://www.youtube.com/watch?v=kH2hlxUfCNg>`_
 * `Vimeo <https://player.vimeo.com/video/194676675>`_
 
-Current State
-----------------
-
-.. image:: pics/spider.jpg
-	:width: 75%
-
-- Processor: Pi Zero W
-- Language: python
-
-ToDo:
-
-- design/build boards instead of the jumpers connecting wires
-- design the head structure to hold electronics and LCD
-
 
 Documentation
 -------------------
+
+This code relies on:
+
+- [pyserial]() which talks to either the AX-12A or XL-320 servos from Robotis.
+
 
 Install
 -----------

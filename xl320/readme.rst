@@ -3,34 +3,13 @@
 	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
 	:width: 75%
 
-Quadruped
+XL-320 Quadruped
 ============================
-
-.. image:: https://img.shields.io/pypi/v/quadruped.svg
-	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
-.. image:: https://img.shields.io/pypi/l/quadruped.svg
-	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
-.. image:: https://travis-ci.org/MomsFriendlyRobotCompany/quadruped.svg?branch=master
-	:target: https://travis-ci.org/MomsFriendlyRobotCompany/quadruped
 
 My robot software.
 
 * `YouTube <https://www.youtube.com/watch?v=kH2hlxUfCNg>`_
 * `Vimeo <https://player.vimeo.com/video/194676675>`_
-
-Current State
-----------------
-
-.. image:: pics/spider.jpg
-	:width: 75%
-
-- Processor: Pi Zero W
-- Language: python
-
-ToDo:
-
-- design/build boards instead of the jumpers connecting wires
-- design the head structure to hold electronics and LCD
 
 
 Documentation
@@ -104,19 +83,6 @@ it takes::
 If you don't pass it a serial port, then it falls back to a simulated serial
 port which does nothing but is useful for testing.
 
-Bulk Writing
---------------
-
-Normally, you would send an individual command to each servo and get a response
-back from it. That creates a lot of back an forth communications. Instead,
-this uses a bulk write to send commands to all 12 servos at once with no reply.
-This results in smoother motion and greatly reduced data transmission.
-
-Building and Documentation
-----------------------------
-
-Details for how to build the robot and other information are in the ``docs`` folder
-in the `git repo <https://github.com/MomsFriendlyRobotCompany/quadruped/tree/master/docs>`_
 
 Tools
 ---------
@@ -203,6 +169,7 @@ Change Log
 -------------
 
 ============ ======= ============================
+2018-02-05   0.8.0   Code now supports both XL-320 and AX-12A servos
 2017-12-25   0.5.0   Clean up and reorg, removed unnecessary libraries
 2017-06-07   0.4.1   broke out into package and published to PyPi
 2016-08-10   0.0.1   init

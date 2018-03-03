@@ -1,16 +1,32 @@
-# AX-12A Quadruped
+![image](pics/spider_dev.jpg)
+
+# XL-320 Quadruped
+
+This robot uses XL-320 smart servos from Robotis. It has 3 servos per leg:
 
 ![](pics/spider.png)
 
-**Still under development**
+- Coxa: red
+- Femur: blue
+- Tibia: yellow
 
-- [Mechanical Hardware](mechanical/)
-- [Electrical Hardware](electrical/)
+![](pics/spider.jpg)
+
+My robot walking:
+
+-   [YouTube](https://www.youtube.com/watch?v=kH2hlxUfCNg)
+-   [Vimeo](https://player.vimeo.com/video/194676675)
+
+# Files
+
+- [Mechanical](mechanical/)
+- [Electrical](electrical/)
+
 
 MIT License
 -----------
 
-**Copyright (c) 2018 Kevin J. Walchko**
+**Copyright (c) 2016 Kevin J. Walchko**
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the

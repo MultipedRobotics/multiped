@@ -19,7 +19,8 @@ Documentation
 
 This code relies on:
 
-- [pyserial]() which talks to either the AX-12A or XL-320 servos from Robotis.
+- `pyserial <https://github.com/MomsFriendlyRobotCompany/pyservos>`_  which
+talks to either the AX-12A or XL-320 servos from Robotis.
 
 
 Install

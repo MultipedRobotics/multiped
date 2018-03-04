@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ##############################################
 # The MIT License (MIT)
 # Copyright (c) 2016 Kevin Walchko
@@ -7,12 +6,11 @@
 
 from __future__ import print_function
 from __future__ import division
-# import numpy as np
-from math import sin, cos, acos, atan2, sqrt, pi, fabs
+from math import sin, cos, acos, atan2, sqrt, pi
 from math import radians as d2r
-from math import degrees as r2d
+# from math import degrees as r2d
 # import logging
-from .Servo import Servo
+# from .Servo import Servo
 
 # logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(level=logging.ERROR)
@@ -24,55 +22,38 @@ class Servo(object):
 	class does the conversion between DH angles to real servo angles
 	"""
 	# _angle = 0.0  # current angle
-	offset = 150.0  # angle offset default, see above for explaination
-	minAngle = -150.0
-	maxAngle = 150.0
-	# ID = 0
+	# offset = 150.0  # angle offset default, see above for explaination
+	# minAngle = -150.0
+	# maxAngle = 150.0
 
-	def __init__(self, minmax, offset):
+	def __init__(self, ID, minmax, offset=150):
 		self.offset = offset
 		self.minAngle = minmax[0]
 		self.maxAngle = minmax[1]
+		self.id = ID
 
-	# @property
-	# def angle(self):
-	# 	"""
-	# 	Returns the current servo angle
-	# 	"""
-	# 	return self._angle
-
-	# @angle.setter
 	def DH2Servo(self, angle):
 		"""
 		Sets the servo angle and clamps it between [limitMinAngle, limitMaxAngle].
 		"""
 		# saturates the angle if it is outside of the limits
 		if self.minAngle > angle or angle > self.maxAngle:
-			# raise Exception('@angle.setter {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
-			print('@angle.setter error {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
+			# raise Exception('DH2Servo {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
+			# print('DH2Servo[{}] error {:.0f} > {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle, self.maxAngle))
+			# pass
 
 			if self.minAngle > angle:
+				print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle))
 				angle = self.minAngle
 			elif self.maxAngle < angle:
+				print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, angle, self.maxAngle))
 				angle = self.maxAngle
 
-		return angle-self.offset
+		return angle+self.offset
 
 
 class LegException(Exception):
 	pass
-
-# length: how long is the link
-# limits: min/max limits so we don't hit something
-# offset: match servo frame and DH frame up
-# data = {    # [ length, (limits), offset]
-# 	'coxa': [28, [-45,45], 150],
-# 	'femur': [90, [-90,90], 150],
-# 	'tibia': [84, [-90,90], 150],
-# 	'tarsus': [98, [-90,90], 150],
-# 	'stand': [0, -110, -40, 90],
-# 	'sit': [0,90,90,90]
-# }
 
 
 class Leg4(object):
@@ -90,11 +71,6 @@ class Leg4(object):
 	tibiaLength = None
 	femurLength = None
 	tarsusLength = None
-	# s_limits = []
-	# s_offsets = []  # angle offsets to line up with fk
-
-	# sit_raw = (150, 270, 100)
-	# stand_raw = (150, 175, 172)
 	sit_angles = None
 	stand_angles = None
 
@@ -102,41 +78,25 @@ class Leg4(object):
 		"""
 		Each leg has 4 servos/channels
 		"""
-
-		# if not len(channels) == 4:
-		# 	raise LegException('len(channels) != 4')
-
 		# setup kinematics and servos
 		self.servos = []
-		for seg in ['coxa', 'femur', 'tibia', 'tarsus']:
-			self.coxaLength = params[seg][0]
-			self.servos.append(Servo(params[seg][1], params[seg][2]))  # do i need to store these?
+		for ID, seg in enumerate(['coxa', 'femur', 'tibia', 'tarsus']):
+			# self.coxaLength = params[seg][0]
+			self.servos.append(Servo(ID, params[seg][1], params[seg][2]))
+
+		self.coxaLength = params['coxa'][0]
+		self.femurLength = params['femur'][0]
+		self.tibiaLength = params['tibia'][0]
+		self.tarsusLength = params['tarsus'][0]
 
 		self.sit_angles = params['sit']
 		self.stand_angles = params['stand']
 
-		# Servo.bulkServoWrite = True
-
-		# # angle offsets to line up with fk
-		# spl = data['servos per leg']  # do better? if tarsus in params?
-		# for i in range(0, 4):  # 4 legs
-		# 	channel = i*spl  # x servos per leg
-		# 	if spl == 3:
-		# 		self.legs.append(
-		# 			Leg3([channel+1, channel+2, channel+3])
-		# 		)
-		# 	elif spl == 4:
-		# 		self.legs.append(
-		# 			Leg4([channel+1, channel+2, channel+3, channel+4])
-		# 		)
-		# 	else:
-		# 		raise Exception('Engine() invalid number of servos per leg:', spl)
-
-		# self.sit_angles = self.convertRawAngles(*self.sit_raw)
-		# initAngles = self.convertRawAngles(*self.stand_raw)
-		# self.stand_angles = initAngles
-		# self.foot0 = self.fk(*initAngles)  # rest/idle position of the foot/leg
-		# self.foot0 = self.fk = self.stand_angles
+		pp = self.forward(*self.stand_angles)
+		aa = self.inverse(*pp)
+		print('stand', pp)
+		print('stand', aa)
+		# exit()
 
 	def __del__(self):
 		pass
@@ -150,9 +110,6 @@ class Leg4(object):
 		# TODO: animate this or slow down the motion so we don't break anything
 		# self.moveFootAngles(*self.stand_angles)
 		pass
-
-	# def convertRawAngles(self, a, b, c):
-	# 	return (a-self.s_offsets[0], b-self.s_offsets[1], c-self.s_offsets[2])
 
 	def forward(self, t1, t2, t3, t4, degrees=True):
 		"""
@@ -170,9 +127,9 @@ class Leg4(object):
 			t3 = d2r(t3)
 			t4 = d2r(t4)
 
-		x = (l1 + l2*cos(t2) + l3*cos(t2 + t3) + l4*cos(t2 + t3 + t4))*cos(t1),
-		y = (l1 + l2*cos(t2) + l3*cos(t2 + t3) + l4*cos(t2 + t3 + t4))*sin(t1),
-		z = l2*sin(t2) + l3*sin(t2 + t3) + l4*sin(t2 + t3 + t4),
+		x = (l1 + l2*cos(t2) + l3*cos(t2 + t3) + l4*cos(t2 + t3 + t4))*cos(t1)
+		y = (l1 + l2*cos(t2) + l3*cos(t2 + t3) + l4*cos(t2 + t3 + t4))*sin(t1)
+		z = l2*sin(t2) + l3*sin(t2 + t3) + l4*sin(t2 + t3 + t4)
 
 		return (x, y, z,)
 
@@ -221,20 +178,35 @@ class Leg4(object):
 		if degrees:
 			o = o*pi/180
 
-		w = sqrt(x**2 + y**2) - l1
-		j4w = w + l4*cos(o)
-		j4z = z + l4*sin(o)
-		r = sqrt(j4w**2 + j4z**2)
-		g1 = atan2(j4z, j4w)
-		g2 = cosinelaw(l2, r, l3)
-		t2 = g1+g2
+		try:
+			w = sqrt(x**2 + y**2) - l1
+			j4w = w + l4*cos(o)
+			j4z = z + l4*sin(o)
+			r = sqrt(j4w**2 + j4z**2)
+			g1 = atan2(j4z, j4w)
+			g2 = cosinelaw(l2, r, l3)
+			t2 = g1+g2
 
-		t3 = pi+cosinelaw(l2, l3, r)
+			t3 = pi+cosinelaw(l2, l3, r)
 
-		j2w = l2*cos(t2)
-		j2z = l2*sin(t2)
-		c = sqrt((w-j2w)**2 + (z-j2z)**2)
-		t4 = pi+cosinelaw(l3, l4, c)
+			j2w = l2*cos(t2)
+			j2z = l2*sin(t2)
+			c = sqrt((w-j2w)**2 + (z-j2z)**2)
+			t4 = pi+cosinelaw(l3, l4, c)
+		except Exception as e:
+			print('inverse({:.2f},{:.2f},{:.2f},{:.2f})'.format(x, y, z, o))
+			print('Error:', e)
+			raise
+
+		def check(t):
+			if t > 150*pi/180:
+				t -= 2*pi
+			return t
+
+		t1 = check(t1)
+		t2 = check(t2)
+		t3 = check(t3)
+		t4 = check(t4)
 
 		if degrees:
 			t1 *= 180/pi
@@ -251,7 +223,8 @@ class Leg4(object):
 
 		footLoc: locations of feet from gait
 		[
-			[id, leg, pos], ...
+			[pos0, pos1, pos2, pos3], # step0
+			...
 		]
 
 		[   step0      step1   ...
@@ -269,25 +242,32 @@ class Leg4(object):
 		"""
 		# TODO: fix this to handle N legs, right now it only does 4
 
-		# angles = []
-		# for _ in len(footLoc)  # this is equal to the number of feet
-		# 	angles.append([])
 		angles = [[], [], [], []]
 
-		for a, b, c, d in zip(*footLoc):
+		for f in footLoc:
+			a, b, c, d = f
 			# calculate the inverse DH angles
-			a = self.inverse(*a)
-			b = self.inverse(*b)
-			c = self.inverse(*c)
+			a = self.inverse(*a)  # s0,s1,s2,s3
+			b = self.inverse(*b)  # s4,s5,s6,s7
+			c = self.inverse(*c)  # ...
 			d = self.inverse(*d)
 
-			# correct DH for servo mounting and double check servo limits
-			angles[0].append(self.servos[0].DH2Servo(a))
-			angles[1].append(self.servos[1].DH2Servo(b))
-			angles[2].append(self.servos[2].DH2Servo(c))
-			angles[3].append(self.servos[3].DH2Servo(d))
+			self.pprint([a, b, c, d])
+
+			for i, s in enumerate([a, b, c, d]):
+				tmp = [0]*4
+				tmp[0] = self.servos[0].DH2Servo(s[0])
+				tmp[1] = self.servos[1].DH2Servo(s[1])
+				tmp[2] = self.servos[2].DH2Servo(s[2])
+				tmp[3] = self.servos[3].DH2Servo(s[3])
+				angles[i].append(tmp)
 
 		return angles
+
+	def pprint(self, step):
+		print('*'*25)
+		for leg in step:
+			print('  DH: [{:.0f} {:.0f} {:.0f} {:.0f}]'.format(*leg))
 
 	def moveFoot(self, x, y, z):
 		"""
@@ -298,39 +278,3 @@ class Leg4(object):
 
 	def getNeutralPos(self):
 		return self.forward(*self.stand_angles)
-
-	# 	try:
-	# 		# a, b, c = self.ik(x, y, z)  # inverse kinematics
-	# 		# angles = [a, b, c]
-	# 		angles = self.ik(x, y, z)  # inverse kinematics
-	# 		# return angles
-	# 		if angles is None:
-	# 			print('something bad')
-	# 			return
-	# 		# print('angles: {:.2f} {:.2f} {:.2f}'.format(*angles))
-	# 		for i, servo in enumerate(self.servos):
-	# 			# print('i, servo:', i, servo)
-	# 			angle = angles[i]
-	# 			# print('servo {} angle {}'.format(i, angle))
-	# 			servo.angle = angle
-	# 		return angles
-	#
-	# 	except Exception as e:
-	# 		print (e)
-	# 		raise
-	#
-	# def moveFootAngles(self, a, b, c):
-	# 	"""
-	# 	Attempts to move it's foot to coordinates [x,y,z]
-	# 	"""
-	# 	try:
-	# 		for servo, angle in zip(self.servos, (a, b, c)):
-	# 			servo.angle = angle
-	#
-	# 	except Exception as e:
-	# 		print('Leg::moveFootAngles() error:', e)
-	# 		raise
-
-	# def reset(self):
-	# 	# self.angles = self.resting_position
-	# 	self.move(*self.foot0)

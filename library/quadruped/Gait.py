@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ##############################################
 # The MIT License (MIT)
 # Copyright (c) 2016 Kevin Walchko
@@ -7,7 +6,6 @@
 
 from __future__ import print_function
 from __future__ import division
-# import numpy as np
 from math import cos, sin, sqrt, pi
 
 
@@ -33,12 +31,6 @@ def rot_z(t, c):
 	c - [x,y,z]
 	return - [x,y,z] numpy array rotated about z-axis
 	"""
-	# ans = np.array([
-	# 	c[0]*cos(t)-c[1]*sin(t),
-	# 	c[0]*sin(t)+c[1]*cos(t),
-	# 	c[2]
-	# ])
-
 	ans = [
 		c[0]*cos(t)-c[1]*sin(t),
 		c[0]*sin(t)+c[1]*cos(t),
@@ -132,11 +124,6 @@ class DiscreteRippleGait(Gait):
 		rest_rot = rot_z(-angle, rest)
 
 		# create new move command
-		# move = np.array([
-		# 	xx/2 - phi*xx,
-		# 	yy/2 - phi*yy,
-		# 	self.z[i]
-		# ])
 		move = [
 			xx/2 - phi*xx,
 			yy/2 - phi*yy,
@@ -169,22 +156,49 @@ class DiscreteRippleGait(Gait):
 
 		for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
 			footPos = []
-			for legNum in [0, 2, 1, 3]:  # order them diagonally
-				# rcmd = self.calcRotatedOffset(cmd, legNum)
+			for legNum in [0, 1, 2, 3]:  # order them diagonally
 				rcmd = rot_z_tuple(self.frame[legNum], cmd)
 				index = (i + self.legOffset[legNum]) % self.steps
 				pos = self.eachLeg(index, rcmd)  # move each leg appropriately
 				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
-				# if legNum == 0: print('New  [{}](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(i, pos[0], pos[1], pos[2]))
-				footPos.append([index, legNum, pos])  # all in leg frame
-			# print('footPos', footPos)
-
-			# corr = Correction()
-			# c = corr.calcCorrection(footPos)
-			# feet = corr.rotateFeetCorrected(footPos, c)
-
-			ret.append(footPos)  # 4 feet at index i: [index, legNum, footposition]
-			# print('4 feet at index i: [index, legNum, footposition]')
-			# print('ret', ret)
+				footPos.append(pos)  # all in leg frame
+			# print('>', i, footPos)
+			ret.append(footPos)
 
 		return ret
+
+	# def oneCycle(self, x, y, rz):
+	# 	"""
+	# 	direction of travel x, y (2D plane) or rotation about z-axis
+	# 	Returns 1 complete cycle of where do the feet go for all 4 legs.
+	# 	"""
+    #
+	# 	# check if x, y, rz is same as last time commanded, if so, return
+	# 	# the last cycle response, else, calculate a new response
+	# 	# ???
+    #
+	# 	scale = self.scale
+	# 	cmd = (scale*x, scale*y, rz)
+	# 	ret = []  # 4 leg foot positions for the entire 12 count cycle is returned
+    #
+	# 	for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
+	# 		footPos = []
+	# 		for legNum in [0, 2, 1, 3]:  # order them diagonally
+	# 			# rcmd = self.calcRotatedOffset(cmd, legNum)
+	# 			rcmd = rot_z_tuple(self.frame[legNum], cmd)
+	# 			index = (i + self.legOffset[legNum]) % self.steps
+	# 			pos = self.eachLeg(index, rcmd)  # move each leg appropriately
+	# 			# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
+	# 			# if legNum == 0: print('New  [{}](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(i, pos[0], pos[1], pos[2]))
+	# 			footPos.append([index, legNum, pos])  # all in leg frame
+	# 		# print('footPos', footPos)
+    #
+	# 		# corr = Correction()
+	# 		# c = corr.calcCorrection(footPos)
+	# 		# feet = corr.rotateFeetCorrected(footPos, c)
+    #
+	# 		ret.append(footPos)  # 4 feet at index i: [index, legNum, footposition]
+	# 		# print('4 feet at index i: [index, legNum, footposition]')
+	# 		# print('ret', ret)
+    #
+	# 	return ret

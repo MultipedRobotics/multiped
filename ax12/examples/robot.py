@@ -7,18 +7,19 @@
 
 from __future__ import print_function
 from __future__ import division
-from quadruped import Engine
-from quadruped import DiscreteRippleGait
+# from quadruped import Engine
+# from quadruped import DiscreteRippleGait
 from quadruped import Robot
 from quadruped import Leg4
+from pyservos import AX12
 # from misc_gaits import CircularGait, ImpatientGait
 from math import pi
 import time
 
 
 class Test(Robot):
-	def __init__(self, data, gaits=None):
-		Robot.__init__(self, data, Leg4, gaits)
+	def __init__(self, data):
+		Robot.__init__(self, data, Leg4, AX12)
 
 	def run(self):
 		# predefined walking path
@@ -66,16 +67,10 @@ class Test(Robot):
 			# print('***********************************')
 			mov = crawl.command(cmd)  # take command and return 4 foot locations
 			angles = self.kinematics.generateServoAngles(mov)
-			self.engine.move(angles)
+			self.engine.moveLegsPosition(angles)
 
 
 def main():
-	# data = {
-	# 	# 'serialPort': '/dev/tty.usbserial-AL034G2K',  # sparkfun usb-serial
-	# 	'serialPort': '/dev/ttyUSB0',
-	# 	'write': 'bulk'
-	# }
-
 	# gaits = {
 	# 	'crawl': DiscreteRippleGait,
 	# 	'circle_tap': CircularGait,
@@ -88,18 +83,19 @@ def main():
 	data = {
 		# leg3/4
 		# [ length, (limits), offset]
-		'coxa': [28, [-45, 45], 150],
-		'femur': [90, [-90, 90], 150],
-		'tibia': [84, [-90, 90], 150],
-		'tarsus': [98, [-90, 90], 150],
+		'coxa':   [28, [-45, 45], 150],
+		'femur':  [90, [-95, 95], 150],
+		'tibia':  [84, [-140, 140], 150],
+		'tarsus': [98, [-95, 95], 150],
 
 		# gait
-		'stand': [0, -110, -40, 90],
-		'sit': [0, 90, 90, 90],
+		# Angles: 0.00 75.60 -120.39 -45.22
+		'stand': [0, 75, -120, -45],
+		'sit': [0, 90, -90, -90],
 
 		# engine
-		'serialPort': '/dev/ttyUSB0',
-		'write': 'bulk'
+		# 'serialPort': '/dev/ttyUSB0',
+		# 'write': 'bulk'
 	}
 
 	test = Test(data)

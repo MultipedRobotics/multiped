@@ -4,7 +4,7 @@ from .Engine import Engine
 from .Gait import DiscreteRippleGait
 from .Leg3 import Leg3, LegException
 from .Leg4 import Leg4
-from .Servo import Servo
+# from .Servo import Servo
 from .Robot import Robot
 
 # do I put exceptions here?

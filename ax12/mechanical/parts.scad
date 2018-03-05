@@ -6,7 +6,7 @@ use <head.scad>;
 use <common.scad>;
 
 //top();
-//rotate([180,0,0]) bottom();
+rotate([180,0,0]) bottom();
 //femur_supt();
-tibia();
+//tibia();
 //tarsus();

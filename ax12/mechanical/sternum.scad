@@ -4,6 +4,7 @@ module spar(L){
     linear_extrude(4){
         hull(){
             circle(d=1.25*40);
+//            translate([2.25*40/3-3,0,0]) square(35, center=true);
             translate([2.25*40/3-3,0,0]) square(35, center=true);
         }
     }
@@ -55,6 +56,11 @@ module base(D){
             rotate([0,0,180])  translate([servo/2,0,0]) servo_mnt();
             rotate([0,0,270])  translate([servo/2,0,0]) servo_mnt();
         }
+		// shorten the spars
+		rotate([0,0,0])  translate([servo-6,-60/2,-10]) cube([40,60,20], center=false);
+		rotate([0,0,90])  translate([servo-6,-60/2,-10]) cube([40,60,20], center=false);
+		rotate([0,0,180])  translate([servo-6,-60/2,-10]) cube([40,60,20], center=false);
+		rotate([0,0,270])  translate([servo-6,-60/2,-10]) cube([40,60,20], center=false);
         // make layer thinner so M2x6 screws work
         rotate([0,0,0])  translate([servo/2-2.5,-32/2,2]) cube([40,32,5], center=false);
         rotate([0,0,90])  translate([servo/2-2.5,-32/2,2]) cube([40,32,5], center=false);

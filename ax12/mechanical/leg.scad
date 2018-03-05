@@ -130,8 +130,9 @@ use <sternum.scad>;
 
 difference(){
     w = 35;
-    l = 80;
+    l = 80-16;
     translate([-l/2, -w/2,0]) cube([l, w, 4]);
+	cube([8,12,10], center=true);
     translate([-14,0,0]) rotate([0,0,180]) servo_mnt();
     translate([14,0,0]) rotate([0,0,0]) servo_mnt();
     translate([14-2.5,-32/2,2]) cube([40,32,5], center=false);

@@ -251,7 +251,7 @@ Wire Notes Line
 	8400 2250 8400 4900
 Wire Notes Line
 	2950 4900 2950 2250
-Text Notes 3000 2200 0    60   ~ 0
+Text Notes 3400 700  0    60   ~ 0
 Power System and Servo Bus Interface
 $Comp
 L Conn_01x03 J5

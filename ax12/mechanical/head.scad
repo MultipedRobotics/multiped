@@ -44,10 +44,10 @@ module head(){
 }
 
 //head();
-module picamera(){
+/* module picamera(){
     // sort of center mass
     color("ForestGreen") translate([-25/2,0,0]) import("parts/pi-camera.stl");
-}
+} */
 
 translate([-20,0,10]) rotate([90,0,-90]) picamera();
 color("ForestGreen") rotate([0,0,0]) translate([40,0,10]) rpi3();

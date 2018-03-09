@@ -1,14 +1,14 @@
 
 // These are STL models I found on line
 
-module ax12(){
+/* module ax12(){
     // sort of center mass
     translate([-70,-210,-180]) import("parts/AX-12A.STL");
-}
+} */
 
 module rpi3(){
     // sort of center mass
-    translate([-3-88.5/2,-2-56/2,0]) import("parts/rpi3.STL");
+    color("Green") translate([-3-88.5/2,-2-56/2,0]) import("parts/rpi3.STL");
 }
 
 module f2(){
@@ -24,4 +24,9 @@ module f3(){
 module ax12(){
     // sort of center mass
     color("gray") translate([-70,-210,-180]) import("parts/AX-12A.STL");
+}
+
+module picamera(){
+    // sort of center mass
+    color("ForestGreen") translate([-25/2,0,0]) import("parts/pi-camera.stl");
 }

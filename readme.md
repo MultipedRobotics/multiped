@@ -19,22 +19,20 @@ to run. This software talks to both the XL-320 and AX-12A servos from Robotis.
 
 ### RC Servos
 
-![](pics/rc-spider.jpg)
+<img src="pics/rc-spider.jpg" width="400px">
 
 This was the original version, shown above around Aug 2016. It used toy RC
 servos (9 g's), they didn't work that great.
 
 ### XL-320 Servos
 
-
-![](pics/xl-320-spider.jpg)
+<img src="pics/xl-320-spider.jpg" width="400px">
 
 **work on this robot has stopped**
 
 ### AX-12A Servos
 
-
-![](pics/ax-12a-spider.jpg)
+<img src="pics/ax-12a-spider.jpg" width="400px">
 
 **this is the current robot I am focusing on**
 

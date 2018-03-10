@@ -36,6 +36,10 @@ servos (9 g's), they didn't work that great.
 
 **this is the current robot I am focusing on**
 
+## Software
+
+![](pics/quad-movement.png)
+
 # MIT Software License
 
 **Copyright (c) 2016 Kevin J. Walchko**

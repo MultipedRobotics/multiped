@@ -5,7 +5,7 @@ has 4 legs, but the parts are expensive, so cut me some slack.
 
 <img src="pics/spider-anatomy.png" width="400px">
 
-<img src="pics/ax-12-quad-servos.png" width="400px">
+<img src="pics/ax-12-quad-servos.png" width="100%">
 
 ## Sternum (body)
 
@@ -14,6 +14,17 @@ has 4 legs, but the parts are expensive, so cut me some slack.
 ## Leg
 
 ![](pics/leg.png)
+
+## Assembled
+
+The design below shows a new femur design where the part is curved. This
+gives the robot a better leg orientation when in the stowed configuration
+and the legs are up.
+
+<img src="pics/stand.png" width="100%">
+
+
+<img src="pics/stow.png" width="100%">
 
 ### Leg Parts
 

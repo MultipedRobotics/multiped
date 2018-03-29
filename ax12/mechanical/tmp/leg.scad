@@ -157,14 +157,15 @@ module coxa(arc, angle, mirror=false){
     r = ar+w/2;
     dia = 2*r;
     translate([0,w-r,0])  // center
-    difference(){
+    difference()
+    {
     difference()
     {
         cylinder(h=thick, d=dia);
-        cylinder(h=15, d=dia-2*w,center=true);
+        cylinder(h=15, d=dia-2*w,center=true);  // center hole
         rotate([0,0,-angle]) translate([0,0,-r/2]) cube([r,r,r]); // quadrant 2
-        translate([0,-r,-r/2]) rotate([0,0,1]) cube([r,r,r]); // quadrant 1
-        translate([-r,-r,-r/2]) cube([r,2*r,r]); // q 3 & 4
+        translate([0,-2*r,-r/2]) rotate([0,0,1]) cube([2*r,2*r,r]); // quadrant 1
+        translate([-2*r,-2*r,-r/2]) cube([2*r,4*r,r]); // q 3 & 4
         
         // servos
 //        translate([10,w/2,0]) rotate([0,0,0]) servo_mnt();
@@ -228,7 +229,8 @@ module draw45(a0=0, a1=0, a2=0){
 // stand: 10, 100, 55
 // stow:
 
-femur_angle = 95;
+module fullrobot(){
+femur_angle = 100;
 tibia_angle = 140;
 tarsus_angle = 115;
 
@@ -263,3 +265,8 @@ color("lightgray") translate([0,-67,-16]) f2();
 color("lightgray") rotate([0,0,90])  translate([0,-67,-16]) f2();
 color("lightgray") rotate([0,0,180]) translate([0,-67,-16]) f2();
 color("lightgray") rotate([0,0,270]) translate([0,-67,-16]) f2();
+}
+
+//fullrobot();
+
+coxa(60,60, mirror=false);

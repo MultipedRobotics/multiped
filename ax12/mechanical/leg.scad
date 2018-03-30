@@ -128,14 +128,34 @@ use <sternum.scad>;
 
 //translate([0,60,0]) femur_supt();
 
-difference(){
-    w = 35;
-    l = 80-16;
-    translate([-l/2, -w/2,0]) cube([l, w, 4]);
-	cube([8,12,10], center=true);
-    translate([-14,0,0]) rotate([0,0,180]) servo_mnt();
-    translate([14,0,0]) rotate([0,0,0]) servo_mnt();
-    translate([14-2.5,-32/2,2]) cube([40,32,5], center=false);
-    translate([-14+2.5,32/2,2]) rotate([0,0,180]) cube([40,32,5], center=false);
-}
+// square femur
+//difference(){
+//    w = 35;
+//    l = 80-16;
+//    translate([-l/2, -w/2,0]) cube([l, w, 4]);
+//	cube([8,12,10], center=true);
+//    translate([-14,0,0]) rotate([0,0,180]) servo_mnt();
+//    translate([14,0,0]) rotate([0,0,0]) servo_mnt();
+//    translate([14-2.5,-32/2,2]) cube([40,32,5], center=false);
+//    translate([-14+2.5,32/2,2]) rotate([0,0,180]) cube([40,32,5], center=false);
+//}
 //translate([57,-2.75,-.5]) rotate([0,-90,90]) ax12();
+
+module tarsus2(L=50){
+    color("SkyBlue") difference(){
+        union(){
+            translate([0,0,L+3/2]) cube([35,25,3], center=true);
+            // [x,y]
+            // x = width
+            // y = height
+            /* points=[[0,0],[4,0],[4,1],[2,2],[2,8],[4,10],[0,10]]; // flat head */
+//            points=[[0,0],[1,1],[1,8],[2,10],[0,10]]; // thumb tack / screw
+//            rotate([0,0,0]) translate([0,0,0]) scale([6,6,5]) rotate_extrude($fn=200) polygon(points);
+            translate([0,0,5]) cylinder(h=L-5,d=10);
+            translate([0,0,L-10]) cylinder(h=10,d1=0,d2=20);
+            cylinder(h=5,d1=0,d2=10);
+        }
+        translate([0,0,L+3/2]) rotate([180,0,0]) holes(10);
+    }
+}
+tarsus2(100);

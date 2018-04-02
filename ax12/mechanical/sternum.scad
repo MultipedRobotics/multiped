@@ -1,4 +1,4 @@
-use <robotis_parts.scad>;
+use <lib/robotis_parts.scad>;
 
 module spar(L){
     linear_extrude(4){

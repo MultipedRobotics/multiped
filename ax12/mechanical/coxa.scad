@@ -1,5 +1,5 @@
 
-use <../robotis_parts.scad>;
+use <lib/robotis_parts.scad>;
 
 ///////////////////////
 // Coxa

@@ -1,7 +1,7 @@
-$fn = 50;
+//$fn = 50;
 
-use <../robotis_parts.scad>;
-use <../misc.scad>;
+use <lib/robotis_parts.scad>;
+use <lib/misc.scad>;
 
 
 module tibiaSupt(L, thick, rev=false){

@@ -33,12 +33,12 @@ module M2(t){
 }
 
 
-module holes(t){
+/* module holes(t){
     // M3 3.3 mm
     M3(t);
 
     // M2 2.3 mm
-    /* dia = 2.3; */
+    // dia = 2.3;
     translate([8,0,0]) M2(t);
     translate([-8,0,0]) M2(t);
     translate([0,8,0]) M2(t);
@@ -47,4 +47,4 @@ module holes(t){
 
 module pulley(dia=24, thick=3, cen=false){
     cylinder(thick,d=dia,center=cen);
-}
+} */

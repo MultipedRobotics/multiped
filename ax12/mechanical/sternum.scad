@@ -1,4 +1,4 @@
-
+use <robotis_parts.scad>;
 
 module spar(L){
     linear_extrude(4){
@@ -10,7 +10,7 @@ module spar(L){
     }
 }
 
-module servo_mnt(){
+/* module servo_mnt(){
     d = 2.5;
     w = 22; // center servo
     l = 35; // center servo
@@ -35,7 +35,7 @@ module servo_mnt(){
     translate([5.5+8,27/2,-1]) cylinder(h,d=d);
     translate([5.5+16,27/2,-1]) cylinder(h,d=d);
     translate([5.5+24,27/2,-1]) cylinder(h,d=d);
-}
+} */
 
 module base(D){
     servo = 35/2+2.25*40/2;

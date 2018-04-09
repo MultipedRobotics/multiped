@@ -34,12 +34,12 @@ module tibiaSupt(L, thick, rev=false){
         }
     }
     if (rev){
-        translate([-L/2-(dia+5)*sin(angle),-(dia+5)*cos(angle),0]) pulleyHole();  // hub
-        translate([L/2,0,0]) holes(2);  // servo head
+        translate([-L/2-(dia+5)*sin(angle),-(dia+5)*cos(angle),0]) holes(2);  // hub
+        translate([L/2,0,0]) pulleyHole();  // servo head
     }
     else {
-        translate([-L/2-(dia+5)*sin(angle),(dia+5)*cos(angle),0]) holes(2);  // hub
-        translate([L/2,0,0]) pulleyHole();  // servo head
+        translate([-L/2-(dia+5)*sin(angle),(dia+5)*cos(angle),0]) pulleyHole();  // hub
+        translate([L/2,0,0]) holes(2);  // servo head
     }
 }
 }

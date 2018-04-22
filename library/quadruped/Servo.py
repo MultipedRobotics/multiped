@@ -126,10 +126,10 @@ class Servo(ServoBase):
 	Keeps info for servo and commands their movement.
 	angles are in degrees
 
-				0
+                    0
 	-150 ------ + ------- 150  kinematics (servo_k)
-				150
-		0 ------ + ------- 300  real servo (servo_r)
+                   150
+           0 ------ + ------- 300  real servo (servo_r)
 
 	servo_k commands are between -150 and 150 degrees, with 0 deg being center
 
@@ -149,6 +149,7 @@ class Servo(ServoBase):
 		"""
 		ServoBase.__init__(self, servo_type)
 		self.ID = ID
+		self._offset = offset
 		self.setServoLimits(150.0, -150.0, 150.0)  # defaults: offset, min, max
 
 	@property

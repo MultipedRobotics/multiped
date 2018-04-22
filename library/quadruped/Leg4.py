@@ -101,12 +101,12 @@ class Leg4(object):
 	def __del__(self):
 		pass
 
-	def sit(self):
+	def sit(self, speed=100):
 		# TODO: animate this or slow down the motion so we don't break anything
 		# self.moveFootAngles(*self.sit_angles)
 		pass
 
-	def stand(self):
+	def stand(self, speed=100):
 		# TODO: animate this or slow down the motion so we don't break anything
 		# self.moveFootAngles(*self.stand_angles)
 		pass

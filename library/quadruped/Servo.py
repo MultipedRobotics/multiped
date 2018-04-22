@@ -11,41 +11,45 @@ import logging
 # from pyxl320 import Packet
 # from pyxl320.Packet import makeSyncAnglePacket
 # from pyxl320 import xl320
-import pyservos
+# import pyservos
+from pyservos import Packet
+# from pyservos import AX12
+# from pyservos import XL320
+from pyservos import ServoSerial
 
 logger = logging.getLogger(__name__)
 
 
-def makeBulkAnglePacket(info):
-	"""
-	Write bulk angle information to servos.
-
-	info = [[ID, angle], [ID, angle], ...]
-	"""
-	addr = Packet.le(xl320.XL320_GOAL_POSITION)
-	data = []
-	for pkt in info:
-		data.append(pkt[0])  # ID
-		data.append(addr[0])  # LSB
-		data.append(addr[1])  # MSB
-		data.append(2)
-		data.append(0)
-		angle = Packet.le(int(pkt[1]/300*1023))
-		data.append(angle[0])  # LSB
-		data.append(angle[1])  # MSB
-
-	ID = xl320.XL320_BROADCAST_ADDR
-	instr = xl320.XL320_BULK_WRITE
-	pkt = Packet.makePacket(ID, instr, None, data)  # create packet
-
-	# print(pkt)
-	return pkt
+# def makeBulkAnglePacket(info):
+# 	"""
+# 	Write bulk angle information to servos.
+#
+# 	info = [[ID, angle], [ID, angle], ...]
+# 	"""
+# 	addr = Packet.le(xl320.XL320_GOAL_POSITION)
+# 	data = []
+# 	for pkt in info:
+# 		data.append(pkt[0])  # ID
+# 		data.append(addr[0])  # LSB
+# 		data.append(addr[1])  # MSB
+# 		data.append(2)
+# 		data.append(0)
+# 		angle = Packet.le(int(pkt[1]/300*1023))
+# 		data.append(angle[0])  # LSB
+# 		data.append(angle[1])  # MSB
+#
+# 	ID = xl320.XL320_BROADCAST_ADDR
+# 	instr = xl320.XL320_BULK_WRITE
+# 	pkt = Packet.makePacket(ID, instr, None, data)  # create packet
+#
+# 	# print(pkt)
+# 	return pkt
 
 
 # I don't like global variables, but I don't know how else to have one array
 # shared by all servos and have one simple class method to push updates
-gBulkData = []
-gSyncData = []  # this is much less data than bulk
+# gBulkData = []
+# gSyncData = []  # this is much less data than bulk
 
 
 class ServoBase(object):
@@ -62,34 +66,51 @@ class ServoBase(object):
 	ser = None
 	bulkServoWrite = False
 	syncServoWrite = False
+	gSyncData = []  # info = [[ID, angle], [ID, angle], ...]
+	gBulkData = []
 	# bulkData = [0]
 
-	def __init__(self):
+	def __init__(self, servo_type):
 		# just put a dummy serial here, because testing needs it in the angle setter
-		if self.ser is None:
-			# self.ser = DummySerial('test')
-			raise Exception('ServoBase::__init__() no serial port')
+		# if self.ser is None:
+		# 	self.ser = ServoSerial('dummy')
+		# 	# raise Exception('ServoBase::__init__() no serial port')
+		# else:
+		# 	self.ser = ServoSerial(port)
+
+		self.packet = Packet(servo_type)
+
+	def setNewSerial(self, port):
+		self.ser = ServoSerial(port)
+		self.ser.open()
+
+	def setSerial(self, serial):
+		self.ser = serial
+		# check if open
 
 	def bulkWrite(self):
-		if self.ser is None:
-			raise Exception('bulkWrite no serial port')
-		# print('Servo::bulkWrite()')
-		global gBulkData
-		pkt = makeBulkAnglePacket(gBulkData)
-		self.ser.write(pkt)
-		gBulkData = []  # clear global
+		pass
+	# 	if self.ser is None:
+	# 		raise Exception('bulkWrite no serial port')
+	# 	# print('Servo::bulkWrite()')
+	# 	# global gBulkData
+	# 	pkt = makeBulkAnglePacket(self.gBulkData)
+	# 	self.ser.write(pkt)
+	# 	gBulkData = []  # clear global
 
 	def syncWrite(self):
+		# sync write is less data than bulk write as long as all servos are
+		# getting the same command
 		if self.ser is None:
 			raise Exception('syncWrite no serial port')
 		# print('Servo::syncWrite()')
-		global gSyncData
+		# global gSyncData
 		# print('gSyncData', gSyncData)
-		pkt = makeSyncAnglePacket(gSyncData)
+		pkt = self.packet.makeSyncMovePacket(self.gSyncData)
 		# print('pkt', pkt)
 		self.ser.write(pkt)
 		# self.ser.write(pkt)
-		gSyncData = []
+		self.gSyncData = []
 
 	def write(self):
 		if self.bulkServoWrite:
@@ -121,12 +142,12 @@ class Servo(ServoBase):
 	maxAngle = 150.0
 	ID = 0
 
-	def __init__(self, ID):
+	def __init__(self, ID, servo_type):
 		"""
 		limits [angle, angle] - [optional] set the angular limits of the servo
 		to avoid collision
 		"""
-		ServoBase.__init__(self)
+		ServoBase.__init__(self, servo_type)
 		self.ID = ID
 		self.setServoLimits(150.0, -150.0, 150.0)  # defaults: offset, min, max
 
@@ -167,17 +188,17 @@ class Servo(ServoBase):
 			if self.syncServoWrite:
 				# global gBulkData
 				# gBulkData.append([self.ID, angle + self._offset])
-				gSyncData.append([self.ID, angle + self._offset])
+				self.gSyncData.append([self.ID, angle + self._offset])
 				# self.bulkData.append([self.ID, angle + self._offset])
 				# print('servo[{}]: bulkWrite {}'.format(self.ID, gBulkData))
 			elif self.bulkServoWrite:
 				# global gBulkData
-				gBulkData.append([self.ID, angle + self._offset])
+				self.gBulkData.append([self.ID, angle + self._offset])
 				# gSyncData.append([self.ID, angle + self._offset])
 				# self.bulkData.append([self.ID, angle + self._offset])
 				# print('servo[{}]: bulkWrite {}'.format(self.ID, gBulkData))
 			else:
-				pkt = Packet.makeServoPacket(self.ID, angle + self._offset)
+				pkt = self.packet.makeServoMovePacket(self.ID, angle + self._offset)
 				self.ser.sendPkt(pkt)
 				# print('sent angle {} [{}]'.format(angle, angle + self._offset))
 

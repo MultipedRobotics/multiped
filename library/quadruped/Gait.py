@@ -167,6 +167,33 @@ class DiscreteRippleGait(Gait):
 
 		return ret
 
+	def oneCycle_alt(self, x, y, rz):
+		"""
+		direction of travel x, y (2D plane) or rotation about z-axis
+		Returns 1 complete cycle of where do the feet go for all 4 legs.
+		"""
+
+		# check if x, y, rz is same as last time commanded, if so, return
+		# the last cycle response, else, calculate a new response
+		# ???
+
+		scale = self.scale
+		cmd = (scale*x, scale*y, rz)
+		ret = []  # 4 leg foot positions for the entire 12 count cycle is returned
+
+		for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
+			footPos = []
+			for legNum in [0, 1, 2, 3]:  # order them diagonally
+				rcmd = rot_z_tuple(self.frame[legNum], cmd)
+				index = (i + self.legOffset[legNum]) % self.steps
+				pos = self.eachLeg(index, rcmd)  # move each leg appropriately
+				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
+				footPos.append(pos)  # all in leg frame
+			# print('>', i, footPos)
+			ret.append(footPos)
+
+		return ret
+
 	# def oneCycle(self, x, y, rz):
 	# 	"""
 	# 	direction of travel x, y (2D plane) or rotation about z-axis

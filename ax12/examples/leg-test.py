@@ -7,7 +7,7 @@
 
 from __future__ import print_function
 from __future__ import division
-# from quadruped import Engine
+from quadruped import Engine
 # from quadruped import DiscreteRippleGait
 from quadruped import Leg4
 from pyservos import AX12
@@ -29,26 +29,44 @@ class LegTest(object):
 			'sit': [0, 90, -90, -90],
 
 			# engine
-			'serialPort': '/dev/tty.usbserial-A506BOT5',
+			# 'serialPort': '/dev/tty.usbserial-A506BOT5',
 			# 'write': 'bulk'
 		}
 		self.leg = Leg4(data)
+		self.engine = Engine(data, AX12)
 
-	def array(self):
+	def angles(self):
 		fa = [
-			[0,0,0,0]
+			[150, 150, 150, 150]  # servo angles [0-300]
 		]
 		for a in fa:
-			self.leg.forward(*a)
+			self.engine.moveLegsAnglesArray(a, 100)
 			time.sleep(2)
+
+	def gait(self):
+		legs = {
+			0: [[150, 150, 150, 150], [175, 175, 175, 175]]  # servo angles [0-300]
+		}
+		self.engine.moveLegsGait(legs, 200)
+		time.sleep(1)
+
+	# def pts(self):
+	# 	fp = [
+	# 		[]
+	# 	]
+	# 	for p in fp:
+	# 		a = self.engine
+	# 		self.engine.moveLegsAngles(a, 100)
+	# 		time.sleep(1)
 
 
 def main():
 	test = LegTest()
 
 	try:
-		test.array()
-		# test.single()
+		# test.angles()
+		test.gait()
+		# test.pts()
 	except KeyboardInterrupt:
 		print('bye ...')
 		time.sleep(1)

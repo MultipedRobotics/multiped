@@ -10,7 +10,7 @@ PACKAGE_NAME = 'quadruped'
 BuildCommand.pkg = PACKAGE_NAME
 PublishCommand.pkg = PACKAGE_NAME
 PublishCommand.version = VERSION
-README = open('../readme.rst').read()
+README = open('readme.rst').read()
 
 setup(
 	name=PACKAGE_NAME,

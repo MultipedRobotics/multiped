@@ -25,11 +25,11 @@ class LegTest(object):
 
 			# gait
 			# Angles: 0.00 75.60 -120.39 -45.22
-			'stand': [0, 75, -120, -45],
-			'sit': [0, 90, -90, -90],
+			# 'stand': [0, 75, -120, -45],
+			# 'sit': [0, 90, -90, -90],
 
 			# engine
-			# 'serialPort': '/dev/tty.usbserial-A506BOT5',
+			'serialPort': '/dev/tty.usbserial-A506BOT5',
 			# 'write': 'bulk'
 		}
 		self.leg = Leg4(data)
@@ -37,7 +37,12 @@ class LegTest(object):
 
 	def angles(self):
 		fa = [
-			[150, 150, 150, 150]  # servo angles [0-300]
+			[150, 240, 70, 240],  # servo angles [0-300]
+			[150, 220, 100, 150],
+			[150, 200, 170, 60],
+			[150, 180, 170, 240],
+			[150, 200, 170, 150],
+			[150, 240, 150, 150]
 		]
 		for a in fa:
 			self.engine.moveLegsAnglesArray(a, 100)
@@ -45,9 +50,16 @@ class LegTest(object):
 
 	def gait(self):
 		legs = {
-			0: [[150, 150, 150, 150], [175, 175, 175, 175]]  # servo angles [0-300]
+			0: [
+				[150, 240, 70, 240],  # servo angles [0-300]
+				[150, 220, 100, 150],
+				[150, 200, 170, 60],
+				[150, 180, 170, 240],
+				[150, 200, 170, 150],
+				[150, 240, 150, 150]
+			]  # servo angles [0-300]
 		}
-		self.engine.moveLegsGait(legs, 200)
+		self.engine.moveLegsGait(legs, speed=100)
 		time.sleep(1)
 
 	# def pts(self):

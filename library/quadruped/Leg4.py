@@ -89,13 +89,15 @@ class Leg4(object):
 		self.tibiaLength = params['tibia'][0]
 		self.tarsusLength = params['tarsus'][0]
 
-		self.sit_angles = params['sit']
-		self.stand_angles = params['stand']
+		if 'sit' in params:
+			self.sit_angles = params['sit']
+		if 'stand' in params:
+			self.stand_angles = params['stand']
 
-		pp = self.forward(*self.stand_angles)
-		aa = self.inverse(*pp)
-		print('stand', pp)
-		print('stand', aa)
+		# pp = self.forward(*self.stand_angles)
+		# aa = self.inverse(*pp)
+		# print('stand', pp)
+		# print('stand', aa)
 		# exit()
 
 	def __del__(self):

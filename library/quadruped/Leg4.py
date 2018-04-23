@@ -89,24 +89,26 @@ class Leg4(object):
 		self.tibiaLength = params['tibia'][0]
 		self.tarsusLength = params['tarsus'][0]
 
-		self.sit_angles = params['sit']
-		self.stand_angles = params['stand']
+		if 'sit' in params:
+			self.sit_angles = params['sit']
+		if 'stand' in params:
+			self.stand_angles = params['stand']
 
-		pp = self.forward(*self.stand_angles)
-		aa = self.inverse(*pp)
-		print('stand', pp)
-		print('stand', aa)
+		# pp = self.forward(*self.stand_angles)
+		# aa = self.inverse(*pp)
+		# print('stand', pp)
+		# print('stand', aa)
 		# exit()
 
 	def __del__(self):
 		pass
 
-	def sit(self):
+	def sit(self, speed=100):
 		# TODO: animate this or slow down the motion so we don't break anything
 		# self.moveFootAngles(*self.sit_angles)
 		pass
 
-	def stand(self):
+	def stand(self, speed=100):
 		# TODO: animate this or slow down the motion so we don't break anything
 		# self.moveFootAngles(*self.stand_angles)
 		pass
@@ -203,7 +205,10 @@ class Leg4(object):
 				t -= 2*pi
 			return t
 
-		t1 = check(t1)
+		# maxa = 150*pi/180
+		# t1 = t1 if t1 <= maxa else t1-2*pi
+
+		t1 = check(t1)  # value?? check elsewhere?
 		t2 = check(t2)
 		t3 = check(t3)
 		t4 = check(t4)
@@ -261,6 +266,53 @@ class Leg4(object):
 				tmp[2] = self.servos[2].DH2Servo(s[2])
 				tmp[3] = self.servos[3].DH2Servo(s[3])
 				angles[i].append(tmp)
+
+		return angles
+
+	def generateServoAngles_alt(self, footLoc):
+		"""
+		This is a bulk process and takes all of the foot locations for an entire
+		sequence of a gait cycle. It handles all legs at once.
+
+		footLoc: locations of feet from gait
+		[      step0      step1   ...
+			0: [(x,y,z), (x,y,z), ...] # leg0
+			2: [(x,y,z), (x,y,z), ...] # leg2
+			...
+		]
+
+		return
+		{      step 0          step 1         ...
+			0: [[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0
+			2: [[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg2
+			...
+		}
+		"""
+		# FIXME: fix this to handle N legs, right now it only does 4
+
+		# get the keys and figure out some stuff
+		keys = list(footLoc.keys())
+		# numSteps = len(footLoc[keys[0]])
+
+		angles = {
+			0: [],
+			1: [],
+			2: [],
+			3: []
+		}
+
+		for k in keys:
+			pos = footLoc[k]  # grab foot positions for leg k
+
+			# calculate the inverse DH angles
+			for p in pos:
+				s = self.inverse(*p)  # s0,s1,s2,s3
+				tmp = [0]*4
+				tmp[0] = self.servos[0].DH2Servo(s[0])
+				tmp[1] = self.servos[1].DH2Servo(s[1])
+				tmp[2] = self.servos[2].DH2Servo(s[2])
+				tmp[3] = self.servos[3].DH2Servo(s[3])
+				angles[k].append(tmp)
 
 		return angles
 

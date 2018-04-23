@@ -1,4 +1,4 @@
-//$fn = 50;
+$fn = 90;
 
 use <lib/robotis_parts.scad>;
 use <lib/misc.scad>;
@@ -35,7 +35,7 @@ module tibiaSupt(L, thick, rev=false){
     }
     if (rev){
         translate([-L/2-(dia+5)*sin(angle),-(dia+5)*cos(angle),0]) holes(2);  // hub
-        translate([L/2,0,0]) pulleyHole();  // servo head
+        translate([L/2,0,0]) pulleyHole();  // pulley head
     }
     else {
         translate([-L/2-(dia+5)*sin(angle),(dia+5)*cos(angle),0]) pulleyHole();  // hub
@@ -51,7 +51,7 @@ module tibia(L=85){
     thick = 4;
 
     // middle support bar and wiring channel
-    color("SkyBlue") difference(){
+    color("red") difference(){
         union(){
             translate([0,21,0]) rotate([-90,0,0]) tibiaSupt(L, thick, true);
             translate([0,-21,0]) rotate([90,0,0]) tibiaSupt(L, thick);
@@ -65,6 +65,8 @@ module tibia(L=85){
             rotate([0,90,0]) scale([1,2.5,1]) cylinder(h=10,d=15, center=true);
         }
         cube([20,12,8], center=true);
+        translate([-40,-25,0]) rotate([0,0,90]) cube([20,11,6], center=true);
+        translate([28,25,0]) rotate([0,0,90]) cube([20,11,6], center=true);
     }
 }
 

@@ -53,6 +53,7 @@ class Engine(object):
 	def setServoSpeed(self, speed):
 		"""
 		Sets the servo speed for all servos.
+		speed - 0-1023, but only up to max speed of servo
 		"""
 		# make packet function
 		pkt = self.packet.makeWritePacket(
@@ -99,20 +100,14 @@ class Engine(object):
 	def moveLegsGait(self, legs, speed=None, wait=1):
 		"""
 		gait or sequence?
+		speed = 1 - 1023 (scalar, all servos move at same rate)
 		legs = { step 0        step 1         ...
 			0: [[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0
 			1: [[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg1
 			3: [[servo1, servo2, ...]] angles in servo space [0-300] deg
 		}
 		NOTE: each leg needs the same number of steps and servos per leg
-
-		FIXME: this moves angles from a gait, not position (x,y,z) ... rename or change interface to take points?
-		FIXME: don't hard code for 4 legs, might want to just move 1 or 2 or 3
-		FIXME: legs are positional ... can't just move leg 3, try:
-			legs = { here legs 1 and 4 are not moved
-				0: [t1,t2, ...], ... move leg 0
-				3: [t1, t2 ...], ... move leg 3
-			}
+		WARNING: these angles are in servo space [0-300 deg]
 		"""
 		# get the keys and figure out some stuff
 		keys = list(legs.keys())
@@ -136,10 +131,10 @@ class Engine(object):
 					else:
 						data.append([legNum*numServos + i+1, a, b])  # ID, low angle, high angle
 
-			print('\n\ndata', data)
+			# print('\n\ndata', data)
 
 			pkt = self.packet.makeSyncWritePacket(self.packet.base.GOAL_POSITION, data)
-			print('raw pkt', pkt)
+			# print('raw pkt', pkt)
 			self.serial.write(pkt)
 			time.sleep(wait)
 

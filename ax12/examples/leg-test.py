@@ -29,7 +29,7 @@ class LegTest(object):
 			# 'sit': [0, 90, -90, -90],
 
 			# engine
-			'serialPort': '/dev/tty.usbserial-A506BOT5',
+			# 'serialPort': '/dev/tty.usbserial-A506BOT5',
 			# 'write': 'bulk'
 		}
 		self.leg = Leg4(data)
@@ -51,6 +51,14 @@ class LegTest(object):
 	def gait(self):
 		legs = {
 			0: [
+				[150, 240, 70, 240],  # servo angles [0-300]
+				[150, 220, 100, 150],
+				[150, 200, 170, 60],
+				[150, 180, 170, 240],
+				[150, 200, 170, 150],
+				[150, 240, 150, 150]
+			],  # servo angles [0-300]
+			3: [
 				[150, 240, 70, 240],  # servo angles [0-300]
 				[150, 220, 100, 150],
 				[150, 200, 170, 60],

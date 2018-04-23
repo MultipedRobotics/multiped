@@ -28,8 +28,10 @@ module power_board(){
     }
     
     // terminal blocks
-    translate([-x/2+7.62,-y/2,board/2]) color("blue") cube([7, 6, 9]); // power out
-    translate([x/2-7-7.62,-y/2,board/2]) color("lightblue") cube([7, 6, 9]); // power in
+    // light blue - Vin
+    // dark blue - Vout
+    translate([-x/2+7.62,-y/2,board/2]) color("blue") cube([7, 6, 9]);
+    translate([x/2-7-7.62,-y/2,board/2]) color("lightblue") cube([7, 6, 9]);
     
     // SMT
     translate([-x/2+5,-y/2+6,board/2]) color("silver") cube([x-10, y-7, 8]);
@@ -45,3 +47,12 @@ rotate([0,0,45]){
 translate([0, 27,10]) power_board();
 translate([0,-27,10]) rotate([0,0,180]) power_board();
 }
+
+//h = 110;
+//d = 75;
+//translate([-d/2,-1.5,0]) cube([d,3,h]);  // base plate
+//rotate([0,90,90]) translate([-60,0,5]) rpi3();
+////rotate([0,90,0]) translate([0,0,0]) picamera();
+//translate([10,-10,30]) rotate([90,90,0]) power_board();
+//translate([10,-10,80]) rotate([90,90,0]) power_board();
+//color("red", 0.25) cylinder(h=h, d=d);

@@ -28,8 +28,8 @@ class Servo(object):
 
 	def __init__(self, ID, minmax, offset=150):
 		self.offset = offset
-		self.minAngle = minmax[0]
-		self.maxAngle = minmax[1]
+		self.minAngle = minmax[0]  # DH space
+		self.maxAngle = minmax[1]  # DH space
 		self.id = ID
 
 	def DH2Servo(self, angle):
@@ -44,10 +44,10 @@ class Servo(object):
 
 			if self.minAngle > angle:
 				print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle))
-				angle = self.minAngle
+				# angle = self.minAngle
 			elif self.maxAngle < angle:
 				print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, angle, self.maxAngle))
-				angle = self.maxAngle
+				# angle = self.maxAngle
 
 		return angle+self.offset
 
@@ -81,7 +81,6 @@ class Leg4(object):
 		# setup kinematics and servos
 		self.servos = []
 		for ID, seg in enumerate(['coxa', 'femur', 'tibia', 'tarsus']):
-			# self.coxaLength = params[seg][0]
 			self.servos.append(Servo(ID, params[seg][1], params[seg][2]))
 
 		self.coxaLength = params['coxa'][0]
@@ -203,6 +202,8 @@ class Leg4(object):
 		def check(t):
 			if t > 150*pi/180:
 				t -= 2*pi
+			elif t < -150*pi/180:
+				t += 2*pi
 			return t
 
 		# maxa = 150*pi/180

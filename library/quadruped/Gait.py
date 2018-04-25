@@ -100,6 +100,9 @@ class DiscreteRippleGait(Gait):
 	steps = 0
 
 	def __init__(self, h, r):
+		"""
+		h: added to z
+		"""
 		Gait.__init__(self, r)
 		self.phi = [9/9, 6/9, 3/9, 0/9, 1/9, 2/9, 3/9, 4/9, 5/9, 6/9, 7/9, 8/9]  # foot pos in gait sequence
 		maxl = h  # lifting higher gives me errors
@@ -156,7 +159,7 @@ class DiscreteRippleGait(Gait):
 
 		for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
 			footPos = []
-			for legNum in [0, 1, 2, 3]:  # order them diagonally
+			for legNum in [0, 2, 1, 3]:  # order them diagonally
 				rcmd = rot_z_tuple(self.frame[legNum], cmd)
 				index = (i + self.legOffset[legNum]) % self.steps
 				pos = self.eachLeg(index, rcmd)  # move each leg appropriately
@@ -179,18 +182,25 @@ class DiscreteRippleGait(Gait):
 
 		scale = self.scale
 		cmd = (scale*x, scale*y, rz)
-		ret = []  # 4 leg foot positions for the entire 12 count cycle is returned
+		ret = {
+			0: [],
+			1: [],
+			2: [],
+			3: []
+		}  # 4 leg foot positions for the entire 12 count cycle is returned
 
 		for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
-			footPos = []
+			# footPos = []
 			for legNum in [0, 1, 2, 3]:  # order them diagonally
 				rcmd = rot_z_tuple(self.frame[legNum], cmd)
 				index = (i + self.legOffset[legNum]) % self.steps
 				pos = self.eachLeg(index, rcmd)  # move each leg appropriately
 				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
-				footPos.append(pos)  # all in leg frame
+				# footPos.append(pos)  # all in leg frame
+				ret[legNum].append(pos)
+
 			# print('>', i, footPos)
-			ret.append(footPos)
+			# ret.append(footPos)
 
 		return ret
 

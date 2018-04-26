@@ -1,12 +1,10 @@
-AX-12 and XL320 Quadruped
+Quadruped
 ============================
 
 .. image:: https://img.shields.io/pypi/v/quadruped.svg
 	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
 .. image:: https://img.shields.io/pypi/l/quadruped.svg
 	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
-.. image:: https://travis-ci.org/MomsFriendlyRobotCompany/quadruped.svg?branch=master
-	:target: https://travis-ci.org/MomsFriendlyRobotCompany/quadruped
 
 My robot software.
 

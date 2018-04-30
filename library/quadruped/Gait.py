@@ -55,7 +55,7 @@ class Gait(object):
 	# these are the offsets of each leg
 	legOffset = [0, 6, 3, 9]
 	# frame rotations for each leg
-	cmrot = [pi/4, -pi/4, -3*pi/4, 3*pi/4]
+	# cmrot = [pi/4, -pi/4, -3*pi/4, 3*pi/4]
 	frame = [-pi/4, pi/4, 3*pi/4, -3*pi/4]  # this seem to work better ... wtf?
 	moveFoot = None
 	rest = None
@@ -99,16 +99,23 @@ class DiscreteRippleGait(Gait):
 	"""
 	steps = 0
 
-	def __init__(self, h, r):
+	def __init__(self, height, rest):
 		"""
-		h: added to z
+		height: added to z
+		rest: the neutral foot position
 		"""
 		Gait.__init__(self, r)
 		self.phi = [9/9, 6/9, 3/9, 0/9, 1/9, 2/9, 3/9, 4/9, 5/9, 6/9, 7/9, 8/9]  # foot pos in gait sequence
-		maxl = h  # lifting higher gives me errors
+		# maxl = h  # lifting higher gives me errors
+		# minl = maxl/2
+		# self.z = [minl, maxl, minl, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
+		self.setLegLift(height)
+		self.steps = len(self.phi)
+
+	def setLegLift(self, height):
+		maxl = height  # lifting higher gives me errors
 		minl = maxl/2
 		self.z = [minl, maxl, minl, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
-		self.steps = len(self.phi)
 
 	def eachLeg(self, index, cmd):
 		"""

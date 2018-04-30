@@ -222,55 +222,55 @@ class Leg4(object):
 
 		return (t1, t2, t3, t4)
 
+	# def generateServoAngles(self, footLoc):
+	# 	"""
+	# 	This is a bulk process and takes all of the foot locations for an entire
+	# 	sequence of a gait cycle. It handles all legs at once.
+	#
+	# 	footLoc: locations of feet from gait
+	# 	[
+	# 		[pos0, pos1, pos2, pos3], # step0
+	# 		...
+	# 	]
+	#
+	# 	[   step0      step1   ...
+	# 		[(x,y,z), (x,y,z), ...] # leg0
+	# 		[(x,y,z), (x,y,z), ...] # leg1
+	# 		...
+	# 	]
+	#
+	# 	return
+	# 	[   step 0          step 1         ...
+	# 		[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0
+	# 		[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg1
+	# 		...
+	# 	]
+	# 	"""
+	# 	# TODO: fix this to handle N legs, right now it only does 4
+	#
+	# 	angles = [[], [], [], []]
+	#
+	# 	for f in footLoc:
+	# 		a, b, c, d = f
+	# 		# calculate the inverse DH angles
+	# 		a = self.inverse(*a)  # s0,s1,s2,s3
+	# 		b = self.inverse(*b)  # s4,s5,s6,s7
+	# 		c = self.inverse(*c)  # ...
+	# 		d = self.inverse(*d)
+	#
+	# 		self.pprint([a, b, c, d])
+	#
+	# 		for i, s in enumerate([a, b, c, d]):
+	# 			tmp = [0]*4
+	# 			tmp[0] = self.servos[0].DH2Servo(s[0])
+	# 			tmp[1] = self.servos[1].DH2Servo(s[1])
+	# 			tmp[2] = self.servos[2].DH2Servo(s[2])
+	# 			tmp[3] = self.servos[3].DH2Servo(s[3])
+	# 			angles[i].append(tmp)
+	#
+	# 	return angles
+
 	def generateServoAngles(self, footLoc):
-		"""
-		This is a bulk process and takes all of the foot locations for an entire
-		sequence of a gait cycle. It handles all legs at once.
-
-		footLoc: locations of feet from gait
-		[
-			[pos0, pos1, pos2, pos3], # step0
-			...
-		]
-
-		[   step0      step1   ...
-			[(x,y,z), (x,y,z), ...] # leg0
-			[(x,y,z), (x,y,z), ...] # leg1
-			...
-		]
-
-		return
-		[   step 0          step 1         ...
-			[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0
-			[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg1
-			...
-		]
-		"""
-		# TODO: fix this to handle N legs, right now it only does 4
-
-		angles = [[], [], [], []]
-
-		for f in footLoc:
-			a, b, c, d = f
-			# calculate the inverse DH angles
-			a = self.inverse(*a)  # s0,s1,s2,s3
-			b = self.inverse(*b)  # s4,s5,s6,s7
-			c = self.inverse(*c)  # ...
-			d = self.inverse(*d)
-
-			self.pprint([a, b, c, d])
-
-			for i, s in enumerate([a, b, c, d]):
-				tmp = [0]*4
-				tmp[0] = self.servos[0].DH2Servo(s[0])
-				tmp[1] = self.servos[1].DH2Servo(s[1])
-				tmp[2] = self.servos[2].DH2Servo(s[2])
-				tmp[3] = self.servos[3].DH2Servo(s[3])
-				angles[i].append(tmp)
-
-		return angles
-
-	def generateServoAngles_alt(self, footLoc):
 		"""
 		This is a bulk process and takes all of the foot locations for an entire
 		sequence of a gait cycle. It handles all legs at once.
@@ -317,17 +317,35 @@ class Leg4(object):
 
 		return angles
 
+	def DH2Servo(self, angles):
+		# tmp = [0]*4
+		# tmp[0] = self.servos[0].DH2Servo(s[0])
+		# tmp[1] = self.servos[1].DH2Servo(s[1])
+		# tmp[2] = self.servos[2].DH2Servo(s[2])
+		# tmp[3] = self.servos[3].DH2Servo(s[3])
+		tmp = []
+		for s, a in list(zip(self.servos, angles)):
+			tmp.append(s.DH2Servo(a))
+
+		return tmp
+
 	def pprint(self, step):
 		print('*'*25)
 		for leg in step:
 			print('  DH: [{:.0f} {:.0f} {:.0f} {:.0f}]'.format(*leg))
 
-	def moveFoot(self, x, y, z):
-		"""
-		generates servo angles to move the foot to coordinates [x,y,z]. This
-		is individual and not intended for walking, but something else.
-		"""
-		pass
+	# this is already done with generateServoAngles
+	# def moveFootPts(self, pts):
+	# 	"""
+	# 	generates servo angles to move the foot to coordinates [x,y,z]. This
+	# 	is individual and not intended for walking, but something else.
+	#
+	# 	pts = {  # move only leg 0 and 1 through an array of points
+	# 		0: [(x,y,z),(x,y,z), ...],
+	# 		1: [(x,y,z),(x,y,z), ...]
+	# 	}
+	# 	"""
+	# 	pass
 
 	def getNeutralPos(self):
 		return self.forward(*self.stand_angles)

@@ -184,6 +184,12 @@ This directory contains several tools for the robot:
 	--------------------------------------------------
 
 
+ToDo
+-----------
+
+- change more return values to tuples instead of lists for performance
+- do CM shifting
+
 Change Log
 -------------
 

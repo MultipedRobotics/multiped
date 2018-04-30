@@ -21,11 +21,12 @@ class Engine(object):
 	"""
 	sync = []
 
-	def __init__(self, data, servoType):
+	def __init__(self, data, servoType, wait=0.1):
 		"""
 		data: serial port to use, if none, then use dummy port
 		kind: AX12 or XL320
 		"""
+		self.wait = wait
 		# determine serial port
 		# default to fake serial port
 		if 'serialPort' in data:
@@ -97,7 +98,8 @@ class Engine(object):
 	# 		pkt = self.packet.makeSyncWritePacket(self.packet.base.GOAL_POSITION, data)
 	# 		self.serial.sendPkt(pkt)
 
-	def moveLegsGait(self, legs, speed=None, wait=1):
+	# FIXME: this also applies to non-gait movement ... moveLegs???
+	def moveLegsGait(self, legs, speed=None):
 		"""
 		gait or sequence?
 		speed = 1 - 1023 (scalar, all servos move at same rate)
@@ -118,6 +120,9 @@ class Engine(object):
 
 		if speed:
 			sl, sh = le(speed)
+			wait = self.wait  # FIXME: wait should be a function of speed
+		else:
+			wait = self.wait
 
 		# for each step in legs
 		for s in range(numSteps):

@@ -26,31 +26,31 @@ class Test(Robot):
 		# x, y, rotation
 		path = [
 			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[0, 0, pi/4],
-			[0, 0, pi/4],
-			[0, 0, pi/4],
-			[0, 0, -pi/4],
-			[0, 0, -pi/4],
-			[0, 0, -pi/4],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [0, 0, pi/4],
+			# [0, 0, pi/4],
+			# [0, 0, pi/4],
+			# [0, 0, -pi/4],
+			# [0, 0, -pi/4],
+			# [0, 0, -pi/4],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
 		]
 
 		# pick a gait to use
@@ -67,7 +67,8 @@ class Test(Robot):
 			# print('***********************************')
 			mov = crawl.command(cmd)  # take command and return 4 foot locations
 			angles = self.kinematics.generateServoAngles(mov)
-			self.engine.moveLegsPosition(angles)
+			print(angles)
+			# self.engine.moveLegsPosition(angles)
 
 
 def main():
@@ -95,6 +96,7 @@ def main():
 
 		# engine
 		# 'serialPort': '/dev/ttyUSB0',
+		'serialPort': '/dev/tty.usbserial-A506BOT5',
 		# 'write': 'bulk'
 	}
 

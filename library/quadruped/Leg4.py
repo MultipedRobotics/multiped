@@ -37,19 +37,21 @@ class Servo(object):
 		Sets the servo angle and clamps it between [limitMinAngle, limitMaxAngle].
 		"""
 		# saturates the angle if it is outside of the limits
-		if self.minAngle > angle or angle > self.maxAngle:
-			# raise Exception('DH2Servo {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
-			# print('DH2Servo[{}] error {:.0f} > {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle, self.maxAngle))
-			# pass
-
-			if self.minAngle > angle:
-				print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle))
-				# angle = self.minAngle
-			elif self.maxAngle < angle:
-				print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, angle, self.maxAngle))
-				# angle = self.maxAngle
-
-		return angle+self.offset
+		# if self.minAngle > angle or angle > self.maxAngle:
+		# 	# raise Exception('DH2Servo {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
+		# 	# print('DH2Servo[{}] error {:.0f} > {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle, self.maxAngle))
+		# 	# pass
+		#
+		# 	if self.minAngle > angle:
+		# 		print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle))
+		# 		# angle = self.minAngle
+		# 	elif self.maxAngle < angle:
+		# 		print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, angle, self.maxAngle))
+		# 		# angle = self.maxAngle
+		sangle = angle+self.offset
+		if sangle > 300 or sangle < 0:
+			raise Exception('{} angle out of range DH: {:.1f}   Servo: {:.1f} deg'.format(self.id, angle, sangle))
+		return sangle
 
 
 class LegException(Exception):

@@ -104,7 +104,7 @@ class DiscreteRippleGait(Gait):
 		height: added to z
 		rest: the neutral foot position
 		"""
-		Gait.__init__(self, r)
+		Gait.__init__(self, rest)
 		self.phi = [9/9, 6/9, 3/9, 0/9, 1/9, 2/9, 3/9, 4/9, 5/9, 6/9, 7/9, 8/9]  # foot pos in gait sequence
 		# maxl = h  # lifting higher gives me errors
 		# minl = maxl/2

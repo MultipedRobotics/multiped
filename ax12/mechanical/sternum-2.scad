@@ -2,6 +2,8 @@
 use <power.scad>;
 use <lib/pi.scad>;
 
+//$fn=100;
+
 module spar(L){
     linear_extrude(4){
         hull(){
@@ -138,7 +140,8 @@ module base_wide2(L, W){
             translate([-shift,0,0]) rotate([0,0,225]) translate([spar_len,0,0]) spar2();
             translate([shift,0,0]) rotate([0,0,315]) translate([spar_len,0,0]) spar2();
         }
-        translate([0,0,-1]) cylinder(20,d=25);  // cable hole
+        translate([0,0,-1]) cylinder(20,d=20);  // cable hole
+        
         translate([shift,0,0]) rotate([0,0,45]) translate([offset,0,0]) servo_mnt();
         translate([-shift,0,0]) rotate([0,0,135]) translate([offset,0,0]) servo_mnt();
         translate([-shift,0,0]) rotate([0,0,225]) translate([offset,0,0]) servo_mnt();
@@ -148,22 +151,81 @@ module base_wide2(L, W){
 }
 
 module top2(l,w){
-    base_wide2(l, w);
-    thick = 4;
-    neck = 15;
     difference(){
-        translate([0,0,neck/2+thick/2]) cylinder(neck, d2=30, d1=2*w/3, center=true);
-        translate([0,0,neck/2+thick/2]) cylinder(2*neck,d=20, center=true);
+        base_wide2(l, w);
+        
+        // stand-offs
+        m3 = 3.1;
+        translate([50-5/2-1, 0, 4]) cylinder(h=19,d=m3, center=true);
+        translate([-50+5/2+1, 0, 4]) cylinder(h=19,d=m3, center=true);
+        translate([0, 50-5/2-1, 4]) cylinder(h=19,d=m3, center=true);
+        translate([0, -50+5/2+1, 4]) cylinder(h=19,d=m3, center=true);
+        
+        // pan head counter sinks
+        m3d = 5;
+        m3h = 2.5;
+        translate([50-5/2-1, 0, -0.5]) cylinder(h=m3h,d=m3d, center=false);
+        translate([-50+5/2+1, 0, -0.5]) cylinder(h=m3h,d=m3d, center=false);
+        translate([0, 50-5/2-1, -0.5]) cylinder(h=m3h,d=m3d, center=false);
+        translate([0, -50+5/2+1, -0.5]) cylinder(h=m3h,d=m3d, center=false);
+        
+        translate([0,26,0]) powerFootPrint();
+        translate([0,-26,0]) rotate([0,0,180]) powerFootPrint();
     }
+    
+//    thick = 4;
+//    neck = 15;
+//    difference(){
+//        translate([0,0,neck/2+thick/2]) cylinder(neck, d2=30, d1=2*w/3, center=true);
+//        translate([0,0,neck/2+thick/2]) cylinder(2*neck,d=20, center=true);
+//    }
 }
 
+module bottom2(l,w){
+    rotate([180,0,0])  translate([0,0,32]) base_wide2(l, w);
+
+    // center grab point
+    dia = 18;
+    h = 15;
+//    translate([0,0,-32-h]) difference(){
+//        cylinder(h, d=dia);
+//        rotate([0,0,90]) translate([dia/2+15,0,0]) cube([dia,dia, 2*h], center=true);
+//        rotate([0,0,90]) translate([-dia/2-15,0,0]) cube([dia,dia, 2*h], center=true);
+//    }
+    translate([0,0,-32-h]) {
+        translate([l/2-dia,0,0]) cylinder(h=h,d=dia);
+        translate([-l/2+dia,0,0]) cylinder(h=h,d=dia);
+        translate([0,w/2-dia,0]) cylinder(h=h,d=dia);
+        translate([0,-w/2+dia,0]) cylinder(h=h,d=dia);
+        
+        translate([-dia/4, -w/2+dia,0]) cube([dia/2,w-2*dia,h]);
+        translate([-l/2+dia,-dia/4,0]) cube([l-2*dia,dia/2,h]);
+        
+//        difference(){
+//            cylinder(h=h,d=2*dia);
+//            cylinder(h=h,d1=dia, d2=w);
+//        }
+    }
+    // corner stablizers
+//    sdia = 10;
+//    rotate([0,0,0]) translate([l/2-sdia/2,0,-32-h]) cylinder(h, d=sdia);
+//    rotate([0,0,90]) translate([w/2-sdia/2,0,-32-h]) cylinder(h, d=sdia);
+//    rotate([0,0,180]) translate([l/2-sdia/2,0,-32-h]) cylinder(h, d=sdia);
+//    rotate([0,0,270]) translate([w/2-sdia/2,0,-32-h]) cylinder(h, d=sdia);
+}
 
 
 //translate([150,0,0]) rotate([0,0,45]) top();
 //translate([0,0,40]) rotate([0,0,45]) top();
 
 //base_wide(135, .75*135);
-rotate([0,0,90]) translate([0,0,30]) rpi3();
-base_wide2(140, 100);
-translate([0,30,10]) power_board();
-translate([0,-30,10]) rotate([0,0,180]) power_board();
+//rotate([0,0,90]) translate([0,0,30]) rpi3();
+//base_wide2(140, 100);
+//translate([0,30,10]) power_board();
+//translate([0,-30,10]) rotate([0,0,180]) power_board();
+
+//bottom2(150,100);
+
+//$fn=90;
+//top2(125,100);
+//bottom2(125,100);

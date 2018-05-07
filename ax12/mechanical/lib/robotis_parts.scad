@@ -6,7 +6,7 @@ use <misc.scad>;
 
 module ax12(){
     // sort of center mass
-    color("gray") translate([-70,-210,-180]) import("parts/AX-12A.STL");
+    color("dimgray") translate([-70,-210,-180]) import("parts/AX-12A.STL");
 }
 
 

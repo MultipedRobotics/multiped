@@ -92,7 +92,7 @@ module upper(){
 // stow: 100 180 70
 
 module fullrobot(femur_angle, tibia_angle, tarsus_angle){
-    length = 125;
+    length = 140;
     width = 100;
     
     color("gray") top2(length, width);
@@ -122,9 +122,10 @@ module fullrobot(femur_angle, tibia_angle, tarsus_angle){
 }
 
 //fullrobot(10,140,20);  // stand
-fullrobot(100,180,70);  // stow
+//fullrobot(100,180,70);  // stow
 
 //translate([0,0,20]) cylinder(d=80,h=110); // head?
 
 //top2(125, 100);
 //upper();
+rpi_base();

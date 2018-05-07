@@ -1,6 +1,6 @@
 //use <lib/robotis_parts.scad>;
 use <power.scad>;
-use <lib/pi.scad>;
+//use <lib/pi.scad>;
 
 //$fn=100;
 
@@ -162,7 +162,7 @@ module top2(l,w){
         translate([0, -50+5/2+1, 4]) cylinder(h=19,d=m3, center=true);
         
         // pan head counter sinks
-        m3d = 5;
+        m3d = 6;
         m3h = 2.5;
         translate([50-5/2-1, 0, -0.5]) cylinder(h=m3h,d=m3d, center=false);
         translate([-50+5/2+1, 0, -0.5]) cylinder(h=m3h,d=m3d, center=false);
@@ -181,6 +181,13 @@ module top2(l,w){
 //    }
 }
 
+module interface(h, dia){
+    difference(){
+        cylinder(h=h,d=dia); 
+        translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
+    }
+}
+
 module bottom2(l,w){
     rotate([180,0,0])  translate([0,0,32]) base_wide2(l, w);
 
@@ -192,19 +199,25 @@ module bottom2(l,w){
 //        rotate([0,0,90]) translate([dia/2+15,0,0]) cube([dia,dia, 2*h], center=true);
 //        rotate([0,0,90]) translate([-dia/2-15,0,0]) cube([dia,dia, 2*h], center=true);
 //    }
-    translate([0,0,-32-h]) {
-        translate([l/2-dia,0,0]) cylinder(h=h,d=dia);
-        translate([-l/2+dia,0,0]) cylinder(h=h,d=dia);
-        translate([0,w/2-dia,0]) cylinder(h=h,d=dia);
-        translate([0,-w/2+dia,0]) cylinder(h=h,d=dia);
-        
-        translate([-dia/4, -w/2+dia,0]) cube([dia/2,w-2*dia,h]);
-        translate([-l/2+dia,-dia/4,0]) cube([l-2*dia,dia/2,h]);
-        
-//        difference(){
-//            cylinder(h=h,d=2*dia);
-//            cylinder(h=h,d1=dia, d2=w);
-//        }
+    translate([0,0,-32-h-4]) {
+        difference(){
+            union(){
+                translate([l/2-dia,0,0]) cylinder(h=h,d=dia); //interface(h,dia);
+                translate([-l/2+dia,0,0]) cylinder(h=h,d=dia); //interface(h,dia);
+                translate([0,w/2-dia,0]) cylinder(h=h,d=dia); //interface(h,dia);
+                translate([0,-w/2+dia,0]) cylinder(h=h,d=dia); //interface(h,dia);
+                
+                cylinder(h=h, d=40);
+                
+                translate([-dia/4, -w/2+dia,0]) cube([dia/2,w-2*dia,h]);
+                translate([-l/2+dia,-dia/4,0]) cube([l-2*dia,dia/2,h]);
+            }
+            translate([l/2-dia,0,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
+            translate([-l/2+dia,0,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
+            translate([0,w/2-dia,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
+            translate([0,-w/2+dia,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
+            translate([0,0,-1]) cylinder(h=h, d2=0, d1=40-1);
+        }
     }
     // corner stablizers
 //    sdia = 10;
@@ -226,6 +239,6 @@ module bottom2(l,w){
 
 //bottom2(150,100);
 
-//$fn=90;
-//top2(125,100);
-//bottom2(125,100);
+$fn=90;
+//top2(140,100);
+bottom2(140,100);

@@ -1,4 +1,4 @@
-$fn = 50;
+//$fn = 50;
 
 // library folder
 use <lib/robotis_parts.scad>;
@@ -38,7 +38,8 @@ module powerFootPrint(){
     
     // counter sink
     m2h = 2.5;
-    m2d = 4;
+    m2d = 5;
+    // hex(3.5, m2h); 
     translate([x/2-2.2, y/2-2.2, -0.5]) cylinder(d=m2d, h=m2h, center=false);
     translate([x/2-2.2, -y/2+4.2, -0.5]) cylinder(d=m2d, h=m2h, center=false);
     translate([-x/2+2.2, -y/2+4.2, -0.5]) cylinder(d=m2d, h=m2h, center=false);

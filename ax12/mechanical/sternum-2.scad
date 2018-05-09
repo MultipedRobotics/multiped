@@ -227,6 +227,20 @@ module bottom2(l,w){
 //    rotate([0,0,270]) translate([w/2-sdia/2,0,-32-h]) cylinder(h, d=sdia);
 }
 
+union(){
+    l = 140;
+    w = 100;
+    dia = 18-1;
+    h = 15-0.5;
+    translate([0,0,2]){
+        translate([l/2-dia,0,0]) translate([0,0,-1]) cylinder(h,d2=0, d1=dia-1);
+        translate([-l/2+dia,0,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
+        translate([0,w/2-dia,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
+        translate([0,-w/2+dia,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
+        translate([0,0,-1]) cylinder(h=h, d2=0, d1=40-1);
+    }
+    translate([-l/2,-w/2,0]) cube([l,w,2]);
+}
 
 //translate([150,0,0]) rotate([0,0,45]) top();
 //translate([0,0,40]) rotate([0,0,45]) top();
@@ -239,6 +253,8 @@ module bottom2(l,w){
 
 //bottom2(150,100);
 
-$fn=90;
+//$fn=90;
 //top2(140,100);
-bottom2(140,100);
+//bottom2(140,100);
+
+

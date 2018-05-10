@@ -73,7 +73,7 @@ class jsonFile(object):
 if __name__ == '__main__':
 	fs = jsonFile()
 	fs.read('walkingeye.json')
-	db = fs.db
+	# db = fs.db
 
 	print('serialPort', fs['serialPort'])
 	print('')

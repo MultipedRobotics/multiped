@@ -10,48 +10,10 @@ from math import sin, cos, acos, atan2, sqrt, pi
 from math import radians as d2r
 # from math import degrees as r2d
 # import logging
-# from .Servo import Servo
+from .Servo import Servo
 
 # logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(level=logging.ERROR)
-
-
-class Servo(object):
-	"""
-	Servo hold the parameters of a servo, it doesn't talk to real servos. This
-	class does the conversion between DH angles to real servo angles
-	"""
-	# _angle = 0.0  # current angle
-	# offset = 150.0  # angle offset default, see above for explaination
-	# minAngle = -150.0
-	# maxAngle = 150.0
-
-	def __init__(self, ID, minmax, offset=150):
-		self.offset = offset
-		self.minAngle = minmax[0]  # DH space
-		self.maxAngle = minmax[1]  # DH space
-		self.id = ID
-
-	def DH2Servo(self, angle):
-		"""
-		Sets the servo angle and clamps it between [limitMinAngle, limitMaxAngle].
-		"""
-		# saturates the angle if it is outside of the limits
-		# if self.minAngle > angle or angle > self.maxAngle:
-		# 	# raise Exception('DH2Servo {} > {} > {}'.format(self.minAngle, angle, self.maxAngle))
-		# 	# print('DH2Servo[{}] error {:.0f} > {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle, self.maxAngle))
-		# 	# pass
-		#
-		# 	if self.minAngle > angle:
-		# 		print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, self.minAngle, angle))
-		# 		# angle = self.minAngle
-		# 	elif self.maxAngle < angle:
-		# 		print('DH2Servo[{}] error {:.0f} > {:.0f}'.format(self.id, angle, self.maxAngle))
-		# 		# angle = self.maxAngle
-		sangle = angle+self.offset
-		if sangle > 300 or sangle < 0:
-			raise Exception('{} angle out of range DH: {:.1f}   Servo: {:.1f} deg'.format(self.id, angle, sangle))
-		return sangle
 
 
 class LegException(Exception):
@@ -73,8 +35,14 @@ class Leg4(object):
 	tibiaLength = None
 	femurLength = None
 	tarsusLength = None
-	sit_angles = None
-	stand_angles = None
+	# sit_angles = None
+	# stand_angles = None
+
+	positions = {
+		'stand': None,
+		'sit': None,
+		'neutral': None
+	}
 
 	def __init__(self, params):
 		"""
@@ -90,29 +58,68 @@ class Leg4(object):
 		self.tibiaLength = params['tibia'][0]
 		self.tarsusLength = params['tarsus'][0]
 
-		if 'sit' in params:
-			self.sit_angles = params['sit']
-		if 'stand' in params:
-			self.stand_angles = params['stand']
+		# if 'sit' in params:
+		# 	self.sit_angles = params['sit']
+		# if 'stand' in params:
+		# 	self.stand_angles = params['stand']
 
 		# pp = self.forward(*self.stand_angles)
 		# aa = self.inverse(*pp)
 		# print('stand', pp)
 		# print('stand', aa)
 		# exit()
+		if 'stand' in params:
+			self.positions['neutral'] = self.forward(*params['stand'])
+		else:
+			raise Exception('Need to have "stand" angles in params file')
+
+		for key in ['stand', 'sit']:
+			if key in params:
+				angles = []
+				for a, s in zip(params[key], self.servos):
+					angles.append(s.DH2Servo(a))
+				self.positions[key] = angles
+
+		print(self.positions)
 
 	def __del__(self):
 		pass
 
-	def sit(self, speed=100):
-		# TODO: animate this or slow down the motion so we don't break anything
-		# self.moveFootAngles(*self.sit_angles)
-		pass
-
 	def stand(self, speed=100):
-		# TODO: animate this or slow down the motion so we don't break anything
-		# self.moveFootAngles(*self.stand_angles)
-		pass
+		feet = None
+		if self.positions['stand']:
+			feet = {
+				0: [self.positions['stand']],
+				1: [self.positions['stand']],
+				2: [self.positions['stand']],
+				3: [self.positions['stand']],
+			}
+			# self.moveLegsGait(feet, speed)
+			# sleep(4)
+		return feet
+
+	def sit(self, speed=100):
+		feet = None
+		if self.positions['sit']:
+			feet = {
+				0: [self.positions['sit']],
+				1: [self.positions['sit']],
+				2: [self.positions['sit']],
+				3: [self.positions['sit']],
+			}
+			# self.moveLegsGait(feet, speed)
+			# sleep(4)
+		return feet
+
+	# def sit(self, speed=100):
+	# 	# TODO: animate this or slow down the motion so we don't break anything
+	# 	# self.moveFootAngles(*self.sit_angles)
+	# 	pass
+	#
+	# def stand(self, speed=100):
+	# 	# TODO: animate this or slow down the motion so we don't break anything
+	# 	# self.moveFootAngles(*self.stand_angles)
+	# 	pass
 
 	def forward(self, t1, t2, t3, t4, degrees=True):
 		"""
@@ -224,65 +231,17 @@ class Leg4(object):
 
 		return (t1, t2, t3, t4)
 
-	# def generateServoAngles(self, footLoc):
-	# 	"""
-	# 	This is a bulk process and takes all of the foot locations for an entire
-	# 	sequence of a gait cycle. It handles all legs at once.
-	#
-	# 	footLoc: locations of feet from gait
-	# 	[
-	# 		[pos0, pos1, pos2, pos3], # step0
-	# 		...
-	# 	]
-	#
-	# 	[   step0      step1   ...
-	# 		[(x,y,z), (x,y,z), ...] # leg0
-	# 		[(x,y,z), (x,y,z), ...] # leg1
-	# 		...
-	# 	]
-	#
-	# 	return
-	# 	[   step 0          step 1         ...
-	# 		[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0
-	# 		[[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg1
-	# 		...
-	# 	]
-	# 	"""
-	# 	# TODO: fix this to handle N legs, right now it only does 4
-	#
-	# 	angles = [[], [], [], []]
-	#
-	# 	for f in footLoc:
-	# 		a, b, c, d = f
-	# 		# calculate the inverse DH angles
-	# 		a = self.inverse(*a)  # s0,s1,s2,s3
-	# 		b = self.inverse(*b)  # s4,s5,s6,s7
-	# 		c = self.inverse(*c)  # ...
-	# 		d = self.inverse(*d)
-	#
-	# 		self.pprint([a, b, c, d])
-	#
-	# 		for i, s in enumerate([a, b, c, d]):
-	# 			tmp = [0]*4
-	# 			tmp[0] = self.servos[0].DH2Servo(s[0])
-	# 			tmp[1] = self.servos[1].DH2Servo(s[1])
-	# 			tmp[2] = self.servos[2].DH2Servo(s[2])
-	# 			tmp[3] = self.servos[3].DH2Servo(s[3])
-	# 			angles[i].append(tmp)
-	#
-	# 	return angles
-
 	def generateServoAngles(self, footLoc):
 		"""
 		This is a bulk process and takes all of the foot locations for an entire
 		sequence of a gait cycle. It handles all legs at once.
 
 		footLoc: locations of feet from gait
-		[      step0      step1   ...
+		{      step0      step1   ...
 			0: [(x,y,z), (x,y,z), ...] # leg0
 			2: [(x,y,z), (x,y,z), ...] # leg2
 			...
-		]
+		}
 
 		return
 		{      step 0          step 1         ...
@@ -295,36 +254,63 @@ class Leg4(object):
 
 		# get the keys and figure out some stuff
 		keys = list(footLoc.keys())
-		# numSteps = len(footLoc[keys[0]])
-
-		angles = {
-			0: [],
-			1: [],
-			2: [],
-			3: []
-		}
+		angles = {}
 
 		for k in keys:
 			pos = footLoc[k]  # grab foot positions for leg k
+			angles[k] = []
 
 			# calculate the inverse DH angles
 			for p in pos:
 				s = self.inverse(*p)  # s0,s1,s2,s3
-				tmp = [0]*4
-				tmp[0] = self.servos[0].DH2Servo(s[0])
-				tmp[1] = self.servos[1].DH2Servo(s[1])
-				tmp[2] = self.servos[2].DH2Servo(s[2])
-				tmp[3] = self.servos[3].DH2Servo(s[3])
+				# tmp = [0]*4
+				# tmp[0] = self.servos[0].DH2Servo(s[0])
+				# tmp[1] = self.servos[1].DH2Servo(s[1])
+				# tmp[2] = self.servos[2].DH2Servo(s[2])
+				# tmp[3] = self.servos[3].DH2Servo(s[3])
+				tmp = self.DH2Servo(s)
+				angles[k].append(tmp)
+
+		return angles
+
+	def generateServoAngles_DH(self, angles):
+		"""
+		This is a bulk process and takes all of the foot locations for an entire
+		sequence of a gait cycle. It handles all legs at once.
+
+		footLoc: locations of feet from gait
+		{      step0      step1   ...
+			0: [[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0 DH space
+			2: [[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg2 DH space
+			...
+		}
+
+		return
+		{      step 0          step 1         ...
+			0: [[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg0 servo space
+			2: [[t1,t2,t3,t4], [t1,t2,t3,t4], ...] # leg2 servo space
+			...
+		}
+		"""
+		# get the keys and figure out some stuff
+		keys = list(footLoc.keys())
+		angles = {}
+
+		for k in keys:
+			angles[k] = []
+			# calculate the inverse DH angles
+			for s in angles:
+				# tmp = [0]*4
+				# tmp[0] = self.servos[0].DH2Servo(s[0])
+				# tmp[1] = self.servos[1].DH2Servo(s[1])
+				# tmp[2] = self.servos[2].DH2Servo(s[2])
+				# tmp[3] = self.servos[3].DH2Servo(s[3])
+				tmp = self.DH2Servo(s)
 				angles[k].append(tmp)
 
 		return angles
 
 	def DH2Servo(self, angles):
-		# tmp = [0]*4
-		# tmp[0] = self.servos[0].DH2Servo(s[0])
-		# tmp[1] = self.servos[1].DH2Servo(s[1])
-		# tmp[2] = self.servos[2].DH2Servo(s[2])
-		# tmp[3] = self.servos[3].DH2Servo(s[3])
 		tmp = []
 		for s, a in list(zip(self.servos, angles)):
 			tmp.append(s.DH2Servo(a))
@@ -350,4 +336,4 @@ class Leg4(object):
 	# 	pass
 
 	def getNeutralPos(self):
-		return self.forward(*self.stand_angles)
+		return self.positions['neutral']

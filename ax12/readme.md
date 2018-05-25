@@ -1,5 +1,39 @@
 # AX-12A Quadruped
 
+Nature loves animals/insects with legs. Even birds have legs! Legs allow for easier
+navigation across rough terrain. The more legs you have, the more redundant and
+robust you are. If you are a centipede and you break a few legs, no big deal.
+However, if you are a human and break one leg, then walking (forget running)
+becomes extremely difficult.
+
+In robotics you see many different types of walking robots. Common ones are:
+2 legs, four legs, and 6 legs. There are advantages and disadvantages for each
+of these types of robots.
+
+- 2 legs
+    - balancing and shifting the body's center of mass is critical to the
+robot not falling over
+    - the 2 legs are generally need to be more powerful to lift the body mass
+- 4 legs:
+    - there is an inherent stability with this configuration. You only need 3
+    legs (tripod) to keep the robot standing, leaving one leg to move freely
+    as needed
+    - each of the legs can be weaker (which also translates into cost $$$) than
+    its 2 legged counter part, but you still have more of them, so it is probably
+    still more expensive
+    - However, there is still a lot of motors, data lines, coordination complexity
+    than if you only had 2 legs
+- 6 legs:
+    - having more than 4 legs contains all of the same advantages/disadvantages
+    of 4 legs
+    - you also have more redundancy, essentially able to loose 2 legs and keep
+    walking
+    - there are also more types of gaits available to you, which is a fancy word
+    for how you control your leg moves when walking, trotting, running, etc
+
+
+
+
 ![](pics/spider.png)
 
 **Still under development**

@@ -20,6 +20,10 @@ class Engine(object):
 	e.g., gait, legs and servos) do the calculations for walking.
 	"""
 	sync = []
+	# positions = {
+	# 	'stand': None,
+	# 	'sit': None
+	# }
 
 	def __init__(self, data, servoType, wait=0.1):
 		"""
@@ -45,6 +49,10 @@ class Engine(object):
 			# raise Exception('No serial port given')
 
 		self.packet = Packet(servoType)
+
+		# for key in ['stand', 'sit']:
+		# 	if key in data:
+		# 		self.positions[key] = data[key]
 
 	def pprint(self, i, step):
 		print('***', i, '*'*25)
@@ -209,3 +217,25 @@ class Engine(object):
 		self.serial.write(pkt)  # no point to read
 		# self.serial.sendPkt(pkt)
 		print('moveLegsAnglesArray', pkt)
+
+	# def stand(self):
+	# 	if self.positions['stand']:
+	# 		feet = {
+	# 			0: [self.positions['stand']],
+	# 			1: [self.positions['stand']],
+	# 			2: [self.positions['stand']],
+	# 			3: [self.positions['stand']],
+	# 		}
+	# 		self.moveLegsGait(feet, 100)
+	# 		sleep(4)
+	#
+	# def sit(self):
+	# 	if self.positions['sit']:
+	# 		feet = {
+	# 			0: [self.positions['sit']],
+	# 			1: [self.positions['sit']],
+	# 			2: [self.positions['sit']],
+	# 			3: [self.positions['sit']],
+	# 		}
+	# 		self.moveLegsGait(feet, 100)
+	# 		sleep(4)

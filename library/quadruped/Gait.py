@@ -56,7 +56,8 @@ class Gait(object):
 	legOffset = [0, 6, 3, 9]
 	# frame rotations for each leg
 	# cmrot = [pi/4, -pi/4, -3*pi/4, 3*pi/4]
-	frame = [-pi/4, pi/4, 3*pi/4, -3*pi/4]  # this seem to work better ... wtf?
+	# frame = [-pi/4, pi/4, 3*pi/4, -3*pi/4]  # this seem to work better ... wtf?
+	frame = [pi/4, -pi/4, -3*pi/4, 3*pi/4]
 	moveFoot = None
 	rest = None
 	scale = 50.0
@@ -67,29 +68,34 @@ class Gait(object):
 
 	def command(self, cmd):
 		"""
-		func is the quadruped move foot function for a specific leg
+		Send a command to the quadruped
+		cmd: [x, y, rotation about z-axis], the x,y is a unit vector and
+		rotation is in radians
 		"""
 		x, y, rz = cmd
 		d = sqrt(x**2+y**2)
 
-		# commands should be unit length, oneCyle scales it
-		if 1.0 < d:
-			x /= d
-			y /= d
-
 		# handle no movement command ... do else where?
-		if d < 0.1 and abs(rz) < 0.1:
+		if d <= 0.1 and abs(rz) < 0.1:
 			x = y = 0.0
 			rz = 0.0
-
+			return None
+		# commands should be unit length, oneCyle scales it
+		elif 0.1 < d:
+			x /= d
+			y /= d
+		else:
 			return None
 
-		# if abs(rz) < 0.001:
-		# 	rz = 0.0
+		angle_limit = pi/2
+		if rz > angle_limit:
+			rz = angle_limit
+		elif rz < -angle_limit:
+			rz = -angle_limit
 
-		return self.oneCycle(x, y, rz)
+		return self.oneCycle_alt(x, y, rz)
 
-	def oneCycle(slef, x, y, rz):
+	def oneCycle_alt(slef, x, y, rz):
 		raise Exception('*** Gait: wrong function, this is base class! ***')
 
 
@@ -105,7 +111,8 @@ class DiscreteRippleGait(Gait):
 		rest: the neutral foot position
 		"""
 		Gait.__init__(self, rest)
-		self.phi = [9/9, 6/9, 3/9, 0/9, 1/9, 2/9, 3/9, 4/9, 5/9, 6/9, 7/9, 8/9]  # foot pos in gait sequence
+		# self.phi = [9/9, 6/9, 3/9, 0/9, 1/9, 2/9, 3/9, 4/9, 5/9, 6/9, 7/9, 8/9]  # foot pos in gait sequence
+		self.phi = [6/8, 4/8, 2/8, 0/8, 1/8, 2/8, 3/8, 4/8, 5/8, 6/8, 7/8, 8/8]
 		# maxl = h  # lifting higher gives me errors
 		# minl = maxl/2
 		# self.z = [minl, maxl, minl, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
@@ -150,33 +157,6 @@ class DiscreteRippleGait(Gait):
 		# print('New  [](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(newpos[0], newpos[1], newpos[2]))
 		return newpos
 
-	def oneCycle(self, x, y, rz):
-		"""
-		direction of travel x, y (2D plane) or rotation about z-axis
-		Returns 1 complete cycle of where do the feet go for all 4 legs.
-		"""
-
-		# check if x, y, rz is same as last time commanded, if so, return
-		# the last cycle response, else, calculate a new response
-		# ???
-
-		scale = self.scale
-		cmd = (scale*x, scale*y, rz)
-		ret = []  # 4 leg foot positions for the entire 12 count cycle is returned
-
-		for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
-			footPos = []
-			for legNum in [0, 2, 1, 3]:  # order them diagonally
-				rcmd = rot_z_tuple(self.frame[legNum], cmd)
-				index = (i + self.legOffset[legNum]) % self.steps
-				pos = self.eachLeg(index, rcmd)  # move each leg appropriately
-				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
-				footPos.append(pos)  # all in leg frame
-			# print('>', i, footPos)
-			ret.append(footPos)
-
-		return ret
-
 	def oneCycle_alt(self, x, y, rz):
 		"""
 		direction of travel x, y (2D plane) or rotation about z-axis
@@ -197,52 +177,11 @@ class DiscreteRippleGait(Gait):
 		}  # 4 leg foot positions for the entire 12 count cycle is returned
 
 		for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
-			# footPos = []
 			for legNum in [0, 1, 2, 3]:  # order them diagonally
 				rcmd = rot_z_tuple(self.frame[legNum], cmd)
 				index = (i + self.legOffset[legNum]) % self.steps
 				pos = self.eachLeg(index, rcmd)  # move each leg appropriately
 				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
-				# footPos.append(pos)  # all in leg frame
 				ret[legNum].append(pos)
 
-			# print('>', i, footPos)
-			# ret.append(footPos)
-
 		return ret
-
-	# def oneCycle(self, x, y, rz):
-	# 	"""
-	# 	direction of travel x, y (2D plane) or rotation about z-axis
-	# 	Returns 1 complete cycle of where do the feet go for all 4 legs.
-	# 	"""
-    #
-	# 	# check if x, y, rz is same as last time commanded, if so, return
-	# 	# the last cycle response, else, calculate a new response
-	# 	# ???
-    #
-	# 	scale = self.scale
-	# 	cmd = (scale*x, scale*y, rz)
-	# 	ret = []  # 4 leg foot positions for the entire 12 count cycle is returned
-    #
-	# 	for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
-	# 		footPos = []
-	# 		for legNum in [0, 2, 1, 3]:  # order them diagonally
-	# 			# rcmd = self.calcRotatedOffset(cmd, legNum)
-	# 			rcmd = rot_z_tuple(self.frame[legNum], cmd)
-	# 			index = (i + self.legOffset[legNum]) % self.steps
-	# 			pos = self.eachLeg(index, rcmd)  # move each leg appropriately
-	# 			# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
-	# 			# if legNum == 0: print('New  [{}](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(i, pos[0], pos[1], pos[2]))
-	# 			footPos.append([index, legNum, pos])  # all in leg frame
-	# 		# print('footPos', footPos)
-    #
-	# 		# corr = Correction()
-	# 		# c = corr.calcCorrection(footPos)
-	# 		# feet = corr.rotateFeetCorrected(footPos, c)
-    #
-	# 		ret.append(footPos)  # 4 feet at index i: [index, legNum, footposition]
-	# 		# print('4 feet at index i: [index, legNum, footposition]')
-	# 		# print('ret', ret)
-    #
-	# 	return ret

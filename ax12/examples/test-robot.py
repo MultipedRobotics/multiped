@@ -46,7 +46,7 @@ class RobotTest(object):
 		neutral = self.leg.getNeutralPos()
 		self.gait = DiscreteRippleGait(35.0, neutral)
 		# self.gait.scale = 100
-		self.engine = Engine(data, AX12, wait=0.1)
+		self.engine = Engine(data, AX12, wait=1)
 
 		self.stand()
 

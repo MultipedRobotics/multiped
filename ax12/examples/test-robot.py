@@ -18,8 +18,12 @@ import platform
 
 class RobotTest(object):
 	def __init__(self):
+		bcm_pin = None
 		if platform.system() == 'Darwin':
 			ser = '/dev/tty.usbserial-A506BOT5'
+		elif platform.system() == 'Linux':
+			ser = '/dev/serial0'
+			bcm_pin = 4
 		else:
 			ser = 'com5'
 
@@ -44,9 +48,9 @@ class RobotTest(object):
 		}
 		self.leg = Leg4(data)
 		neutral = self.leg.getNeutralPos()
-		self.gait = DiscreteRippleGait(35.0, neutral)
+		self.gait = DiscreteRippleGait(55.0, neutral)
 		# self.gait.scale = 100
-		self.engine = Engine(data, AX12, wait=1)
+		self.engine = Engine(data, AX12, wait=0.3, bcm_pin=bcm_pin)
 
 		self.stand()
 
@@ -97,20 +101,20 @@ class RobotTest(object):
 		path = [
 			[1.0, 0, 0],
 			[1.0, 0, 0],
+			[1.0, 0, 0],
+			[1.0, 0, 0],
 			# [1.0, 0, 0],
 			# [1.0, 0, 0],
 			# [1.0, 0, 0],
 			# [1.0, 0, 0],
 			# [1.0, 0, 0],
 			# [1.0, 0, 0],
-			# [1.0, 0, 0],
-			# [1.0, 0, 0],
-			[0, 0, pi/4],
-			[0, 0, pi/4],
-			[0, 0, pi/4],
-			[0, 0, -pi/4],
-			[0, 0, -pi/4],
-			[0, 0, -pi/4],
+			# [0, 0, pi/4],
+			# [0, 0, pi/4],
+			# [0, 0, pi/4],
+			# [0, 0, -pi/4],
+			# [0, 0, -pi/4],
+			# [0, 0, -pi/4],
 			# [-1.0, 0, 0],
 			# [-1.0, 0, 0],
 			# [-1.0, 0, 0],
@@ -118,14 +122,14 @@ class RobotTest(object):
 			# [-1.0, 0, 0],
 			# [-1.0, 0, 0],
 			# [-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
-			[-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
+			# [-1.0, 0, 0],
 		]
 
 		for cmd in path:
-			# pts = self.gait.oneCycle_alt(*cmd)        # get 3d feet points
-			pts = self.gait.command(cmd)        # get 3d feet points
+			pts = self.gait.oneCycle_alt(*cmd)        # get 3d feet points
+			# pts = self.gait.command(cmd)        # get 3d feet points
 			angles = self.leg.generateServoAngles(pts)  # get servo angles
 
 			# only move 1 leg, remove others from commands
@@ -133,8 +137,8 @@ class RobotTest(object):
 			# angles.pop(1)
 			# angles.pop(3)
 
-			self.engine.moveLegsGait(angles, speed=100)  # send commands to servos
-			# time.sleep(5)
+			self.engine.moveLegsGait(angles, speed=50)  # send commands to servos
+			time.sleep(5)
 			print(cmd)
 			# print(angles)
 			# print('len', len(angles[2]))
@@ -166,6 +170,7 @@ def main():
 
 	try:
 		# test.stand()
+		time.sleep(3)
 		test.walk()
 		# test.sitstand()
 		# test.pose_pt(2,[140,0,-10])
@@ -174,6 +179,7 @@ def main():
 		# p = [160,0,-70]
 		# print(test.get_angle(p))
 		# test.sit()
+		# time.sleep(2)
 	except KeyboardInterrupt:
 		print('bye ...')
 		time.sleep(1)

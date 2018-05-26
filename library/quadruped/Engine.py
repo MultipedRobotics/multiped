@@ -25,7 +25,7 @@ class Engine(object):
 	# 	'sit': None
 	# }
 
-	def __init__(self, data, servoType, wait=0.1):
+	def __init__(self, data, servoType, bcm_pin=None, wait=0.1):
 		"""
 		data: serial port to use, if none, then use dummy port
 		kind: AX12 or XL320
@@ -35,7 +35,7 @@ class Engine(object):
 		# default to fake serial port
 		if 'serialPort' in data:
 			try:
-				self.serial = ServoSerial(data['serialPort'])
+				self.serial = ServoSerial(data['serialPort'], pi_pin=bcm_pin)
 				print('Using servo serial port: {}'.format(data['serialPort']))
 				self.serial.open()
 

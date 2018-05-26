@@ -114,7 +114,7 @@ class DiscreteRippleGait(Gait):
 		# self.phi = [9/9, 6/9, 3/9, 0/9, 1/9, 2/9, 3/9, 4/9, 5/9, 6/9, 7/9, 8/9]  # foot pos in gait sequence
 
 		# could do [8/8, 4/8, 0/8, 0/8 ...] then the leg would lift straight up???
-		self.phi = [6/8, 4/8, 2/8, 0/8, 1/8, 2/8, 3/8, 4/8, 5/8, 6/8, 7/8, 8/8]
+		self.phi = [8/8, 7/8, 1/8, 0/8, 1/8, 2/8, 3/8, 4/8, 5/8, 6/8, 7/8, 8/8]
 		# maxl = h  # lifting higher gives me errors
 		# minl = maxl/2
 		# self.z = [minl, maxl, minl, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
@@ -124,7 +124,7 @@ class DiscreteRippleGait(Gait):
 	def setLegLift(self, height):
 		maxl = height  # max lift height
 		minl = maxl/2  # half height
-		self.z = [minl, maxl, minl, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
+		self.z = [0.0, maxl, maxl, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
 
 	def eachLeg(self, index, cmd):
 		"""

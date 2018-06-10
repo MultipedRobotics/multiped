@@ -4,9 +4,9 @@
 
 ## Power
 
-![](power-v4/pics/gerber-top.png)
+![](power-v5/pics/gerber-top.png)
 
-![](power-v4/pics/gerber-bottom.png)
+![](power-v5/pics/gerber-bottom.png)
 
 # Bill of Materials (BoM)
 

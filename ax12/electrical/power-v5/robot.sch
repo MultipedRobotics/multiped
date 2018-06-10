@@ -173,53 +173,42 @@ $EndComp
 $Comp
 L LED D1
 U 1 1 5ACD24C2
-P 4550 2550
-F 0 "D1" H 4550 2650 50  0000 C CNN
-F 1 "PWR" H 4550 2450 50  0000 C CNN
-F 2 "LEDs:LED_1206_HandSoldering" H 4550 2550 50  0001 C CNN
-F 3 "" H 4550 2550 50  0001 C CNN
-	1    4550 2550
+P 5850 2850
+F 0 "D1" H 5850 2950 50  0000 C CNN
+F 1 "PWR" H 5850 2750 50  0000 C CNN
+F 2 "LEDs:LED_1206_HandSoldering" H 5850 2850 50  0001 C CNN
+F 3 "" H 5850 2850 50  0001 C CNN
+	1    5850 2850
 	0    -1   -1   0   
 $EndComp
 $Comp
 L R R1
 U 1 1 5ACD2583
-P 4550 3000
-F 0 "R1" V 4630 3000 50  0000 C CNN
-F 1 "2.4k" V 4550 3000 50  0000 C CNN
-F 2 "Resistors_SMD:R_1206_HandSoldering" V 4480 3000 50  0001 C CNN
-F 3 "" H 4550 3000 50  0001 C CNN
-	1    4550 3000
-	1    0    0    -1  
-$EndComp
-$Comp
-L +12V #PWR05
-U 1 1 5ACD2665
-P 4550 2300
-F 0 "#PWR05" H 4550 2150 50  0001 C CNN
-F 1 "+12V" H 4550 2440 50  0000 C CNN
-F 2 "" H 4550 2300 50  0001 C CNN
-F 3 "" H 4550 2300 50  0001 C CNN
-	1    4550 2300
+P 5850 3300
+F 0 "R1" V 5930 3300 50  0000 C CNN
+F 1 "2.4k" V 5850 3300 50  0000 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 5780 3300 50  0001 C CNN
+F 3 "" H 5850 3300 50  0001 C CNN
+	1    5850 3300
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR06
 U 1 1 5ACD2691
-P 4550 3300
-F 0 "#PWR06" H 4550 3050 50  0001 C CNN
-F 1 "GND" H 4550 3150 50  0000 C CNN
-F 2 "" H 4550 3300 50  0001 C CNN
-F 3 "" H 4550 3300 50  0001 C CNN
-	1    4550 3300
+P 5850 3600
+F 0 "#PWR06" H 5850 3350 50  0001 C CNN
+F 1 "GND" H 5850 3450 50  0000 C CNN
+F 2 "" H 5850 3600 50  0001 C CNN
+F 3 "" H 5850 3600 50  0001 C CNN
+	1    5850 3600
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4550 2300 4550 2400
+	5850 2200 5850 2700
 Wire Wire Line
-	4550 2700 4550 2850
+	5850 3000 5850 3150
 Wire Wire Line
-	4550 3150 4550 3300
+	5850 3450 5850 3600
 $Comp
 L Conn_01x03 J14
 U 1 1 5ACD2D1C
@@ -325,14 +314,14 @@ Connection ~ 6850 3700
 Wire Wire Line
 	9350 3650 9000 3650
 Connection ~ 9000 3650
-Text Notes 4400 1350 0    60   ~ 0
-AX-12A Quadruped Power Distribution Board\nVersion 5\nNote: the molex pin numbers appear to be in reverse\n--------------------------------\n1 - Data\n2 - 12V\n3 - Ground
+Text Notes 4400 1600 0    60   ~ 0
+AX-12A Quadruped Power Distribution Board\nVersion 5\nNote: the molex pin numbers appear to be in reverse\n--------------------------------\n1 - Data\n2 - 12V\n3 - Ground\n----------------------------\nTrying to keep the current draw around 3A per cable:\nCX-Y: coxa motors for leg X and leg Y\nLegX: tibia, fibia, and tarsus motors for leg X
 Text Notes 4350 1950 0    60   ~ 0
 Power LED
 Text Notes 6350 1900 0    60   ~ 0
 AX-12A Interfaces
 Text Notes 7400 5300 0    60   ~ 0
-Data and Alternate Interfaces
+Data and Power Alternate Interfaces
 $Comp
 L Conn_01x03 J2
 U 1 1 5AF331DD
@@ -425,4 +414,9 @@ Wire Notes Line
 	10200 5550 6000 5550
 Wire Notes Line
 	6000 5550 6000 4350
+Wire Wire Line
+	5850 2200 6650 2200
+Wire Wire Line
+	6650 2200 6650 2400
+Connection ~ 6650 2400
 $EndSCHEMATC

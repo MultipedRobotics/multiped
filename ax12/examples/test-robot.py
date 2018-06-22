@@ -19,13 +19,15 @@ import platform
 class RobotTest(object):
 	def __init__(self):
 		bcm_pin = None
-		if platform.system() == 'Darwin':
+		if True:  # manual override for testing - don't actually talk to servos
+			ser = 'fake'
+		elif platform.system() == 'Darwin':
 			ser = '/dev/tty.usbserial-A506BOT5'
 		elif platform.system() == 'Linux':
 			ser = '/dev/serial0'
 			bcm_pin = 4
 		else:
-			ser = 'com5'
+			raise Exception('Your OS is not supported')
 
 		data = {
 			# [ length, (limit_angles), offset_angle] - units:mm or degrees
@@ -87,22 +89,26 @@ class RobotTest(object):
 		return self.leg.inverse(*pt)
 
 	def pose_pt(self, leg, pt):
+		"""
+		Moves 1 leg to a position
+		value?
+		"""
 		pts = {
 			leg: [pt]
 		}
 		angles = self.leg.generateServoAngles(pts)
 		print(angles)
 		self.engine.moveLegsGait(angles, speed=100)
-		pass
+		# pass
 
 	def walk(self):
 		# predefined walking path
 		# x, y, rotation
 		path = [
 			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
-			[1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
+			# [1.0, 0, 0],
 			# [1.0, 0, 0],
 			# [1.0, 0, 0],
 			# [1.0, 0, 0],
@@ -137,7 +143,7 @@ class RobotTest(object):
 			# angles.pop(1)
 			# angles.pop(3)
 
-			self.engine.moveLegsGait(angles, speed=50)  # send commands to servos
+			self.engine.moveLegsGait(angles, speed=100)  # send commands to servos
 			time.sleep(5)
 			print(cmd)
 			# print(angles)
@@ -151,16 +157,22 @@ class RobotTest(object):
 		p2 - stop (x,y,z)
 		lift - how high to lift the foot
 		"""
-
+		pass
 
 	def sit(self):
+		"""
+		Puts legs into a sitting position
+		"""
 		angles = self.leg.sit()
-		self.engine.moveLegsGait(angles, speed=200)
+		self.engine.moveLegsGait(angles)
 		time.sleep(2)
 
 	def stand(self):
+		"""
+		Puts legs into a standing position
+		"""
 		angles = self.leg.stand()
-		self.engine.moveLegsGait(angles, speed=200)
+		self.engine.moveLegsGait(angles)
 		time.sleep(2)
 
 
@@ -170,7 +182,7 @@ def main():
 
 	try:
 		# test.stand()
-		time.sleep(3)
+		# time.sleep(3)
 		test.walk()
 		# test.sitstand()
 		# test.pose_pt(2,[140,0,-10])

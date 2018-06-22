@@ -124,6 +124,7 @@ class DiscreteRippleGait(Gait):
 	def setLegLift(self, height):
 		maxl = height  # max lift height
 		minl = maxl/2  # half height
+		#           0     1     2    3    4    5    6    7    8    9   10   11
 		self.z = [0.0, maxl, maxl, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
 
 	def eachLeg(self, index, cmd):
@@ -178,12 +179,22 @@ class DiscreteRippleGait(Gait):
 			3: []
 		}  # 4 leg foot positions for the entire 12 count cycle is returned
 
-		for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
+		# iteration, there are 12 steps in gait cycle, add a 13th so all feet
+		# are on the ground at the end, otherwise one foot is still in the air
+		for i in range(0, self.steps)+[0]:
 			for legNum in [0, 1, 2, 3]:  # order them diagonally
 				rcmd = rot_z_tuple(self.frame[legNum], cmd)
 				index = (i + self.legOffset[legNum]) % self.steps
 				pos = self.eachLeg(index, rcmd)  # move each leg appropriately
 				# print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
 				ret[legNum].append(pos)
+
+		# for i in range(0, self.steps):  # iteration, there are 12 steps in gait cycle
+		# 	for legNum in [0, 1, 2, 3]:
+
+		for legNum in [0, 1, 2, 3]:  # order them diagonally
+			print('Leg[{}]---------'.format(legNum))
+			for i, pt in enumerate(ret[legNum]):
+				print('  {}:'.format(i), pt)
 
 		return ret

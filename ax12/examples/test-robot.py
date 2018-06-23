@@ -19,7 +19,7 @@ import platform
 class RobotTest(object):
     def __init__(self):
         bcm_pin = None
-        if True:  # manual override for testing - don't actually talk to servos
+        if False:  # manual override for testing - don't actually talk to servos
             ser = 'fake'
         elif platform.system() == 'Darwin':
             ser = '/dev/tty.usbserial-A506BOT5'
@@ -84,14 +84,48 @@ class RobotTest(object):
         print(angles)
         self.engine.moveLegsGait(angles)
 
+    def angleCheckLeg(self, legNum, speed):
+        """
+        speed = 1 - 1023 (scalar, all servos move at same rate)
+        {      step 0          step 1         ...
+            0: [[(t1,s1),(t2,s2),(t3,s3),(t4,s4)], [(t1,s1),(t2,s2),(t3,s3),(t4,s4)], ...] # leg0
+            2: [[(t1,s1),(t2,s2),(t3,s3),(t4,s4)], [(t1,s1),(t2,s2),(t3,s3),(t4,s4)], ...] # leg2
+            ...
+        } where t=theta s=speed
+        """
+        cmds = {}
+        dh_cmds = [
+            [0,0,0,0],
+            [0,0,0,45],
+            [0,0,0,-45],
+            [0,0,0,0],
+            [0,0,90,0],
+            [0,0,0,0],
+            [0,90,0,0],
+            [0,0,0,0],
+            [80,0,0,0],
+            [-80,0,0,0],
+            [0,0,0,0],
+        ]
+
+        move = []
+        for angles in dh_cmds:
+            s_cmds = []
+            for a, s in zip(angles, self.leg.servos):
+                s_cmds.append((s.DH2Servo(a), speed))
+            move.append(s_cmds)
+        cmds[legNum] = move
+        print(cmds)
+        self.engine.moveLegsGait(cmds)
+
     def walk(self):
         print(" <<< Walk >>>")
         # predefined walking path
         # x, y, rotation
         path = [
             [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
+            [1.0, 0, 0],
+            [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
@@ -120,19 +154,18 @@ class RobotTest(object):
         for cmd in path:
             pts = self.gait.oneCycle(*cmd)        # get 3d feet points
             # pts = self.gait.command(cmd)        # get 3d feet points
-            angles_speeds = self.leg.generateServoAngles(pts, 100)  # get servo angles
-            # print("angles_speeds", angles_speeds)
+
+            # pts = (x,y,z) for each leg for the whole cycle
+            # speed = max speed seen by any joint, most likely it will be lower
+            angles_speeds = self.leg.generateServoAngles(pts, 200)  # get servo angles
 
             # only move 1 leg, remove others from commands
-            # angles.pop(0)
-            # angles.pop(1)
-            # angles.pop(3)
+            if False:
+                angles_speeds.pop(0)
+                angles_speeds.pop(1)
+                angles_speeds.pop(3)
 
             self.engine.moveLegsGait(angles_speeds)  # send commands to servos
-            # time.sleep(5)
-            # print(cmd)
-            # print(angles)
-            # print('len', len(angles[2]))
 
     def step(self, leg, p1, p2, lift):
         """
@@ -185,6 +218,7 @@ def main():
         # test.stand()
         # time.sleep(3)
         test.walk()
+        # test.angleCheckLeg(0, 200)
         # test.sitstand()
         # test.pose_pt(2,[140,0,-10])
         # a = [0, 160-123, 130-194, 100-167]

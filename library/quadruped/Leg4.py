@@ -268,7 +268,9 @@ class Leg4(object):
             for step, p in enumerate(pos):
                 s = self.inverse(*p)  # s0,s1,s2,s3
                 tmp = self.DH2Servo(s)
-                scaled_speed = int(speed*ramp(step, numStep))
+                # scaled_speed = int(speed*ramp(step, numStep))
+                if p[2] > -70: scaled_speed = speed
+                else: scaled_speed = int(0.6*speed)
                 tmp2 = [(x, scaled_speed) for x in tmp]
                 angles[k].append(tmp2)
                 # print("speed", speed)

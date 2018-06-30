@@ -119,6 +119,7 @@ class DiscreteRippleGait(Gait):
         self.steps = len(self.phi)
 
     def setLegLift(self, lift):
+        # legs lift in the sequence: 0, 3, 1, 2
         #           0     1     2    3    4    5    6    7    8    9   10   11
         self.z = [0.0, lift, lift, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
 
@@ -155,6 +156,40 @@ class DiscreteRippleGait(Gait):
         # print('New  [](x,y,z): {:.2f}\t{:.2f}\t{:.2f}'.format(newpos[0], newpos[1], newpos[2]))
         return newpos
 
+    def move_cg(self, leg, off, pt, leg_lift):
+        """
+        There is a pattern of which direction to shift based on which leg you
+        are trying to move and which leg is lifted (not currently providing
+        support for the robot)
+        leg - leg number
+        off - offset in mm to shift cm
+        leg_lift - which leg is moving through the air currently
+
+        lift 0: x-d    1: y-d    2: x+d    3: y+d
+                y+d       x-d       y-d       x+d
+                x+d       y+d       x-d       y-d
+                y-d       x+d       y+d       x-d
+        pattern: always x y x y (alternate)
+                 always - + + -
+        """
+        axis = [0, 1, 0, 1]  # 0=x, 1=y componets of 3d point
+        offset = [-off, off, off, -off]  # either adding or subtracting offset from point
+        ia = axis[(leg+leg_lift) % 4]  # us mod to rotate through each of these indexes
+        io = (leg-leg_lift) % 4
+        pt[ia] += offset[io]  # shift point
+        return pt
+        # if leg == 0:
+        #     if   leg_lift == 0: pt[0] -= offset  # x-d
+        #     elif leg_lift == 1: pt[1] += offset  # y+d
+        #     elif leg_lift == 2: pt[0] += offset  # x+d
+        #     elif leg_lift == 3: pt[1] -= offset  # y-d
+        # elif leg == 0:
+        #     if   leg_lift == 0: pt[1] -= offset  # x-d
+        #     elif leg_lift == 1: pt[0] -= offset  # y+d
+        #     elif leg_lift == 2: pt[1] += offset  # x+d
+        #     elif leg_lift == 3: pt[0] += offset  # y-d
+
+
     def oneCycle(self, x, y, rz):
         """
         direction of travel x, y (2D plane) or rotation about z-axis
@@ -176,12 +211,18 @@ class DiscreteRippleGait(Gait):
 
         # iteration, there are 12 steps in gait cycle, add a 13th so all feet
         # are on the ground at the end, otherwise one foot is still in the air
+        leg_lift = [0,0,0,3,3,3,1,1,1,2,2,2]
         for i in range(0, self.steps)+[0]:
             for legNum in [0, 1, 2, 3]:  # order them diagonally
                 rcmd = rot_z_tuple(self.frame[legNum], cmd)
                 index = (i + self.legOffset[legNum]) % self.steps
                 pos = self.eachLeg(index, rcmd)  # move each leg appropriately
                 # print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
+
+                # shift cg
+                # fist and last shouldn't move cg??
+                pos = self.move_cg(legNum, 40, pos, leg_lift[i])
+
                 ret[legNum].append(pos)
 
         if debug:

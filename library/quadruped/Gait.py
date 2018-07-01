@@ -233,6 +233,50 @@ class DiscreteRippleGait(Gait):
 
         return ret
 
+
+    # def oneCycle2(self, x, y, rz):
+    #     """
+    #     direction of travel x, y (2D plane) or rotation about z-axis
+    #     Returns 1 complete cycle for all 4 feet (x,y,z)
+    #     """
+    #
+    #     # check if x, y, rz is same as last time commanded, if so, return
+    #     # the last cycle response, else, calculate a new response
+    #     # ???
+    #
+    #     scale = self.scale
+    #     cmd = (scale*x, scale*y, rz)
+    #     ret = {
+    #         0: [],
+    #         1: [],
+    #         2: [],
+    #         3: []
+    #     }  # 4 leg foot positions for the entire 12 count cycle is returned
+    #
+    #     # iteration, there are 12 steps in gait cycle, add a 13th so all feet
+    #     # are on the ground at the end, otherwise one foot is still in the air
+    #     leg_lift = [0,0,0,3,3,3,1,1,1,2,2,2]
+    #     for i in range(0, self.steps)+[0]:
+    #         for legNum in [0, 1, 2, 3]:  # order them diagonally
+    #             rcmd = rot_z_tuple(self.frame[legNum], cmd)
+    #             index = (i + self.legOffset[legNum]) % self.steps
+    #             pos = self.eachLeg(index, rcmd)  # move each leg appropriately
+    #             # print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
+    #
+    #             # shift cg
+    #             # fist and last shouldn't move cg??
+    #             pos = self.move_cg(legNum, 40, pos, leg_lift[i])
+    #
+    #             ret[legNum].append(pos)
+    #
+    #     if debug:
+    #         for legNum in [0, 1, 2, 3]:
+    #             print('Leg[{}]---------'.format(legNum))
+    #             for i, pt in enumerate(ret[legNum]):
+    #                 print('  {:2}: {:7.2f} {:7.2f} {:7.2f}'.format(i, *pt))
+    #
+    #     return ret
+
     # def oneCycle_alt2(self, x, y, rz):
     #     """
     #     direction of travel x, y (2D plane) or rotation about z-axis

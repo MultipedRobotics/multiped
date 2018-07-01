@@ -124,8 +124,8 @@ class RobotTest(object):
         # x, y, rotation
         path = [
             [1.0, 0, 0],
-            [1.0, 0, 0],
-            [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
@@ -157,7 +157,7 @@ class RobotTest(object):
 
             # pts = (x,y,z) for each leg for the whole cycle
             # speed = max speed seen by any joint, most likely it will be lower
-            angles_speeds = self.leg.generateServoAngles(pts, 200)  # get servo angles
+            angles_speeds = self.leg.generateServoAngles2(pts, 200)  # get servo angles
 
             # only move 1 leg, remove others from commands
             if False:
@@ -182,15 +182,15 @@ class RobotTest(object):
         Puts legs into a sitting position
         """
         # angles = self.leg.sit()
-        ans = [(x, speed) for x in self.positions['sit']]
+        ans = [x for x in self.positions['sit']]
         feet = {
-            0: [ans],
-            1: [ans],
-            2: [ans],
-            3: [ans],
+            0: [ans+[speed]],
+            1: [ans+[speed]],
+            2: [ans+[speed]],
+            3: [ans+[speed]],
         }
 
-        self.engine.moveLegsGait(feet)
+        self.engine.moveLegsGait2(feet)
         time.sleep(1)
 
     def stand(self, speed=100):
@@ -198,15 +198,18 @@ class RobotTest(object):
         Puts legs into a standing position
         """
         # angles = self.positions['stand']
-        ans = [(x, speed) for x in self.positions['stand']]
+        # ans = [x for x in self.positions['stand']]
+        ans = self.positions['stand']
         feet = {
-            0: [ans],
-            1: [ans],
-            2: [ans],
-            3: [ans],
+            0: [ans+[speed]],
+            1: [ans+[speed]],
+            2: [ans+[speed]],
+            3: [ans+[speed]],
         }
 
-        self.engine.moveLegsGait(feet)
+        print(feet)
+
+        self.engine.moveLegsGait2(feet)
         time.sleep(1)
 
 

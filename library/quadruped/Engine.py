@@ -178,14 +178,14 @@ class Engine(object):
             0: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg0
             2: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg2
             ...
-        } where t=theta s=speed
+        } where t=theta
         NOTE: each leg needs the same number of steps and servos per leg
         WARNING: these angles are in servo space [0-300 deg]
         """
         # get the keys and figure out some stuff
         keys = list(legs.keys())  # which legs are we moving
         numSteps = len(legs[keys[0]])  # how many steps in the cycle
-        numServos = len(legs[keys[0]][0]-1)  # how many servos per leg, -1 because speed there
+        numServos = len(legs[keys[0]])-1  # how many servos per leg, -1 because speed there
 
         if self.last_move is None:
             # assume we just turned on and was in the sit position
@@ -202,22 +202,33 @@ class Engine(object):
         for step in range(numSteps):
             dprint("\nStep[{}]===============================================".format(step))
             data = []
+
+            # for legNum in [0,3,1,2]:
             for legNum in keys:
                 dprint("  leg[{}]--------------".format(legNum))
                 leg_angles_speed = legs[legNum][step]
+                # print(leg_angles_speed)
                 angles = leg_angles_speed[:4]
                 speed = leg_angles_speed[4]
                 sl, sh = le(speed)
-                
+
                 max_wait = 0
                 for i, angle in enumerate(angles):
                     al, ah = angle2int(angle)  # angle
                     dprint("    Servo[{}], angle: {:.2f}, speed: {}".format(legNum*numServos + i+1, angle, speed))
                     data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
-                    
+
+                    # print(self.last_move)
+                    # print(leg_angles_speed)
+                    # print(angles)
+                    # print(i)
+                    # print(step)
+
                     oldangle = self.last_move[legNum][i]
                     # calculate wait time for a leg, take max time
                     w = abs((angle - oldangle)/(0.111*speed*6))
+                    print(angle - oldangle)
+                    print('w',w)
                     w *= 1.10  # scaling to make things look better: 1.3
                     max_wait = w if w > max_wait else max_wait
 
@@ -227,7 +238,7 @@ class Engine(object):
                 data = []
                 print('max_wait', max_wait)
                 time.sleep(max_wait)
-                
+
                 self.last_move[legNum] = leg_angles_speed
 
             """

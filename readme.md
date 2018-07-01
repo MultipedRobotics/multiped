@@ -1,5 +1,7 @@
 # Quadruped
 
+**this isn't really working right now**
+
 This repo contains my work on a quadruped or 4 legged robot. There are multiple
 versions located here.
 

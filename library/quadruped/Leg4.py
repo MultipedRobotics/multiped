@@ -300,26 +300,27 @@ class Leg4(object):
             ...
         } where t=theta
         """
-        # FIXME: fix this to handle N legs, right now it only does 4
 
         # get the keys and figure out some stuff
         keys = list(footLoc.keys())
         angles = {}
 
-        for k in keys:
-            pos = footLoc[k]  # grab foot positions for leg k
-            angles[k] = []
+        for legNum in keys:
+            pos = footLoc[legNum]  # grab foot positions for leg k
+            angles[legNum] = []
+            # print('pos', pos)
 
             # calculate the inverse DH angles
-            numStep = len(pos)
+            # numStep = len(pos)
             for step, p in enumerate(pos):
+                # print('step: {} p: {}'.format(step, p))
                 s = self.inverse(*p)  # s0,s1,s2,s3
                 tmp = self.DH2Servo(s)
                 # scaled_speed = int(speed*ramp(step, numStep))
                 if p[2] > -70: scaled_speed = speed
                 else: scaled_speed = int(0.6*speed)
                 # tmp2 = [(x, scaled_speed) for x in tmp]
-                angles[k].append(tmp + (scaled_speed,))
+                angles[legNum].append(tmp + (scaled_speed,))
                 # print("speed", speed)
                 # print("tmp", tmp)
                 # exit(0)

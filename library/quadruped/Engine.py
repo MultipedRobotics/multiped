@@ -189,15 +189,18 @@ class Engine(object):
 
         if self.last_move is None:
             # assume we just turned on and was in the sit position
-            self.last_move = {}
+            # need a better solution
+            self.last_move = {
+                0: legs[0][0],
+                1: legs[1][0],
+                2: legs[2][0],
+                3: legs[3][0]
+            }
 
         curr_move = {}
         # for each step in legs
-        # print("-------------------")
         for step in range(numSteps):
             dprint("\nStep[{}]===============================================".format(step))
-            # min_speed = 10000
-            # max_angle = 0
             data = []
             for legNum in keys:
                 dprint("  leg[{}]--------------".format(legNum))
@@ -205,7 +208,6 @@ class Engine(object):
                 angles = leg_angles_speed[:4]
                 speed = leg_angles_speed[4]
                 sl, sh = le(speed)
-                curr_move[legNum] = leg_angles_speed  # save current angle/speed
                 
                 max_wait = 0
                 for i, angle in enumerate(angles):
@@ -213,6 +215,7 @@ class Engine(object):
                     dprint("    Servo[{}], angle: {:.2f}, speed: {}".format(legNum*numServos + i+1, angle, speed))
                     data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
                     
+                    oldangle = self.last_move[legNum][i]
                     # calculate wait time for a leg, take max time
                     w = abs((angle - oldangle)/(0.111*speed*6))
                     w *= 1.10  # scaling to make things look better: 1.3
@@ -222,7 +225,10 @@ class Engine(object):
                 self.serial.write(pkt)
                 dprint("sent serial packet")
                 data = []
+                print('max_wait', max_wait)
                 time.sleep(max_wait)
+                
+                self.last_move[legNum] = leg_angles_speed
 
             """
             [Join Mode]

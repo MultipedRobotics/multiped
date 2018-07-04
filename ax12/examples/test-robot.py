@@ -19,7 +19,7 @@ import platform
 class RobotTest(object):
     def __init__(self):
         bcm_pin = None
-        if False:  # manual override for testing - don't actually talk to servos
+        if True:  # manual override for testing - don't actually talk to servos
             ser = 'fake'
         elif platform.system() == 'Darwin':
             ser = '/dev/tty.usbserial-A506BOT5'
@@ -167,7 +167,7 @@ class RobotTest(object):
                 angles_speeds.pop(1)
                 angles_speeds.pop(3)
 
-            self.engine.moveLegsGait3(angles_speeds)  # send commands to servos
+            self.engine.moveLegsGait4(angles_speeds)  # send commands to servos
 
     def step(self, leg, p1, p2, lift):
         """
@@ -237,10 +237,10 @@ def main():
     try:
         # test.stand()
         # time.sleep(3)
-        # test.walk()
+        test.walk()
         # test.angleCheckLeg(0, 200)
         # test.sitstand()
-        test.pose_pt(0, [160, 0, 30], 100)
+        # test.pose_pt(0, [160, 0, 30], 100)
         # a = [0, 160-123, 130-194, 100-167]
         # print(test.get_point(a))  # (196.89869392004982, 0.0, -76.0225669165195)
         # p = [160,0,-70]

@@ -20,6 +20,53 @@ def dprint(s):
         print(s)
 
 
+def calc_rpm(da, wait):
+    """
+    Given an angular delta and a wait time, calculate the rpm needed to achieve
+
+    [Join Mode]
+    0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
+    If it is set to 0, it means the maximum rpm of the motor is used
+    without controlling the speed. If it is 1023, it is about 114rpm.
+    For example, if it is set to 300, it is about 33.3 rpm.
+
+    AX12 max rmp is 59 (max speed 532)
+    rev  min     360 deg      deg
+    --- -------  ------- = 6 ----
+    min  60 sec    rev        sec
+
+    rpm = abs(new_angle - old_angle)/(0.111 * wait * 6)
+    """
+    return int(abs(da)/(0.111*wait*6))
+
+
+def calc_wait(da, speed):
+    """
+    Given an angular delta and the speed (servo counts), calculate the how long
+    to wait for the servo to complete the movement
+
+    [Join Mode]
+    0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
+    If it is set to 0, it means the maximum rpm of the motor is used
+    without controlling the speed. If it is 1023, it is about 114rpm.
+    For example, if it is set to 300, it is about 33.3 rpm.
+
+    AX12 max rmp is 59 (max speed 532)
+    rev  min     360 deg      deg
+    --- -------  ------- = 6 ----
+    min  60 sec    rev        sec
+
+                            da deg
+    wait = ----------------------------------------
+                 rpm                360 deg    min
+           0.111 --- * speed cnt *  ------- * ------
+                 cnt                   rev    60 sec
+
+    sleep time = abs(new_angle - old_angle)/(0.111 * speed * 6)
+    """
+    return abs(da)/(0.111*speed*6)
+
+
 class Engine(object):
     """
     This class holds the serial port and talks to the hardware. Other classes (
@@ -339,7 +386,88 @@ class Engine(object):
             print('max_wait', max_wait)
             time.sleep(max_wait)
 
+    def moveLegsGait4(self, legs):
+        """
+        gait or sequence?
+        speed = 1 - 1023 (scalar, all servos move at same rate)
+        {      step 0          step 1         ...
+            0: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg0
+            2: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg2
+            ...
+        } where t=theta
+        NOTE: each leg needs the same number of steps and servos per leg
+        WARNING: these angles are in servo space [0-300 deg]
 
+        [Join Mode]
+        0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
+        If it is set to 0, it means the maximum rpm of the motor is used
+        without controlling the speed. If it is 1023, it is about 114rpm.
+        For example, if it is set to 300, it is about 33.3 rpm.
+
+        AX12 max rmp is 59 (max speed 532)
+        rev  min     360 deg      deg
+        --- -------  ------- = 6 ----
+        min  60 sec    rev        sec
+
+        sleep time = | (new_angle - old_angle) /(0.111 * min_speed * 6) |
+        """
+        # get the keys and figure out some stuff
+        keys = list(legs.keys())  # which legs are we moving
+        numSteps = len(legs[keys[0]])  # how many steps in the cycle
+        numServos = len(legs[keys[0]][0])-1  # how many servos per leg, -1 because speed there
+
+        if self.last_move is None:
+            # assume we just turned on and was in the sit position
+            # need a better solution
+            self.last_move = {
+                0: legs[0][0],
+                1: legs[1][0],
+                2: legs[2][0],
+                3: legs[3][0]
+            }
+
+        # curr_move = {}
+        # for each step in legs
+        for step in range(numSteps):
+            dprint("\nStep[{}]===============================================".format(step))
+            data = []
+
+            max_wait = 0
+            for legNum in keys:
+                angles = legs[legNum][step][:4]
+                speed = legs[legNum][step][4]
+                for a, oa in zip(angles, self.last_move[legNum][:4]):
+                    da = abs(a-oa)
+                    w = calc_wait(da, speed)
+                    max_wait = w if w > max_wait else max_wait
+
+            print(">> found wait", max_wait)
+
+            # for legNum in [0,3,1,2]:
+            for legNum in keys:
+                dprint("  leg[{}]--------------".format(legNum))
+                leg_angles_speed = legs[legNum][step]
+                # print(leg_angles_speed)
+                angles = leg_angles_speed[:4]
+                speed = leg_angles_speed[4]
+                print("Speed:", speed, "wait", max_wait)
+
+                for i, angle in enumerate(angles):
+                    oldangle = self.last_move[legNum][i]
+                    spd = calc_rpm((angle - oldangle), max_wait)
+                    sl, sh = le(spd)
+                    al, ah = angle2int(angle)  # angle
+                    dprint("    Servo[{}], angle: {:.2f}, delta: {:.2f}, speed: {}".format(legNum*numServos + i+1, angle, abs(angle - oldangle), spd))
+                    data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
+
+                self.last_move[legNum] = leg_angles_speed
+
+            pkt = self.packet.makeSyncWritePacket(self.packet.base.GOAL_POSITION, data)
+            self.serial.write(pkt)
+            dprint("sent serial packet leg: {}".format(legNum))
+            data = []
+            print('max_wait', max_wait)
+            time.sleep(max_wait)
 
 
     def moveLegsAnglesArray(self, angles, speed=None, degrees=True):

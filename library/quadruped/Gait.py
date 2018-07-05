@@ -99,7 +99,7 @@ class Gait(object):
         return self.oneCycle_alt(x, y, rz)
 
     def oneCycle_alt(slef, x, y, rz):
-        raise Exception('*** Gait: wrong function, this is base class! ***')
+        raise NotImplementedError('*** Gait: wrong function, this is base class! ***')
 
 
 class DiscreteRippleGait(Gait):

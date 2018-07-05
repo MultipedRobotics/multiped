@@ -19,7 +19,7 @@ import platform
 class RobotTest(object):
     def __init__(self):
         bcm_pin = None
-        if True:  # manual override for testing - don't actually talk to servos
+        if False:  # manual override for testing - don't actually talk to servos
             ser = 'fake'
         elif platform.system() == 'Darwin':
             ser = '/dev/tty.usbserial-A506BOT5'
@@ -126,11 +126,11 @@ class RobotTest(object):
         # x, y, rotation
         path = [
             [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
+            [1.0, 0, 0],
+            [1.0, 0, 0],
+            [1.0, 0, 0],
+            [1.0, 0, 0],
+            [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
@@ -159,11 +159,11 @@ class RobotTest(object):
 
             # pts = (x,y,z) for each leg for the whole cycle
             # speed = max speed seen by any joint, most likely it will be lower
-            angles_speeds = self.leg.generateServoAngles2(pts, 150)  # get servo angles
+            angles_speeds = self.leg.generateServoAngles2(pts, 200)  # get servo angles
 
             # only move 1 leg, remove others from commands
             if False:
-                angles_speeds.pop(0)
+                angles_speeds.pop(2)
                 angles_speeds.pop(1)
                 angles_speeds.pop(3)
 

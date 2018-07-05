@@ -60,10 +60,10 @@ def calc_wait(da, speed):
                             da deg
     wait = ----------------------------------------
                  rpm                360 deg    min
-           0.111 --- * speed cnt *  ------- * ------
+           0.111 --- * speed_cnt *  ------- * ------
                  cnt                   rev    60 sec
 
-    sleep time = abs(new_angle - old_angle)/(0.111 * speed * 6)
+    wait = abs(new_angle - old_angle)/(0.111 * speed * 6)
     """
     return abs(da)/(0.111*speed*6)
 
@@ -176,7 +176,7 @@ class Engine(object):
                     min_speed = speed if speed < min_speed else min_speed
                     max_angle = angle if angle > max_angle else max_angle
                     sl, sh = le(speed)
-                    dprint("    Servo[{}], angle: {:.2f}, speed: {}".format(legNum*numServos + i+1, angle, speed))
+                    dprint("    Servo[{}], angle: {:.2f}, speed: {} time: {:.2f}".format(legNum*numServos + i+1, angle, speed, 0.111*speed*6))
                     data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
 
                 pkt = self.packet.makeSyncWritePacket(self.packet.base.GOAL_POSITION, data)
@@ -440,6 +440,7 @@ class Engine(object):
                 for a, oa in zip(angles, self.last_move[legNum][:4]):
                     da = abs(a-oa)
                     w = calc_wait(da, speed)
+                    print("calc_wait: {:.3f}".format(w))
                     max_wait = w if w > max_wait else max_wait
 
             print(">> found wait", max_wait)
@@ -455,10 +456,17 @@ class Engine(object):
 
                 for i, angle in enumerate(angles):
                     oldangle = self.last_move[legNum][i]
-                    spd = calc_rpm((angle - oldangle), max_wait)
+                    # due to rounding errors, to ensure the other servers finish
+                    # BEFORE time.sleep(max_wait) ends, the the function it
+                    # has less time
+                    spd = calc_rpm((angle - oldangle), 0.9*max_wait)
+                    # now that i am scaling the spd parameter above, I sometimes
+                    # exceed the original speed number, so saturate it if
+                    # necessary
+                    spd = spd if spd <= speed else speed
                     sl, sh = le(spd)
                     al, ah = angle2int(angle)  # angle
-                    dprint("    Servo[{}], angle: {:.2f}, delta: {:.2f}, speed: {}".format(legNum*numServos + i+1, angle, abs(angle - oldangle), spd))
+                    dprint("    Servo[{}], angle: {:.2f}, delta: {:.2f}, speed: {} time: {:.4f}".format(legNum*numServos + i+1, angle, abs(angle - oldangle), spd, calc_wait(abs(angle - oldangle), spd)))
                     data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
 
                 self.last_move[legNum] = leg_angles_speed

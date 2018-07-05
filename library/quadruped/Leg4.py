@@ -305,7 +305,9 @@ class Leg4(object):
         keys = list(footLoc.keys())
         angles = {}
 
+        print("=[Leg4.py]===============================")
         for legNum in keys:
+            print("Leg[{}]-------------".format(legNum))
             pos = footLoc[legNum]  # grab foot positions for leg k
             angles[legNum] = []
             # print('pos', pos)
@@ -313,6 +315,7 @@ class Leg4(object):
             # calculate the inverse DH angles
             # numStep = len(pos)
             for step, p in enumerate(pos):
+                # print('  {:2}: {:7.2f} {:7.2f} {:7.2f}'.format(i, *pt))
                 # print('step: {} p: {}'.format(step, p))
                 s = self.inverse(*p)  # s0,s1,s2,s3
                 tmp = self.DH2Servo(s)
@@ -324,6 +327,7 @@ class Leg4(object):
                 # print("speed", speed)
                 # print("tmp", tmp)
                 # exit(0)
+                print("  {:2}: {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, *tmp))
 
         return angles
 

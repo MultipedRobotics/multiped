@@ -9,7 +9,7 @@ from __future__ import division
 from math import cos, sin, sqrt, pi
 
 
-debug = False
+debug = True
 
 
 def rot_z_tuple(t, c):
@@ -114,14 +114,15 @@ class DiscreteRippleGait(Gait):
         rest: the neutral foot position
         """
         Gait.__init__(self, rest)
-        self.phi = [8/8, 7/8, 1/8, 0/8, 1/8, 2/8, 3/8, 4/8, 5/8, 6/8, 7/8, 8/8]
+        # self.phi = [8/8, 7/8, 1/8, 0/8, 1/8, 2/8, 3/8, 4/8, 5/8, 6/8, 7/8, 8/8]
+        self.phi = [10/10, 5/10, 0/10, 1/10, 2/10, 3/10, 4/10, 5/10, 6/10, 7/10, 8/10, 9/10]
         self.setLegLift(height)
         self.steps = len(self.phi)
 
     def setLegLift(self, lift):
         # legs lift in the sequence: 0, 3, 1, 2
         #           0     1     2    3    4    5    6    7    8    9   10   11
-        self.z = [0.0, lift, lift, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
+        self.z = [0.0, lift, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # leg height
 
     def eachLeg(self, index, cmd):
         """
@@ -147,6 +148,7 @@ class DiscreteRippleGait(Gait):
         ]
 
         # new foot position: newpos = rot + move ----------------------------
+        # newpos = linear_movement + angular_movement
         # newpos = move + rest_rot
         newpos = [0, 0, 0]
         newpos[0] = move[0] + rest_rot[0]
@@ -212,7 +214,7 @@ class DiscreteRippleGait(Gait):
         # iteration, there are 12 steps in gait cycle, add a 13th so all feet
         # are on the ground at the end, otherwise one foot is still in the air
         leg_lift = [0,0,0,3,3,3,1,1,1,2,2,2]
-        for i in range(0, self.steps)+[0]:
+        for i in range(0, self.steps):
             for legNum in [0, 1, 2, 3]:  # order them diagonally
                 rcmd = rot_z_tuple(self.frame[legNum], cmd)
                 index = (i + self.legOffset[legNum]) % self.steps
@@ -221,11 +223,12 @@ class DiscreteRippleGait(Gait):
 
                 # shift cg
                 # fist and last shouldn't move cg??
-                pos = self.move_cg(legNum, 40, pos, leg_lift[i])
+                # pos = self.move_cg(legNum, 40, pos, leg_lift[i])
 
                 ret[legNum].append(pos)
 
         if debug:
+            print("=[Gait.py]===============================")
             for legNum in [0, 1, 2, 3]:
                 print('Leg[{}]---------'.format(legNum))
                 for i, pt in enumerate(ret[legNum]):

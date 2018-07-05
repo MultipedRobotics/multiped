@@ -14,6 +14,7 @@ import time
 
 debug = True
 
+
 def dprint(s):
     global debug
     if debug:

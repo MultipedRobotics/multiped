@@ -1,0 +1,19 @@
+---
+processes:
+- - move
+  - movement
+  - {}
+- - lidar
+  - lidar
+  - {}
+- - vision
+  - pcv
+  - {}
+geckocore:
+  type: tcp
+  in:
+  - localhost
+  - 9998
+  out:
+  - localhost
+  - 9999

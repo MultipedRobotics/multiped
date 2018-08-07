@@ -11,7 +11,7 @@ from the_collector.messages import Image
 
 # from pygecko.transport import Pub, Sub
 # from pygecko.transport import zmqTCP  #, GeckoCore
-from pygecko.multiprocessing import GeckoPy
+from pygecko.multiprocessing import geckopy
 # from math import sin, cos, pi, sqrt
 import numpy as np
 
@@ -23,7 +23,7 @@ except ImportError:
 
 
 def pcv(**kwargs):
-    geckopy = GeckoPy(**kwargs)
+    geckopy.init_node(**kwargs)
     rate = geckopy.Rate(10)
 
     p = geckopy.Publisher()
@@ -39,6 +39,7 @@ def pcv(**kwargs):
             msg = Image(img.shape, img.tobytes(), img.dtype)
             p.pub('images_color', msg)  # topic msg
             # p.pub(topic, {'a': 5})
+            geckopy.log(img.shape)
         else:
             geckopy.log("*** couldn't read image ***")
 

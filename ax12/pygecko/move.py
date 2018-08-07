@@ -4,11 +4,12 @@
 from __future__ import print_function
 import time
 
-from pygecko.multiprocessing import GeckoPy
+from pygecko.multiprocessing import geckopy
+import itertools
 
 
 def movement(**kwargs):
-    geckopy = GeckoPy(**kwargs)
+    geckopy.init_node(**kwargs)
     rate = geckopy.Rate(1)
 
     path = [
@@ -22,12 +23,14 @@ def movement(**kwargs):
 
     p = geckopy.Publisher()
     i = 0
+    cmd = itertools.cycle(path)
     while not geckopy.is_shutdown():
-        msg = path[i]
+        msg = next(cmd)
         p.pub('cmd', msg)  # topic msg
+        geckopy.log(msg)
 
         # geckopy.log('[{}] published: {}'.format(i, msg))
-        i = (i + 1) % len(path)
+        # i = (i + 1) % len(path)
         rate.sleep()
     print('pub bye ...')
 

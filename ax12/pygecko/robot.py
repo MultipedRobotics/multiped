@@ -14,9 +14,18 @@ from pyservos import AX12
 import time
 from math import pi
 import platform
-from pygecko.multiprocessing import GeckoPy
+from pygecko.multiprocessing import geckopy
 
 global_logger = None
+
+
+def getHostSerialNumber():
+    ssn = None
+    a=check_output(["cat", '/proc/cpuinfo'])
+    for s in a.split('\n'):
+        if s.find('Serial') > -1:
+            ssn = s.split()[2]
+    return ssn
 
 
 class RobotTest(object):
@@ -169,14 +178,14 @@ class RobotTest(object):
 
 
 def go(**kwargs):
-    geckopy = GeckoPy(**kwargs)
+    geckopy.init_node(**kwargs)
     # global_logger = geckopy.log
 
     test = kwargs.get('test', True)
     robot = RobotTest(test)
 
     s = geckopy.Subscriber(['cmd', 'avoid'], robot.handle_msg)
-    geckopy.spin(1)
+    geckopy.spin(5)
 
 
 if __name__ == "__main__":

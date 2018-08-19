@@ -2,10 +2,10 @@
   "processes":
   [
     ["move", "movement", {}],
-    ["lidar", "lidar", {"test": true}],
+    ["lidar", "lidar_publisher", {}],
     ["vision", "pcv", {}],
-    ["robot", "go", {"test": true}],
-    ["imu", "imu", {"test": true}]
+    ["robot", "go", {}],
+    ["imu", "imu_publisher", {}]
   ],
   "geckocore": {
       "type": "tcp",

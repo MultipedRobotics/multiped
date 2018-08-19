@@ -7,7 +7,7 @@ import time
 import signal
 # import imutils
 from imutils.video import WebcamVideoStream
-from the_collector.messages import Image
+from pygecko.messages import Image
 
 # from pygecko.transport import Pub, Sub
 # from pygecko.transport import zmqTCP  #, GeckoCore

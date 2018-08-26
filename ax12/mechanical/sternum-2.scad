@@ -1,6 +1,6 @@
 //use <lib/robotis_parts.scad>;
 use <power.scad>;
-//use <lib/pi.scad>;
+use <lib/misc.scad>;
 
 //$fn=100;
 
@@ -39,13 +39,13 @@ module servo_mnt(){
     translate([5.5+8,27/2,-1]) cylinder(h,d=d);
     translate([5.5+16,27/2,-1]) cylinder(h,d=d);
     translate([5.5+24,27/2,-1]) cylinder(h,d=d);
-    
+
     // make layer thinner so M2x6 screws work
     translate([-2.5,-32/2,2]) cube([40,32,5], center=false);
-    
+
     // make shorter - x: 25 mm should give 3 holes
     translate([25,-60/2,-10]) cube([40,60,20], center=false);
-} 
+}
 
 module base(D){
     servo = 35/2+2.25*40/2;
@@ -141,26 +141,26 @@ module base_wide2(L, W){
             translate([shift,0,0]) rotate([0,0,315]) translate([spar_len,0,0]) spar2();
         }
         translate([0,0,-1]) cylinder(20,d=20);  // cable hole
-        
+
         translate([shift,0,0]) rotate([0,0,45]) translate([offset,0,0]) servo_mnt();
         translate([-shift,0,0]) rotate([0,0,135]) translate([offset,0,0]) servo_mnt();
         translate([-shift,0,0]) rotate([0,0,225]) translate([offset,0,0]) servo_mnt();
         translate([shift,0,0]) rotate([0,0,315]) translate([offset,0,0]) servo_mnt();
-        
+
     }
 }
 
 module top2(l,w){
     difference(){
         base_wide2(l, w);
-        
+
         // stand-offs
         m3 = 3.1;
         translate([50-5/2-1, 0, 4]) cylinder(h=19,d=m3, center=true);
         translate([-50+5/2+1, 0, 4]) cylinder(h=19,d=m3, center=true);
         translate([0, 50-5/2-1, 4]) cylinder(h=19,d=m3, center=true);
         translate([0, -50+5/2+1, 4]) cylinder(h=19,d=m3, center=true);
-        
+
         // pan head counter sinks
         m3d = 6;
         m3h = 2.5;
@@ -168,11 +168,11 @@ module top2(l,w){
         translate([-50+5/2+1, 0, -0.5]) cylinder(h=m3h,d=m3d, center=false);
         translate([0, 50-5/2-1, -0.5]) cylinder(h=m3h,d=m3d, center=false);
         translate([0, -50+5/2+1, -0.5]) cylinder(h=m3h,d=m3d, center=false);
-        
+
         translate([0,26,0]) powerFootPrint();
         translate([0,-26,0]) rotate([0,0,180]) powerFootPrint();
     }
-    
+
 //    thick = 4;
 //    neck = 15;
 //    difference(){
@@ -183,13 +183,28 @@ module top2(l,w){
 
 module interface(h, dia){
     difference(){
-        cylinder(h=h,d=dia); 
+        cylinder(h=h,d=dia);
         translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
     }
 }
 
 module bottom2(l,w){
-    rotate([180,0,0])  translate([0,0,32]) base_wide2(l, w);
+
+    difference(){
+        rotate([180,0,0])  translate([0,0,32]) base_wide2(l, w);
+
+        // cable holes
+        translate([20,w/2-10,-32]) cube([15,8,10], center=true);
+        translate([-20,w/2-10,-32]) cube([15,8,10], center=true);
+        translate([20,-w/2+10,-32]) cube([15,8,10], center=true);
+        translate([-20,-w/2+10,-32]) cube([15,8,10], center=true);
+
+        hbolt = 100;
+        translate([22,22,-32])   M3(hbolt);
+        translate([-22,22,-32])  M3(hbolt);
+        translate([22,-22,-32])  M3(hbolt);
+        translate([-22,-22,-32]) M3(hbolt);
+    }
 
     // center grab point
     dia = 18;
@@ -200,15 +215,16 @@ module bottom2(l,w){
 //        rotate([0,0,90]) translate([-dia/2-15,0,0]) cube([dia,dia, 2*h], center=true);
 //    }
     translate([0,0,-32-h-4]) {
-        difference(){
+        difference()
+        {
             union(){
                 translate([l/2-dia,0,0]) cylinder(h=h,d=dia); //interface(h,dia);
                 translate([-l/2+dia,0,0]) cylinder(h=h,d=dia); //interface(h,dia);
                 translate([0,w/2-dia,0]) cylinder(h=h,d=dia); //interface(h,dia);
                 translate([0,-w/2+dia,0]) cylinder(h=h,d=dia); //interface(h,dia);
-                
+
                 cylinder(h=h, d=40);
-                
+
                 translate([-dia/4, -w/2+dia,0]) cube([dia/2,w-2*dia,h]);
                 translate([-l/2+dia,-dia/4,0]) cube([l-2*dia,dia/2,h]);
             }
@@ -217,6 +233,7 @@ module bottom2(l,w){
             translate([0,w/2-dia,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
             translate([0,-w/2+dia,0]) translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
             translate([0,0,-1]) cylinder(h=h, d2=0, d1=40-1);
+
         }
     }
     // corner stablizers
@@ -234,7 +251,7 @@ module robot_stand(height){
         dia = 18-1;
         h = 15-0.5;
         thick = 4;
-        
+
         // spikes
         translate([0,0,thick+height]){
             translate([l/2-dia,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
@@ -243,7 +260,7 @@ module robot_stand(height){
             translate([0,-w/2+dia,-1]) cylinder(h=h,d2=0, d1=dia-1);
             translate([0,0,-1]) cylinder(h=h, d2=0, d1=40-1);
         }
-        
+
         // pillar supports
         translate([0,0,thick]){
             translate([l/2-dia,0,-1]) cylinder(h=height,d=dia-1);
@@ -251,8 +268,8 @@ module robot_stand(height){
             translate([0,w/2-dia,-1]) cylinder(h=height,d=dia-1);
             translate([0,-w/2+dia,-1]) cylinder(h=height,d=dia-1);
             translate([0,0,-1]) cylinder(h=height, d=40-1);
-            
-            
+
+
             translate([-dia/8, -w/2+dia,0]) cube([dia/4,w-2*dia,height-10]);
             translate([-l/2+dia,-dia/8,0]) cube([l-2*dia,dia/4,height-10]);
         }
@@ -260,7 +277,7 @@ module robot_stand(height){
     }
 }
 
-robot_stand(70);
+/* robot_stand(70); */
 
 //translate([150,0,0]) rotate([0,0,45]) top();
 //translate([0,0,40]) rotate([0,0,45]) top();
@@ -276,5 +293,3 @@ robot_stand(70);
 //$fn=90;
 //top2(140,100);
 //bottom2(140,100);
-
-

@@ -13,7 +13,7 @@ use <lib/pi.scad>;
 //use <head.scad>;
 //use <sternum.scad>;
 
-module piFootPrint(depth=10){
+/* module piFootPrint(depth=10){
     hole = 2.8; // mm
     dx = 58;
     dy = 49;
@@ -23,23 +23,23 @@ module piFootPrint(depth=10){
         translate([0,dy,0]) cylinder(h=depth, d=hole, center=true);
         translate([dx,dy,0]) cylinder(h=depth, d=hole, center=true);
     }
-}
+} */
 
 module powerFootPrint(){
     // board dimensions
     x = 42.2;
     y = 31.8;
     height = 10;
-    
+
     translate([x/2-2.2, y/2-2.2, 0]) cylinder(d=2.2, h=height, center=true);
     translate([x/2-2.2, -y/2+4.2, 0]) cylinder(d=2.2, h=height, center=true);
     translate([-x/2+2.2, -y/2+4.2, 0]) cylinder(d=2.2, h=height, center=true);
     translate([-x/2+2.2, y/2-2.2, 0]) cylinder(d=2.2, h=height, center=true);
-    
+
     // counter sink
     m2h = 2.5;
     m2d = 5;
-    // hex(3.5, m2h); 
+    // hex(3.5, m2h);
     translate([x/2-2.2, y/2-2.2, -0.5]) cylinder(d=m2d, h=m2h, center=false);
     translate([x/2-2.2, -y/2+4.2, -0.5]) cylinder(d=m2d, h=m2h, center=false);
     translate([-x/2+2.2, -y/2+4.2, -0.5]) cylinder(d=m2d, h=m2h, center=false);
@@ -52,7 +52,7 @@ module power_board(){
     x = 42.2;
     y = 31.8;
     board = 1.8;
-    
+
     difference(){
         color("green") cube([x, y, board], center=true);
         translate([x/2-2.2, y/2-2.2, 0]) cylinder(d=2.2, h=5, center=true);
@@ -60,13 +60,13 @@ module power_board(){
         translate([-x/2+2.2, -y/2+4.2, 0]) cylinder(d=2.2, h=5, center=true);
         translate([-x/2+2.2, y/2-2.2, 0]) cylinder(d=2.2, h=5, center=true);
     }
-    
+
     // terminal blocks
     // light blue - Vin
     // dark blue - Vout
     translate([-x/2+7.62,-y/2,board/2]) color("blue") cube([7, 6, 9]);
     translate([x/2-7-7.62,-y/2,board/2]) color("lightblue") cube([7, 6, 9]);
-    
+
     // SMT
     translate([-x/2+5,-y/2+6,board/2]) color("silver") cube([x-10, y-7, 8]);
     translate([-x/2+5,-y/2+6,-board/2-2]) color("silver") cube([x-10, y-7, 2]);
@@ -110,7 +110,7 @@ module power_board(){
 //    h = 110;
 //    d = 75;
 //    translate([0,0,-20]) rotate([0,0,90]) HeadMount();
-//    
+//
 //    difference()
 //    {
 //        translate([-d/2,-1.5,0]) cube([d,3,h]);  // base plate

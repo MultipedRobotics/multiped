@@ -20,14 +20,14 @@ module hex(side,t){
 
 module M3(t){
     dia = 3.5;
-    sdia = 6;
-    cylinder(3*t, d=dia, center=true);  // M2
+    sdia = 6.5;
+    cylinder(3*t, d=dia, center=true);  // M3
     translate([0,0,2]) cylinder(3*t, d=sdia, center=false);  // screw driver
 }
 
 module M2(t){
     dia = 2.5;
-    sdia = 4;
+    sdia = 5;
     cylinder(3*t, d=dia, center=true);  // M2
     translate([0,0,2]) cylinder(3*t, d=sdia, center=false);  // screw driver
 }

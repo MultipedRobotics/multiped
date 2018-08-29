@@ -97,15 +97,16 @@ module rpi_base(){
 }
 
 module lidar_base(){
+    dia = 100;
     difference(){
         cylinder(h=4, d=100);
         cylinder(h=10, d=40, center=true);
 
         m3d = 6;
-        translate([50-5/2-1, 0, 0]) M3(20); //cylinder(h=19,d=m3d, center=true);
-        translate([-50+5/2+1, 0, 0]) M3(20);
-        translate([0, 50-5/2-1, 0]) M3(20);
-        translate([0, -50+5/2+1, 0]) M3(20);
+        translate([50-5/2-1, 0, 0]) M3Nut(20); //cylinder(h=19,d=m3d, center=true);
+        translate([-50+5/2+1, 0, 0]) M3Nut(20);
+        translate([0, 50-5/2-1, 0]) M3Nut(20);
+        translate([0, -50+5/2+1, 0]) M3Nut(20);
 //}{
         // lidar mount
         rotate([0,180,45]) translate([3,0,-4]){
@@ -114,6 +115,11 @@ module lidar_base(){
             translate([-35,25,0]) M3(20);
             translate([-35,-25,0]) M3(20);
         }
+
+        translate([dia/3, dia/3, -2]) rotate([0,0,-45]) scale([1,.5,1]) cylinder(h=10, d=50);
+        translate([-dia/3, dia/3, -2]) rotate([0,0,45]) scale([1,.5,1]) cylinder(h=10, d=50);
+        translate([dia/3, -dia/3, -2]) rotate([0,0,45]) scale([1,.5,1]) cylinder(h=10, d=50);
+        translate([-dia/3, -dia/3, -2]) rotate([0,0,-45]) scale([1,.5,1]) cylinder(h=10, d=50);
     }
 }
 

@@ -75,10 +75,22 @@ module piFootPrint(depth=10){
     }
 }
 
+module M2standoff(x,y,z,h){
+    dia = 2.5;
+    wide = 3;
+
+    translate([x,y,z]) difference(){
+        cylinder(h=h, d=dia+wide);
+        cylinder(h=4*h, d=dia, center=true);
+    }
+}
+
 module rpi_base(){
     difference(){
         cylinder(h=4, d=100);
-        cylinder(h=10, d=40, center=true);
+        cube([70,20,20], center=true);
+        translate([0,-10,0]) cylinder(h=10, d=50, center=true);
+        translate([0,10,0]) cylinder(h=20, d=40, center=true);
 
         translate([50-5/2-1, 0, 0]) M3(20);
         translate([-50+5/2+1, 0, 0]) M3(20);
@@ -92,7 +104,17 @@ module rpi_base(){
             translate([0, -50+5/2+1, 0]) M3(20);
         }
 
-        rotate([0,180,90]) translate([2,0,-4]) piFootPrint();
+        rotate([0,180,90]) translate([10,0,-4]) piFootPrint();
+    }
+    // pi standoffs
+    dx = 58;
+    dy = 49;
+    height = 4;  // height above plate
+    rotate([0,0,90]) translate([-dx/2,-dy/2,0]) {
+        M2standoff(dx-10,0,4,height);
+        M2standoff(-10,0,4,height);
+        M2standoff(dx-10,dy,4,height);
+        M2standoff(-10,dy,4,height);
     }
 }
 
@@ -183,9 +205,9 @@ module fullrobot(femur_angle, tibia_angle, tarsus_angle){
 //bottom2(140,100);
 
 //top2(140,100);
-//rotate([0,0,90]) translate([10,0,4+10]) rpi3();
-//translate([0,0,0]) rpi_base();
-translate([0,0,0]) lidar_base();
+//rotate([0,0,90]) translate([2,0,4]) rpi3();
+translate([0,0,0]) rpi_base();
+//translate([0,0,0]) lidar_base();
 //translate([0,0,20]) cylinder(d=80,h=110); // head?
 
 //top2(125, 100);

@@ -12,7 +12,7 @@ Power distribution board
 
 ![](pics/pololu-12v-reg.png)
 
-![](pics/pololu-12v-reg-eff.pmg)
+![](pics/pololu-12v-reg-eff.png)
 
 # Bill of Materials (BoM)
 

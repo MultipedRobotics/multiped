@@ -2,7 +2,7 @@
 
 ## Schematic
 
-[pdf schematic](rpi.pdf)
+[pdf schematic](power.pdf)
 
 ## Board
 

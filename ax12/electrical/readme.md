@@ -2,11 +2,17 @@
 
 ## Raspberry Pi
 
+Adaptor board to connect the RPi to sensors/actuators
+
 ## Power
 
-![](power-v5/pics/gerber-top.png)
+Power distribution board
 
-![](power-v5/pics/gerber-bottom.png)
+### Pololu 12V Buck Regulator
+
+![](pics/pololu-12v-reg.png)
+
+![](pics/pololu-12v-reg-eff.pmg)
 
 # Bill of Materials (BoM)
 

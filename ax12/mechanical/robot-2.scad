@@ -204,9 +204,9 @@ module fullrobot(femur_angle, tibia_angle, tarsus_angle){
 //fullrobot(100,180,70);  // stow
 //bottom2(140,100);
 
-//top2(140,100);
+top2(140,100);
 //rotate([0,0,90]) translate([2,0,4]) rpi3();
-translate([0,0,0]) rpi_base();
+//translate([0,0,0]) rpi_base();
 //translate([0,0,0]) lidar_base();
 //translate([0,0,20]) cylinder(d=80,h=110); // head?
 

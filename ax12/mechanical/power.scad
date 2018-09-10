@@ -47,6 +47,28 @@ module powerFootPrint(){
 }
 
 
+module M2standoff(x,y,z,h){
+    dia = 2.5;
+    wide = 3;
+
+    translate([x,y,z]) difference(){
+        cylinder(h=h, d=dia+wide);
+        cylinder(h=4*h, d=dia, center=true);
+    }
+}
+
+
+module powerStandoff(height){
+    // board dimensions
+    x = 42.2;
+    y = 31.8;
+
+    M2standoff(x/2-2.2, y/2-2.2, 0, height);
+    M2standoff(x/2-2.2, -y/2+4.2, 0, height);
+    M2standoff(-x/2+2.2, -y/2+4.2, 0, height);
+    M2standoff(-x/2+2.2, y/2-2.2, 0, height);
+}
+
 module power_board(){
     // board dimensions
     x = 42.2;

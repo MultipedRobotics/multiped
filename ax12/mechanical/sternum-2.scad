@@ -139,8 +139,15 @@ module base_wide2(L, W){
             translate([-shift,0,0]) rotate([0,0,135]) translate([spar_len,0,0]) spar2();
             translate([-shift,0,0]) rotate([0,0,225]) translate([spar_len,0,0]) spar2();
             translate([shift,0,0]) rotate([0,0,315]) translate([spar_len,0,0]) spar2();
+
+            // push button
+            // translate([32,0,0]) cylinder(10,d=19, center=false);
         }
-        translate([0,0,-1]) cylinder(20,d=20);  // cable hole
+        // translate([0,0,-1]) cylinder(20,d=20);  // cable hole
+        cube([40,20,60], center=true);  // cable hole
+
+        // push button
+        // translate([32,0,0]) cylinder(40,d=16.5, center=true);
 
         translate([shift,0,0]) rotate([0,0,45]) translate([offset,0,0]) servo_mnt();
         translate([-shift,0,0]) rotate([0,0,135]) translate([offset,0,0]) servo_mnt();
@@ -150,9 +157,23 @@ module base_wide2(L, W){
     }
 }
 
+/* module M2standoff(x,y,z,h){
+    dia = 2.5;
+    wide = 3;
+
+    translate([x,y,z]) difference(){
+        cylinder(h=h, d=dia+wide);
+        cylinder(h=4*h, d=dia, center=true);
+    }
+} */
+
 module top2(l,w){
     difference(){
-        base_wide2(l, w);
+        union(){
+            base_wide2(l, w);
+            translate([0,26,0]) powerStandoff(8);
+            translate([0,-26,0]) rotate([0,0,180]) powerStandoff(8);
+        }
 
         // stand-offs
         m3 = 3.1;

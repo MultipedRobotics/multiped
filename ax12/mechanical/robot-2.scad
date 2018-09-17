@@ -85,6 +85,24 @@ module M2standoff(x,y,z,h){
     }
 }
 
+module cameramount(thick){
+    offset = 5;
+
+    // connects to base plate
+    difference(){
+        translate([-49/2,0,0])cube([49, 15, thick]);
+        translate([-20/2,-1,-1])cube([20, 20, 2*thick]); // screw cutout
+    }
+    difference(){
+        translate([-49/2,0,0])cube([49, 3, 30+offset]);
+        translate([-49/2+3,-1,3+offset]) cube([4, 10, 4]);
+        translate([-49/2+3,-1,3+offset+20]) cube([4, 10, 4]);
+        translate([49/2-7,-1,3+offset]) cube([4, 10, 4]);
+        translate([49/2-7,-1,3+offset+20]) cube([4, 10, 4]);
+        translate([-25/2,-1,-1])cube([25, 10, 25]);  // cable/sd card cutout
+    }
+}
+
 module rpi_base(){
     difference(){
         cylinder(h=4, d=100);
@@ -116,6 +134,8 @@ module rpi_base(){
         M2standoff(dx-10,dy,4,height);
         M2standoff(-10,dy,4,height);
     }
+
+    translate([0,-55,0]) cameramount(4);
 }
 
 module lidar_base(){
@@ -204,12 +224,12 @@ module fullrobot(femur_angle, tibia_angle, tarsus_angle){
 //fullrobot(100,180,70);  // stow
 //bottom2(140,100);
 
-top2(140,100);
-//rotate([0,0,90]) translate([2,0,4]) rpi3();
-//translate([0,0,0]) rpi_base();
+//top2(140,100);
+//rotate([0,0,90]) translate([2,0,6]) rpi3();
+translate([0,0,0]) rpi_base();
 //translate([0,0,0]) lidar_base();
 //translate([0,0,20]) cylinder(d=80,h=110); // head?
 
 //top2(125, 100);
 //upper();
-/* rpi_base(); */
+//rpi_base();

@@ -86,13 +86,14 @@ module M2standoff(x,y,z,h){
 }
 
 module cameramount(thick){
-    offset = 5;
-
+    offset = 15;
+    translate([0,-3,0]){  // move to avoid screw holes
     // connects to base plate
     difference(){
-        translate([-49/2,0,0])cube([49, 15, thick]);
-        translate([-20/2,-1,-1])cube([20, 20, 2*thick]); // screw cutout
+        translate([-49/2,0,0]) cube([49, 15, thick]);
+        translate([-25/2,-1,-1]) cube([25, 20, 2*thick]); // screw cutout
     }
+    // camera mount back
     difference(){
         translate([-49/2,0,0])cube([49, 3, 30+offset]);
         translate([-49/2+3,-1,3+offset]) cube([4, 10, 4]);
@@ -101,6 +102,13 @@ module cameramount(thick){
         translate([49/2-7,-1,3+offset+20]) cube([4, 10, 4]);
         translate([-25/2,-1,-1])cube([25, 10, 25]);  // cable/sd card cutout
     }
+    // curved edges
+    difference(){
+        translate([-49/2,0,4]) cube([49, 8, 5]);
+        translate([-49/2-1,5+3,4+5]) rotate([0,90,0]) cylinder(h=55, d=10);
+        translate([-25/2,-1,-1]) cube([25, 20, 40]); // screw cutout
+    }
+}
 }
 
 module rpi_base(){

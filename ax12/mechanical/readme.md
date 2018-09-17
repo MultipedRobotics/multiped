@@ -1,9 +1,25 @@
+![](pics/tachikoma.jpg)
+
 # AX-12A Mechanical Frame
+
+This is sort of my poor man's tachikoma.
+
+### Leg Parts
+
+<img src="pics/spider-anatomy.png" width="400px">
 
 Part names are based off of a traditional 8 legged spider. Yes, this one only
 has 4 legs, but the parts are expensive, so cut me some slack.
 
-<img src="pics/spider-anatomy.png" width="400px">
+![](pics/quad-4-links.png)
+
+- Coxa: red
+- Femur: blue
+- Tibia: yellow
+- Tarsus: green
+
+Each of the legs has 4 addressable smart servos. Leg 1 for example, has servos 1,
+2, 3, and 4. Each servo controls a degree of freedom for each leg.
 
 <img src="pics/ax-12-quad-servos.png" width="100%">
 
@@ -26,14 +42,6 @@ and the legs are up.
 
 <img src="pics/stow.png" width="100%">
 
-### Leg Parts
-
-![](pics/quad-4-links.png)
-
-- Coxa: red
-- Femur: blue
-- Tibia: yellow
-- Tarsus: green
 
 # Ideas
 
@@ -52,10 +60,10 @@ Also, I always thought the bugs from Starship Troopers were cool.
 
 I use [OpenSCAD](http://www.openscad.org/) which is a free solid modeler.
 
-# Bill of Materials (BoM)
+# Bill of Materials (BoM) for Hardware
 
 | Part | Qnty | Each | Cost |
-|---|---|---|---|
+|------|------|------|------|
 | AX-12A Servos x6 | 3 | $225  | $675 |
 | 400 S1 (M2) screws | 1 | $5 | $5 |
 | 400 N1 (M2) screws | 1 | $5 | $5 |

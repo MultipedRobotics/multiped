@@ -4,6 +4,7 @@ $fn = 90;
 use <lib/robotis_parts.scad>;
 use <lib/misc.scad>;
 use <lib/pi.scad>;
+use <lib/lidar.scad>;
 
 // this folder
 use <tibia.scad>;
@@ -113,25 +114,44 @@ module cameramount(thick){
 
 module rpi_base(){
     difference(){
+        // main deck
         cylinder(h=4, d=100);
+
+        // cable cutouts
         cube([70,20,20], center=true);
         translate([0,-10,0]) cylinder(h=10, d=50, center=true);
         translate([0,10,0]) cylinder(h=20, d=40, center=true);
 
+        // alt imu mount point
+        rotate([0,180,0]) translate([0,0,-4]){
+            y = 5;
+            translate([38, 23+y, 0]) M2(20);
+            translate([38, y, 0]) M2(20);
+        }
+
+        // screws to bottom (legs)
         translate([50-5/2-1, 0, 0]) M3(20);
         translate([-50+5/2+1, 0, 0]) M3(20);
         translate([0, 50-5/2-1, 0]) M3(20);
         translate([0, -50+5/2+1, 0]) M3(20);
 
+        // screws to top (lidar)
         rotate([0,180,45]) translate([0,0,-4]){
-            translate([50-5/2-1, 0, 0]) M3(20);
+            rotate([0,0,20]) translate([50-5/2-1, 0, 0]) M3(20);
             translate([-50+5/2+1, 0, 0]) M3(20);
             translate([0, 50-5/2-1, 0]) M3(20);
-            translate([0, -50+5/2+1, 0]) M3(20);
+            rotate([0,0,-20]) translate([0, -50+5/2+1, 0]) M3(20);
         }
 
         rotate([0,180,90]) translate([10,0,-4]) piFootPrint();
     }
+
+    // imu standoffs
+    height = 4;  // height above plate
+    y = 5;
+    M2standoff(-38,23+y,4,height);
+    M2standoff(-38,y,4,height);
+
     // pi standoffs
     dx = 58;
     dy = 49;
@@ -152,11 +172,12 @@ module lidar_base(){
         cylinder(h=4, d=100);
         cylinder(h=10, d=40, center=true);
 
+        // screws to rpi deck
         m3d = 6;
         translate([50-5/2-1, 0, 0]) M3Nut(20); //cylinder(h=19,d=m3d, center=true);
-        translate([-50+5/2+1, 0, 0]) M3Nut(20);
+        rotate([0,0,-20]) translate([-50+5/2+1, 0, 0]) M3Nut(20);
         translate([0, 50-5/2-1, 0]) M3Nut(20);
-        translate([0, -50+5/2+1, 0]) M3Nut(20);
+        rotate([0,0,20]) translate([0, -50+5/2+1, 0]) M3Nut(20);
 //}{
         // lidar mount
         rotate([0,180,45]) translate([3,0,-4]){
@@ -166,10 +187,12 @@ module lidar_base(){
             translate([-35,-25,0]) M3(20);
         }
 
-        translate([dia/3, dia/3, -2]) rotate([0,0,-45]) scale([1,.5,1]) cylinder(h=10, d=50);
-        translate([-dia/3, dia/3, -2]) rotate([0,0,45]) scale([1,.5,1]) cylinder(h=10, d=50);
-        translate([dia/3, -dia/3, -2]) rotate([0,0,45]) scale([1,.5,1]) cylinder(h=10, d=50);
-        translate([-dia/3, -dia/3, -2]) rotate([0,0,-45]) scale([1,.5,1]) cylinder(h=10, d=50);
+        // skeletonizing
+        translate([dia/3+4, dia/3+4, -2]) rotate([0,0,-45]) scale([1.2,.85,1]) cylinder(h=10, d=50); // back
+        translate([-dia/4-5, dia/2.5, -2]) rotate([0,0,35]) scale([.90,.75,1]) cylinder(h=10, d=50); // right
+        //translate([dia/3, -dia/3, -2]) rotate([0,0,45]) scale([1,.5,1]) cylinder(h=10, d=50);
+        translate([dia/2.5, -dia/4-5, -2]) rotate([0,0,35]) scale([.90,.75,1]) cylinder(h=10, d=50); // left
+        translate([-dia/3, -dia/3, -2]) rotate([0,0,-45]) scale([1.75,.70,1]) cylinder(h=10, d=50); // front
     }
 }
 
@@ -228,14 +251,17 @@ module fullrobot(femur_angle, tibia_angle, tarsus_angle){
     color("gray") bottom2(length,width);
 }
 
+COLOR1 = "lime";
+
 //fullrobot(10,140,20);  // stand
 //fullrobot(100,180,70);  // stow
 //bottom2(140,100);
 
 //top2(140,100);
-//rotate([0,0,90]) translate([2,0,6]) rpi3();
-translate([0,0,0]) rpi_base();
-//translate([0,0,0]) lidar_base();
+rotate([0,0,90]) translate([2,0,6]) rpi3();
+translate([0,0,0]) color(COLOR1) rpi_base();
+translate([0,0,30]) rotate([0,0,45]) color(COLOR1) lidar_base();
+translate([0,0,34]) rotate([0,0,-90]) rplidar();
 //translate([0,0,20]) cylinder(d=80,h=110); // head?
 
 //top2(125, 100);

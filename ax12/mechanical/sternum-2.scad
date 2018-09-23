@@ -1,6 +1,7 @@
 //use <lib/robotis_parts.scad>;
 use <power.scad>;
 use <lib/misc.scad>;
+use <base.scad>;
 
 //$fn=100;
 
@@ -202,12 +203,12 @@ module top2(l,w){
 //    }
 }
 
-module interface(h, dia){
+/* module interface(h, dia){
     difference(){
         cylinder(h=h,d=dia);
         translate([0,0,-1]) cylinder(h=h,d2=0, d1=dia-1);
     }
-}
+} */
 
 module bottom2(l,w){
 
@@ -265,7 +266,7 @@ module bottom2(l,w){
 //    rotate([0,0,270]) translate([w/2-sdia/2,0,-32-h]) cylinder(h, d=sdia);
 }
 
-module robot_stand(height){
+/* module robot_stand(height){
     union(){
         l = 140;
         w = 100;
@@ -296,7 +297,7 @@ module robot_stand(height){
         }
         translate([-l/2,-w/2,0]) cube([l,w,thick]);
     }
-}
+} */
 
 /* robot_stand(70); */
 

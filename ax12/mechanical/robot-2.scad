@@ -34,30 +34,31 @@ use <power.scad>;
 //    }
 //}
 
-module leg60(a1=0, a2=0){
+module leg60(a1=0, a2=0,COLOR1,COLOR2){
     translate([18,-16.5,15]) {
         length=60;
         // 60 degrees
-        color("silver") femur(length, 60);
-        translate([0,0,-35]) color("silver") femur(length, 60);
+        color(COLOR2) femur(length, 60);
+        translate([0,0,-35]) color(COLOR2) femur(length, 60);
+
         translate([-3,20-4,-13]) rotate([0,0,90]) ax12();
         translate([51,-13,-13]) rotate([0,0,270-60]) ax12();
 //        rotate([90,0,-60]) translate([53+(89/2)*cos(a1)+27*sin(a1),-15, -38-(27+89/2)*sin(a1)+27*cos(a1)]) rotate([0,a1,0]) {
         rotate([90,0,-60]) translate([53+(89/2)*cos(a1)+27*sin(a1),-15, -18-(27+89/2)*sin(a1)+37*cos(a1)]) rotate([0,a1,0]) {
-            rotate([180,0,0]) tibia();
+            rotate([180,0,0]) color(COLOR1) tibia();
             translate([43+15*cos(a2),-2.75,-15*sin(a2)]) rotate([0,-90,90]) rotate([0,0,-a2]) {
                 ax12();
 
                 rotate([-90,0,0]) translate([0,4,-25]) rotate([90,0,0]) f3();
-                rotate([-90,0,0]) translate([0,4,-78]) rotate([0,0,90]) color("silver") tarsus();
+                rotate([-90,0,0]) translate([0,4,-78]) rotate([0,0,90]) color(COLOR2) tarsus();
             }
         }
     }
 }
 
-module leg(femur_angle, tibia_angle, tarsus_angle){
-    rotate([-90,0,0]) coxa();
-    rotate([-90,-femur_angle,0]) leg60(tibia_angle,tarsus_angle);
+module leg(femur_angle, tibia_angle, tarsus_angle,COLOR1,COLOR2){
+    rotate([-90,0,0]) coxa();  // standard robotis parts
+    rotate([-90,-femur_angle,0]) leg60(tibia_angle,tarsus_angle,COLOR1,COLOR2);
 }
 
 module piFootPrint(depth=10){
@@ -225,45 +226,59 @@ module fullrobot(femur_angle, tibia_angle, tarsus_angle){
     length = 140;
     width = 100;
 
-    color("gray") top2(length, width);
-    upper();
+    // COLOR1 = "skyblue";
+    COLOR1 = "red";
+    COLOR2 = "silver";
+
+    color(COLOR1) top2(length, width);
+    translate([0,30,10]) power_board();
+    translate([0,-30,10]) rotate([0,0,180]) power_board();
+
+    translate([0,0,25]) {
+        color(COLOR1) rpi_base();
+        translate([0,-60,20]) rotate([90,0,0]) picamera();
+        rotate([0,0,90]) translate([2,0,6]) rpi3();
+        translate([0,0,30]) rotate([0,0,45]) color(COLOR1) lidar_base();
+        translate([0,0,34]) rotate([0,0,-90]) rplidar();
+    }
 
     // Legs
     offset = 31;  // distance from 45 deg mid-line
     shift = length/2 - sqrt(50*50+50*50)*cos(45);
     translate([shift,0,0]) rotate([0,0,45]) translate([offset,0,0]) translate([21,0,-12]) rotate([0,0,-90]){
-        color("gray") ax12();
-        rotate([0,0,90]) translate([70,0,-7]) leg(femur_angle,tibia_angle,tarsus_angle);
+        ax12();
+        rotate([0,0,90]) translate([70,0,-7]) leg(femur_angle,tibia_angle,tarsus_angle,COLOR1,COLOR2);
     }
     translate([-shift,0,0]) rotate([0,0,135]) translate([offset,0,0]) translate([21,0,-12]) rotate([0,0,-90]){
-        color("gray") ax12();
-        rotate([0,0,90]) translate([70,0,-7]) leg(femur_angle,tibia_angle,tarsus_angle);
+        ax12();
+        rotate([0,0,90]) translate([70,0,-7]) leg(femur_angle,tibia_angle,tarsus_angle,COLOR1,COLOR2);
     }
     translate([-shift,0,0]) rotate([0,0,225]) translate([offset,0,0]) translate([21,0,-12]) rotate([0,0,-90]){
-        color("gray") ax12();
-        rotate([0,0,90]) translate([70,0,-7]) leg(femur_angle,tibia_angle,tarsus_angle);
+        color(COLOR2) ax12();
+        rotate([0,0,90]) translate([70,0,-7]) leg(femur_angle,tibia_angle,tarsus_angle,COLOR1,COLOR2);
     }
     translate([shift,0,0]) rotate([0,0,315]) translate([offset,0,0]) translate([21,0,-12]) rotate([0,0,-90]){
-        color("gray") ax12();
-        rotate([0,0,90]) translate([70,0,-7]) leg(femur_angle,tibia_angle,tarsus_angle);
+        ax12();
+        rotate([0,0,90]) translate([70,0,-7]) leg(femur_angle,tibia_angle,tarsus_angle,COLOR1,COLOR2);
     }
 
-    color("gray") bottom2(length,width);
+    color(COLOR1) bottom2(length,width);
 }
 
-COLOR1 = "lime";
+//COLOR1 = "lime";
 
 //fullrobot(10,140,20);  // stand
-//fullrobot(100,180,70);  // stow
+//fullrobot(100,160,90);  // stow
 //bottom2(140,100);
 
 //top2(140,100);
-rotate([0,0,90]) translate([2,0,6]) rpi3();
-translate([0,0,0]) color(COLOR1) rpi_base();
-translate([0,0,30]) rotate([0,0,45]) color(COLOR1) lidar_base();
-translate([0,0,34]) rotate([0,0,-90]) rplidar();
+//rotate([0,0,90]) translate([2,0,6]) rpi3();
+//translate([0,0,0]) color(COLOR1) rpi_base();
+//translate([0,0,30]) rotate([0,0,45]) color(COLOR1) lidar_base();
+//translate([0,0,34]) rotate([0,0,-90]) rplidar();
 //translate([0,0,20]) cylinder(d=80,h=110); // head?
 
 //top2(125, 100);
 //upper();
 //rpi_base();
+lidar_base();

@@ -51,7 +51,7 @@ module tibia(L=85){
     thick = 4;
 
     // middle support bar and wiring channel
-    color("red") difference(){
+    difference(){
         union(){
             translate([0,21,0]) rotate([-90,0,0]) tibiaSupt(L, thick, true);
             translate([0,-21,0]) rotate([90,0,0]) tibiaSupt(L, thick);

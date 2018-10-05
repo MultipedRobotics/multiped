@@ -180,12 +180,22 @@ module lidar_base(){
         translate([0, 50-5/2-1, 0]) M3Nut(20);
         rotate([0,0,20]) translate([0, -50+5/2+1, 0]) M3Nut(20);
 //}{
-        // lidar mount
+        // ydlidar/lds-01 lidar mount
         rotate([0,180,45]) translate([3,0,-4]){
             translate([22,31,0]) M3(20);
             translate([22,-31,0]) M3(20);
             translate([-35,25,0]) M3(20);
             translate([-35,-25,0]) M3(20);
+        }
+
+        // rpylidar - tbd
+
+        // hokuyo urg mount
+        rotate([0,180,45]) translate([0,0,-4]){
+            translate([20,20,0]) M3(20);
+            translate([20,-20,0]) M3(20);
+            translate([-20,20,0]) M3(20);
+            translate([-20,-20,0]) M3(20);
         }
 
         // skeletonizing

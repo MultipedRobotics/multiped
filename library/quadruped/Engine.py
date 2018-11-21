@@ -191,7 +191,7 @@ class Engine(object):
             without controlling the speed. If it is 1023, it is about 114rpm.
             For example, if it is set to 300, it is about 33.3 rpm.
 
-            AX12 max rmp is 59 (max speed 532)
+            AX12 max rpm is 59 (max speed 532)
             rev  min     360 deg      deg
             --- -------  ------- = 6 ----
             min  60 sec    rev        sec

@@ -9,7 +9,7 @@ from __future__ import division
 from math import cos, sin, sqrt, pi
 
 
-debug = True
+debug = False
 
 
 def rot_z_tuple(t, c):
@@ -98,7 +98,7 @@ class Gait(object):
 
         return self.oneCycle_alt(x, y, rz)
 
-    def oneCycle_alt(slef, x, y, rz):
+    def oneCycle_alt(self, x, y, rz):
         raise NotImplementedError('*** Gait: wrong function, this is base class! ***')
 
 

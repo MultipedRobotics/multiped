@@ -8,18 +8,21 @@
 from __future__ import print_function
 from __future__ import division
 from quadruped import Engine
-from quadruped import DiscreteRippleGait
+# from quadruped import DiscreteRippleGait
 from quadruped import Leg4
 from pyservos import AX12
 import time
 from math import pi
 import platform
+import sys
+sys.path.insert(0,'../testing')
+from Gait2 import Discrete
 
 
 class RobotTest(object):
     def __init__(self):
         bcm_pin = None
-        if False:  # manual override for testing - don't actually talk to servos
+        if True:  # manual override for testing - don't actually talk to servos
             ser = 'fake'
         elif platform.system() == 'Darwin':
             ser = '/dev/tty.usbserial-A506BOT5'
@@ -50,8 +53,8 @@ class RobotTest(object):
         }
         self.leg = Leg4(data)
         neutral = self.leg.getNeutralPos()
-        self.gait = DiscreteRippleGait(55.0, neutral)
-        self.gait.setLegLift(20)
+        self.gait = Discrete(55.0, neutral)
+        # self.gait.setLegLift(20)
         self.gait.scale = 65
         self.engine = Engine(data, AX12, wait=0.3, bcm_pin=bcm_pin)
 
@@ -127,10 +130,10 @@ class RobotTest(object):
         path = [
             [1.0, 0, 0],
             [1.0, 0, 0],
-            [1.0, 0, 0],
-            [1.0, 0, 0],
-            [1.0, 0, 0],
-            [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
@@ -162,10 +165,10 @@ class RobotTest(object):
             angles_speeds = self.leg.generateServoAngles2(pts, 200)  # get servo angles
 
             # only move 1 leg, remove others from commands
-            if False:
-                angles_speeds.pop(2)
-                angles_speeds.pop(1)
-                angles_speeds.pop(3)
+            # if False:
+            #     angles_speeds.pop(2)
+            #     angles_speeds.pop(1)
+            #     angles_speeds.pop(3)
 
             self.engine.moveLegsGait4(angles_speeds)  # send commands to servos
 

@@ -79,41 +79,8 @@ class Leg4(object):
         else:
             raise Exception('Need to have "stand" angles in params file')
 
-        # for key in ['stand', 'sit']:
-        #     if key in params:
-        #         angles = []
-        #         for a, s in zip(params[key], self.servos):
-        #             angles.append(s.DH2Servo(a))
-        #         self.positions[key] = angles
-
     def __del__(self):
         pass
-
-    # def stand(self, speed=100):
-    #     # FIXME: why here? Shouldn't this be in gait or robot?
-    #     feet = None
-    #     if self.positions['stand']:
-    #         ans = [(x, speed) for x in self.positions['stand']]
-    #         feet = {
-    #             0: [ans],
-    #             1: [ans],
-    #             2: [ans],
-    #             3: [ans],
-    #         }
-    #     return feet
-    #
-    # def sit(self, speed=100):
-    #     # FIXME: why here?
-    #     feet = None
-    #     if self.positions['sit']:
-    #         ans = [(x, speed) for x in self.positions['sit']]
-    #         feet = {
-    #             0: [ans],
-    #             1: [ans],
-    #             2: [ans],
-    #             3: [ans],
-    #         }
-    #     return feet
 
     def forward(self, t1, t2, t3, t4, degrees=True):
         """
@@ -306,7 +273,7 @@ class Leg4(object):
         keys = list(footLoc.keys())
         angles = {}
 
-        print("=[Leg4.py]===============================")
+        print("=[generateServoAngles2 speed servo[0-3]]===================")
         for legNum in keys:
             print("Leg[{}]-------------".format(legNum))
             pos = footLoc[legNum]  # grab foot positions for leg k
@@ -328,8 +295,9 @@ class Leg4(object):
                 angles[legNum].append(tmp + (scaled_speed,))
                 # print("speed", speed)
                 # print("tmp", tmp)
-                # exit(0)
-                print("  {:2}: {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, *tmp))
+                # # exit(0)
+                # print("  {:2}: {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, *tmp))
+                print("  {:2}: {} {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, scaled_speed, *tmp))
 
         return angles
 

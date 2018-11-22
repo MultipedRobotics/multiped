@@ -73,7 +73,7 @@ def rplot(t1, t2, t3, t4, degrees=True):
     plt.pause(1)
 
 
-def rplot2(angles, pause=.1, degrees=True):
+def rplot2(angles, pause=1, degrees=True):
     """Given the 4 joint angles (in rads), plot the arm in the x-y and w-z planes
 
     x = (d2 + l1*cos(t2) + l2*cos(t2 + t3) + l3*cos(t2 + t3 + t4))*cos(t1)
@@ -85,8 +85,8 @@ def rplot2(angles, pause=.1, degrees=True):
     l3 = 90
     l4 = 95
 
-    plt.subplot(1,2,1,projection='polar')
-    plt.ion()
+    # plt.subplot(1,2,1,projection='polar')
+    # plt.ion()
 
     for t1,t2,t3,t4 in angles:
 
@@ -133,6 +133,7 @@ def rplot2(angles, pause=.1, degrees=True):
         ptsx.append(x3)
         ptsy.append(y3)
 
+        plt.subplot(1,2,1,projection='polar')
         plt.plot([0, t1], [0, 1.0])
         plt.grid(True)
         plt.title('Azimuth Angle (x-y plane)\n')
@@ -148,7 +149,7 @@ def rplot2(angles, pause=.1, degrees=True):
     plt.show()
 
 
-def plot_body_frame(pts):
+def plot_body_frame(pts, pause=1):
     def rot_z(t, c):
         """
         t - theta [radians]
@@ -228,7 +229,8 @@ def plot_body_frame(pts):
         ax.add_patch(rect)
 #         ax.axis([-200,200,-200,200])
         ax.axis('equal')
-        plt.pause(1)
+        # plt.pause(pause)
+        plt.show()
 
     # plt.legend();
     plt.show()

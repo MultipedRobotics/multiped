@@ -8,14 +8,16 @@
 from __future__ import print_function
 from __future__ import division
 from quadruped import Engine
-from quadruped import DiscreteRippleGait
+# from quadruped import DiscreteRippleGait
 from quadruped import Leg4
 from pyservos import AX12
 import time
 from math import pi
 import platform
 from pygecko.multiprocessing import geckopy
-
+import sys
+sys.path.insert(0,'../testing')
+from Gait2 import Discrete
 global_logger = None
 
 
@@ -62,8 +64,8 @@ class RobotTest(object):
         }
         self.leg = Leg4(data)
         neutral = self.leg.getNeutralPos()
-        self.gait = DiscreteRippleGait(55.0, neutral)
-        self.gait.setLegLift(20)
+        self.gait = Discrete(55.0, neutral)
+        # self.gait.setLegLift(20)
         self.gait.scale = 65
         self.engine = Engine(data, AX12, wait=0.3, bcm_pin=bcm_pin)
 
@@ -184,7 +186,7 @@ def go(**kwargs):
     test = kwargs.get('test', True)
     robot = RobotTest(test)
 
-    s = geckopy.Subscriber(['cmd', 'avoid'], robot.handle_msg)
+    # s = geckopy.Subscriber(['cmd'], robot.handle_msg)
     geckopy.spin(5)
 
 

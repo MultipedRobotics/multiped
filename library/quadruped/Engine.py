@@ -65,7 +65,13 @@ def calc_wait(da, speed):
 
     wait = abs(new_angle - old_angle)/(0.111 * speed * 6)
     """
-    return abs(da)/(0.111*speed*6)
+    try:
+        w = abs(da)/(0.111*speed*6)
+    except ZeroDivisionError:
+        w = 1
+        print("*** calc_wait() div error: {}".format(speed))
+
+    return w
 
 
 class Engine(object):
@@ -105,10 +111,10 @@ class Engine(object):
         #     if key in data:
         #         self.positions[key] = data[key]
 
-    def pprint(self, i, step):
-        print('***', i, '*'*25)
-        for leg in step:
-            print('  Servo: [{:.0f} {:.0f} {:.0f} {:.0f}]'.format(*leg))
+    # def pprint(self, i, step):
+    #     print('***', i, '*'*25)
+    #     for leg in step:
+    #         print('  Servo: [{:.0f} {:.0f} {:.0f} {:.0f}]'.format(*leg))
 
     def setServoSpeed(self, speed):
         """
@@ -430,44 +436,48 @@ class Engine(object):
         # curr_move = {}
         # for each step in legs
         for step in range(numSteps):
-            dprint("\nStep[{}]===============================================".format(step))
+            # dprint("\nStep[{}]===============================================".format(step))
             data = []
 
+            # find max time we have to wait for all 4 legs to reach their end
+            # point.
             max_wait = 0
             for legNum in keys:
                 angles = legs[legNum][step][:4]
                 speed = legs[legNum][step][4]
+                # print(" speed", speed)
                 for a, oa in zip(angles, self.last_move[legNum][:4]):
                     da = abs(a-oa)
                     w = calc_wait(da, speed)
-                    print("calc_wait: {:.3f}".format(w))
+                    # print(" calc_wait: {:.3f}".format(w))
+                    # print("calc_wait: {}".format(w))
                     max_wait = w if w > max_wait else max_wait
 
-            print(">> found wait", max_wait)
+            # print(">> found wait", max_wait, " speed:", speed)
 
             # for legNum in [0,3,1,2]:
             for legNum in keys:
-                dprint("  leg[{}]--------------".format(legNum))
+                # dprint("  leg[{}]--------------".format(legNum))
                 leg_angles_speed = legs[legNum][step]
                 # print(leg_angles_speed)
                 angles = leg_angles_speed[:4]
                 speed = leg_angles_speed[4]
-                print("Speed:", speed, "wait", max_wait)
+                # print("Speed:", speed, "wait", max_wait)
 
                 for i, angle in enumerate(angles):
-                    oldangle = self.last_move[legNum][i]
+                    # oldangle = self.last_move[legNum][i]
                     # due to rounding errors, to ensure the other servers finish
                     # BEFORE time.sleep(max_wait) ends, the the function it
                     # has less time
-                    spd = calc_rpm((angle - oldangle), 0.9*max_wait)
+                    # spd = calc_rpm((angle - oldangle), 0.9*max_wait)
                     # now that i am scaling the spd parameter above, I sometimes
                     # exceed the original speed number, so saturate it if
                     # necessary
-                    spd = spd if spd <= speed else speed
-                    sl, sh = le(spd)
+                    # spd = spd if spd <= speed else speed
+                    # sl, sh = le(spd)
                     al, ah = angle2int(angle)  # angle
-                    dprint("    Servo[{}], angle: {:.2f}, delta: {:.2f}, speed: {} time: {:.4f}".format(legNum*numServos + i+1, angle, abs(angle - oldangle), spd, calc_wait(abs(angle - oldangle), spd)))
-                    data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
+                    # data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
+                    data.append([legNum*numServos + i+1, al, ah])  # ID, low angle, high angle, low speed, high speed
 
                 self.last_move[legNum] = leg_angles_speed
 

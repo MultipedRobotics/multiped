@@ -109,8 +109,8 @@ class Discrete(Gait):
         rest: the neutral foot position
         """
         Gait.__init__(self, rest)
-        x = 100
-        zu = 70    # z lift height
+        x = 135
+        zu = 50    # z lift height
         zd = 0  # z on the ground
         dx = x/sqrt(2)
 

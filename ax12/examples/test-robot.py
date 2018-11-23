@@ -22,13 +22,13 @@ from Gait2 import Discrete
 class RobotTest(object):
     def __init__(self):
         bcm_pin = None
-        if True:  # manual override for testing - don't actually talk to servos
+        if False:  # manual override for testing - don't actually talk to servos
             ser = 'fake'
         elif platform.system() == 'Darwin':
             ser = '/dev/tty.usbserial-A506BOT5'
         elif platform.system() == 'Linux':
             ser = '/dev/serial0'
-            bcm_pin = 4
+            bcm_pin = 17
         else:
             raise Exception('Your OS is not supported')
 
@@ -71,6 +71,8 @@ class RobotTest(object):
                 self.positions[key] = angles
 
         self.stand()
+        time.sleep(3)
+
 
     def __del__(self):
         self.sit()
@@ -222,6 +224,7 @@ class RobotTest(object):
         # self.engine.moveLegsGait3(feet)
         # time.sleep(1)
         pt = ((130, 0, -70),)  # foot position in mm
+        pt = (self.gait.rest,)
         feet = {
             0: pt,
             1: pt,

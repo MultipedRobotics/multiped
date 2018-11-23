@@ -488,6 +488,8 @@ class Engine(object):
             print('max_wait', max_wait)
             time.sleep(max_wait)
 
+            time.sleep(1)
+
 
     def moveLegsAnglesArray(self, angles, speed=None, degrees=True):
         """

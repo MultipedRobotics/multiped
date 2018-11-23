@@ -39,7 +39,7 @@ class RobotTest(object):
             ser = '/dev/tty.usbserial-A506BOT5'
         elif platform.system() == 'Linux':
             ser = '/dev/serial0'
-            bcm_pin = 4
+            bcm_pin = 11
         else:
             raise Exception('Your OS is not supported')
 

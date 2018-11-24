@@ -229,8 +229,8 @@ def plot_body_frame(pts, pause=1):
         ax.add_patch(rect)
 #         ax.axis([-200,200,-200,200])
         ax.axis('equal')
-        # plt.pause(pause)
-        plt.show()
+        plt.pause(pause)
+        # plt.show()
 
     # plt.legend();
     plt.show()

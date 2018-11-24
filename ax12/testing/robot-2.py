@@ -91,7 +91,7 @@ class RobotTest(object):
         # pts = array(3d foot locations)
         cmd = [1,0,0]
         pts = self.gait.oneCycle(*cmd)
-        # plot_body_frame(pts,1)
+        plot_body_frame(pts,1)
 
         # servo angles corrects for link offsets
         # angles_speeds is a dict = {

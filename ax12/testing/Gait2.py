@@ -109,7 +109,7 @@ class Discrete(Gait):
         rest: the neutral foot position
         """
         Gait.__init__(self, rest)
-        x = 135
+        x = 110  # 135
         zu = 70    # z lift height
         zd = 0  # z on the ground
         dx = x/sqrt(2)
@@ -117,26 +117,20 @@ class Discrete(Gait):
         self.rest = (x, 0, -zu,)
 
         self.points = {
-            'A': (-x/2, 0, zd,),  # A - closest point
-            'B': (x/2, 0, zd,),   # B - farthest point
+            'A': (-x*.85, 0, zd,),  # A - closest point
+            'B': (x*.75, 0, zd,),   # B - farthest point
             'N': (0, 0, zd,),     # N - netural point
-            'a': (-x/2, 0, zu),   # A lifted up
-            'b': (x/2, 0, zu,)    # B lifted up
+            'a': (-x*.85, 0, zu),   # A lifted up
+            'b': (x*.75, 0, zu,)    # B lifted up
         }
 
+
         # self.points = {
-        #     'A': (x/2, -x/2, zd,),   # A - closest point
-        #     'B': (x+dx, dx, zd,),    # B - farthest point
-        #     'N': (x, 0, zd,),        # N - netural point
-        #     'a': (x/2, -x/2, zu),
-        #     'b': (x+dx, dx, zu,)
-        # }
-        # self.points2 = {
-        #     'A': (x/2, x/2,zd,),   # A - closest point
-        #     'B': (x+dx, -dx,zd,),  # B - farthest point
-        #     'N': (x, 0,zd,),    # N - netural point
-        #     'a': (x/2, x/2, zu),
-        #     'b': (x+dx, -dx, zu,)
+        #     'A': (-x/2, 0, zd,),  # A - closest point
+        #     'B': (x/2, 0, zd,),   # B - farthest point
+        #     'N': (0, 0, zd,),     # N - netural point
+        #     'a': (-x/2, 0, zu),   # A lifted up
+        #     'b': (x/2, 0, zu,)    # B lifted up
         # }
 
         # A,a',b',B,N,n,n,N,n,n,N,A,a,a,a

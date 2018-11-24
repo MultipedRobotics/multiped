@@ -22,7 +22,7 @@ from Gait2 import Discrete
 class RobotTest(object):
     def __init__(self):
         bcm_pin = None
-        if False:  # manual override for testing - don't actually talk to servos
+        if True:  # manual override for testing - don't actually talk to servos
             ser = 'fake'
         elif platform.system() == 'Darwin':
             ser = '/dev/tty.usbserial-A506BOT5'

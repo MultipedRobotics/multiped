@@ -455,12 +455,14 @@ class Engine(object):
 
             # print(">> found wait", max_wait, " speed:", speed)
 
+            servo_speeds = [100,125,150,200]
+
             # for legNum in [0,3,1,2]:
             for legNum in keys:
                 # dprint("  leg[{}]--------------".format(legNum))
                 leg_angles_speed = legs[legNum][step]
                 # print(leg_angles_speed)
-                angles = leg_angles_speed[:4]
+                angles = leg_angles_speed[:4]  # 4 servo angles
                 speed = leg_angles_speed[4]
                 # print("Speed:", speed, "wait", max_wait)
 
@@ -475,9 +477,10 @@ class Engine(object):
                     # necessary
                     # spd = spd if spd <= speed else speed
                     # sl, sh = le(spd)
+                    sl, sh = le(servo_speeds[i])
                     al, ah = angle2int(angle)  # angle
-                    # data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
-                    data.append([legNum*numServos + i+1, al, ah])  # ID, low angle, high angle, low speed, high speed
+                    data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
+                    # data.append([legNum*numServos + i+1, al, ah])  # ID, low angle, high angle, low speed, high speed
 
                 self.last_move[legNum] = leg_angles_speed
 

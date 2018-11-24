@@ -110,7 +110,7 @@ class Discrete(Gait):
         """
         Gait.__init__(self, rest)
         x = 135
-        zu = 50    # z lift height
+        zu = 70    # z lift height
         zd = 0  # z on the ground
         dx = x/sqrt(2)
 

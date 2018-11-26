@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ##############################################
 # The MIT License (MIT)
 # Copyright (c) 2016 Kevin Walchko
@@ -69,13 +68,13 @@ class jsonFile(object):
 	def clear(self):
 		self.db = None
 
-
-if __name__ == '__main__':
-	fs = jsonFile()
-	fs.read('walkingeye.json')
-	# db = fs.db
-
-	print('serialPort', fs['serialPort'])
-	print('')
-
-	print(fs)
+#
+# if __name__ == '__main__':
+# 	fs = jsonFile()
+# 	fs.read('walkingeye.json')
+# 	# db = fs.db
+#
+# 	print('serialPort', fs['serialPort'])
+# 	print('')
+#
+# 	print(fs)

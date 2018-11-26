@@ -15,9 +15,8 @@ import time
 from math import pi
 import platform
 import sys
-sys.path.insert(0,'../testing')
 from Gait2 import Discrete
-from plotting import rplot, rplot2,plot_body_frame
+from plotting import rplot, rplot2, plot_body_frame
 
 """
 need:
@@ -102,28 +101,143 @@ class RobotTest(object):
         }
 
         self.kinematics = Kinematics4(data)
-        # neutral = self.kinematics.getNeutralPos()
         self.gait = Discrete(self.positions['stand'])
-        # self.gait.setLegLift(20)
-        # self.gait.scale = 65
 
-        pt = (self.positions['sit'],)
+        self.engine = Engine(data, AX12)
+
+        # where are the feet currently ... angles?
+        self.currentAngles = {}  # DH angles
+        dh_angles = self.engine.getCurrentAngles()
+        self.currentAngles = dh_angles  # value??
+        # where are the feet currently ... (x,y,z)?
+        self.currentFeet = {}  # (x,y,z)
+        for i, angles in enumerate(dh_angles):
+            self.currentFeet[i] = self.kinematics.forward(*angles)
+
+        self.stand()
+
+    def __del__(self):
+        self.sit()
+
+    def walk(self):
+        print(" <<<==========  Walk  ==========>>>")
+        # predefined walking path
+        # x, y, rotation
+        path = [
+            [1.0, 0.0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [1.0, 0, 0],
+            # [0, 0, pi/4],
+            # [0, 0, pi/4],
+            # [0, 0, pi/4],
+            # [0, 0, -pi/4],
+            # [0, 0, -pi/4],
+            # [0, 0, -pi/4],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+            # [-1.0, 0, 0],
+        ]
+
+        for cmd in path:
+            pts = self.gait.command(cmd)        # get 3d feet points
+
+            # save 3d points
+            for i in pts.keys():
+                self.currentFeet[i] = pts[i][-1]
+
+            # plot_body_frame(pts,1)
+
+            # pts = (x,y,z) for each leg for the whole cycle
+            # speed = max speed seen by any joint, most likely it will be lower
+            angles_speeds = self.kinematics.generateDHAngles(pts, 200)  # get servo angles
+
+            # rplot2(angles_speeds[0])
+
+            # only move 1 leg, remove others from commands
+            # if False:
+            #     angles_speeds.pop(2)
+            #     angles_speeds.pop(1)
+            #     angles_speeds.pop(3)
+
+            self.engine.moveLegsGait4(angles_speeds)  # send commands to servos
+
+    def step(self, leg, p1, p2, lift):
+        """
+        Pick the foot up and set it down
+        leg - which leg number 0-3
+        p1 - start (x,y,z)
+        p2 - stop (x,y,z)
+        lift - how high to lift the foot
+        """
+        pass
+
+    def sit(self, speed=100):
+        """
+        Puts legs into a sitting position
+        """
+        print(" <<<========== Sit ==========>>> ")
+        # time.sleep(1)
+        # feet = {}
+        # for leg in range(4):
+        #     print('d', self.engine.last_move[leg])  # these are servo angles!!!!
+        #     x,y,z,s = self.engine.last_move[leg]
+        #     feet[leg] = ((x,y,0),(80, 0, 1),)  # foot position in mm
+
+        pt = ((self.gait.rest[0],0,0,),(80, 0, 1,),)  # foot position in mm
         feet = {
             0: pt,
             1: pt,
             2: pt,
             3: pt,
         }
-        angles_speeds = self.kinematics.generateDHAngles(feet, 100)
-        # print(">> ", angles_speeds)
-        self.engine = Engine(data, AX12, curr_pos=angles_speeds)
+        angles_speeds = self.kinematics.generateDHAngles(feet, speed)
+        self.engine.moveLegsGait4(angles_speeds)
 
-        self.stand()
-        # time.sleep(3)
+    def stand(self, speed=100):
+        """
+        Puts legs into a standing position
+        """
+        print(" <<<========== Stand ==========>>> ")
+        # angles = self.positions['stand']
+        # # ans = [x for x in self.positions['stand']]
+        # ans = self.positions['stand']
+        # feet = {
+        #     0: [ans+[speed]],
+        #     1: [ans+[speed]],
+        #     2: [ans+[speed]],
+        #     3: [ans+[speed]],
+        # }
+        #
+        # print(feet)
+        #
+        # self.engine.moveLegsGait3(feet)
+        # time.sleep(1)
+        # pt = ((130, 0, -70),)  # foot position in mm
+        pt = (self.gait.rest,)
+        feet = {
+            0: pt,
+            1: pt,
+            2: pt,
+            3: pt,
+        }
+        angles_speeds = self.kinematics.generateDHAngles(feet, speed)
+        self.engine.moveLegsGait4(angles_speeds)
+        time.sleep(1)
 
-
-    def __del__(self):
-        self.sit()
 
     # def pose_pt(self, leg, pt, speed):
     #     """
@@ -172,119 +286,6 @@ class RobotTest(object):
     #     cmds[legNum] = move
     #     print(cmds)
     #     self.engine.moveLegsGait3(cmds)
-
-    def walk(self):
-        print(" <<< Walk >>>")
-        # predefined walking path
-        # x, y, rotation
-        path = [
-            [1.0, 0.0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [1.0, 0, 0],
-            # [0, 0, pi/4],
-            # [0, 0, pi/4],
-            # [0, 0, pi/4],
-            # [0, 0, -pi/4],
-            # [0, 0, -pi/4],
-            # [0, 0, -pi/4],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-            # [-1.0, 0, 0],
-        ]
-
-        for cmd in path:
-            pts = self.gait.command(cmd)        # get 3d feet points
-            # pts = self.gait.command(cmd)        # get 3d feet points
-            # plot_body_frame(pts,1)
-
-            # pts = (x,y,z) for each leg for the whole cycle
-            # speed = max speed seen by any joint, most likely it will be lower
-            angles_speeds = self.kinematics.generateDHAngles(pts, 200)  # get servo angles
-
-            rplot2(angles_speeds[0])
-
-            # only move 1 leg, remove others from commands
-            # if False:
-            #     angles_speeds.pop(2)
-            #     angles_speeds.pop(1)
-            #     angles_speeds.pop(3)
-
-            self.engine.moveLegsGait4(angles_speeds)  # send commands to servos
-
-    def step(self, leg, p1, p2, lift):
-        """
-        Pick the foot up and set it down
-        leg - which leg number 0-3
-        p1 - start (x,y,z)
-        p2 - stop (x,y,z)
-        lift - how high to lift the foot
-        """
-        pass
-
-    def sit(self, speed=100):
-        """
-        Puts legs into a sitting position
-        """
-        time.sleep(1)
-        # feet = {}
-        # for leg in range(4):
-        #     print('d', self.engine.last_move[leg])  # these are servo angles!!!!
-        #     x,y,z,s = self.engine.last_move[leg]
-        #     feet[leg] = ((x,y,0),(80, 0, 1),)  # foot position in mm
-
-        pt = ((self.gait.rest[0],0,0,),(80, 0, 1,),)  # foot position in mm
-        feet = {
-            0: pt,
-            1: pt,
-            2: pt,
-            3: pt,
-        }
-        angles_speeds = self.kinematics.generateDHAngles(feet, speed)
-        self.engine.moveLegsGait4(angles_speeds)
-
-    def stand(self, speed=100):
-        """
-        Puts legs into a standing position
-        """
-        # angles = self.positions['stand']
-        # # ans = [x for x in self.positions['stand']]
-        # ans = self.positions['stand']
-        # feet = {
-        #     0: [ans+[speed]],
-        #     1: [ans+[speed]],
-        #     2: [ans+[speed]],
-        #     3: [ans+[speed]],
-        # }
-        #
-        # print(feet)
-        #
-        # self.engine.moveLegsGait3(feet)
-        # time.sleep(1)
-        # pt = ((130, 0, -70),)  # foot position in mm
-        pt = (self.gait.rest,)
-        feet = {
-            0: pt,
-            1: pt,
-            2: pt,
-            3: pt,
-        }
-        angles_speeds = self.kinematics.generateDHAngles(feet, speed)
-        self.engine.moveLegsGait4(angles_speeds)
-        time.sleep(1)
 
     # def moveToNeutral(self):
     #     curr = ??

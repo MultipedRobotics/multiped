@@ -1,19 +1,19 @@
 from __future__ import print_function
 from __future__ import division
-from .Engine import Engine
-from .Gait import DiscreteRippleGait
-# from .Leg3 import Leg3, LegException
+from quadruped.Engine import Engine
+from quadruped.Gait import DiscreteRippleGait
+# from quadruped.kinematics3 import Kinematics3
 from quadruped.kinematics4 import Kinematics4
 # from .Servo import Servo  # don't need
-from .Robot import Robot
+from quadruped.Robot import Robot
 
 # do I put exceptions here?
 
-# gait - servo positions for one cycle
+# gait - generates 3d (x,y,z) points for one cycle
 # engine - talk to servos/packet/bulk/sync
 # servo - individual parameters for each servo
-# leg - fk/ik
-# robot - one of each above
+# kinematics - fk/ik
+# robot - holds above along with other logic and sensors
 
 __author__ = 'Kevin J. Walchko'
 __license__ = 'MIT'

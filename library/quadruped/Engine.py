@@ -84,7 +84,7 @@ class Engine(object):
 
     last_move = None
 
-    def __init__(self, data, servoType, curr_pos):
+    def __init__(self, data, servoType):
         """
         data: serial port to use, if none, then use dummy port
         servoType: AX12 or XL320 or other servo type
@@ -128,7 +128,7 @@ class Engine(object):
             self.servos.append(Servo(ID, offset))
             # resp = self.pingServo(ID)  # return: (T/F, servo_angle)
             # self.servos[ID] = resp[0]
-            curr_angle[ID] = 
+            # curr_angle[ID] =
         # for s, val in self.servos.items():
         #     if val is False:
         #         print("*** Engine.__init__(): servo[{}] has failed".format(s))
@@ -136,21 +136,36 @@ class Engine(object):
         self.packet = Packet(servoType)
 
         # keep track of last location, this is servo angle space
-        self.last_move = {
-            0: curr_pos[0][0],
-            1: curr_pos[1][0],
-            2: curr_pos[2][0],
-            3: curr_pos[3][0]
+        # self.last_move = {
+        #     0: curr_pos[0][0],
+        #     1: curr_pos[1][0],
+        #     2: curr_pos[2][0],
+        #     3: curr_pos[3][0]
+        # }
+        self.last_move = self.getCurrentAngles()
+
+    def getCurrentAngles(self):
+        """
+        Returns the current angles for all servos in DH space as a dictionary.
+        angles = {
+            0: [0.0, 130.26, -115.73, -104.52],
+            1: [0.0, 130.26, -115.73, -104.52],
+            2: [0.0, 130.26, -115.73, -104.52],
+            3: [0.0, 130.26, -115.73, -104.52],
         }
 
-    # def DH2Servo(self, angles):
-    #     tmp = []
-    #     for s, a in list(zip(self.servos, angles)):
-    #         tmp.append(s.DH2Servo(a))
-    #     return tuple(tmp)
+        FIXME: actually query the servos and get there angles in DH space
+        """
+        angles = {
+            0: [0.0, 130.26, -115.73, -104.52],
+            1: [0.0, 130.26, -115.73, -104.52],
+            2: [0.0, 130.26, -115.73, -104.52],
+            3: [0.0, 130.26, -115.73, -104.52],
+        }
+        return angles
+
     def DH2Servo(self, angle, num):
         return self.servos[num].DH2Servo(angle)
-
 
     def moveLegsGait4(self, legs):
         """

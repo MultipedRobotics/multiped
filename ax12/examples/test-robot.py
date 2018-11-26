@@ -9,7 +9,7 @@ from __future__ import print_function
 from __future__ import division
 from quadruped import Engine
 # from quadruped import DiscreteRippleGait
-from quadruped import Leg4
+from quadruped import Kinematics4
 from pyservos import AX12
 import time
 from math import pi
@@ -22,11 +22,6 @@ from plotting import rplot, rplot2,plot_body_frame
 """
 need:
 
-- last move (x,y,z)
-
-      cmd      3d pts      servo angles        servo packet
-robot --> gait -----> legs -----------> engine -----------> servos
-
       cmd      3d pts      DH angles        servo packet
 robot --> gait -----> legs --------> engine -----------> servos
 
@@ -35,25 +30,22 @@ robot:
 - AI
 - knows:
     - command
+    - 3d points
+    - dh angles
 
-Leg model
+Kinematics
 - init: link lengths
 - F/I Kinematics
-- DH2ServoAngles [move to engine]
-- knows:
-    - nothing???
 
 Gait:
 - init: neutral pos
 - step sequence
-- knows:
-    - current leg pos (x,y,z)
 
 Engine:
 - init: servoType, current pos, servoOffsets, serial port
 - serial connection
-- AX12 protocol
-- DH2ServoAngles [move Servo offsets here]
+- servo protocol (ax12, xl430, rcservo, etc)
+- DH2ServoAngles
 """
 
 
@@ -76,6 +68,8 @@ class RobotTest(object):
             # 'femur':  [90, [-90, 90], 123],   # fixme
             # 'tibia':  [89, [-90, 120], 194],  # fixme
             # 'tarsus': [90, [-90, 90], 167],
+
+            'numServos': 4,  # helps?
             'coxa':   [52, 150],
             'femur':  [90, 123],   # fixme
             'tibia':  [89, 194],  # fixme
@@ -85,7 +79,10 @@ class RobotTest(object):
             'stand': (120, 0, -70),
 
             # engine
+            # types: 1:ax12 2:xl320 4:xl430
+            'servoType': 1,
             'serialPort': ser,
+            'bcm_pin': bcm_pin
         }
 
         self.positions = {
@@ -93,8 +90,8 @@ class RobotTest(object):
             'sit': data['sit']
         }
 
-        self.leg = Leg4(data)
-        # neutral = self.leg.getNeutralPos()
+        self.kinematics = Kinematics4(data)
+        # neutral = self.kinematics.getNeutralPos()
         self.gait = Discrete(self.positions['stand'])
         # self.gait.setLegLift(20)
         # self.gait.scale = 65
@@ -106,9 +103,9 @@ class RobotTest(object):
             2: pt,
             3: pt,
         }
-        angles_speeds = self.leg.generateServoAngles2(feet, 100)
+        angles_speeds = self.kinematics.generateDHAngles(feet, 100)
         # print(">> ", angles_speeds)
-        self.engine = Engine(data, AX12, curr_pos=angles_speeds, wait=0.3, bcm_pin=bcm_pin)
+        self.engine = Engine(data, AX12, curr_pos=angles_speeds)
 
         self.stand()
         # time.sleep(3)
@@ -125,7 +122,7 @@ class RobotTest(object):
     #     pts = {
     #         leg: [pt]
     #     }
-    #     angles = self.leg.generateServoAngles2(pts, speed)
+    #     angles = self.kinematics.generateServoAngles2(pts, speed)
     #     print(angles)
     #     self.engine.moveLegsGait3(angles)
     #     time.sleep(1)
@@ -157,7 +154,7 @@ class RobotTest(object):
     #     move = []
     #     for angles in dh_cmds:
     #         s_cmds = []
-    #         for a, s in zip(angles, self.leg.servos):
+    #         for a, s in zip(angles, self.kinematics.servos):
     #             s_cmds.append(s.DH2Servo(a))
     #         s_cmds.append(speed)
     #         move.append(s_cmds)
@@ -205,7 +202,9 @@ class RobotTest(object):
 
             # pts = (x,y,z) for each leg for the whole cycle
             # speed = max speed seen by any joint, most likely it will be lower
-            angles_speeds = self.leg.generateServoAngles2(pts, 200)  # get servo angles
+            angles_speeds = self.kinematics.generateDHAngles(pts, 200)  # get servo angles
+
+            rplot2(angles_speeds[0])
 
             # only move 1 leg, remove others from commands
             # if False:
@@ -243,7 +242,7 @@ class RobotTest(object):
             2: pt,
             3: pt,
         }
-        angles_speeds = self.leg.generateServoAngles2(feet, speed)
+        angles_speeds = self.kinematics.generateDHAngles(feet, speed)
         self.engine.moveLegsGait4(angles_speeds)
 
     def stand(self, speed=100):
@@ -272,7 +271,7 @@ class RobotTest(object):
             2: pt,
             3: pt,
         }
-        angles_speeds = self.leg.generateServoAngles2(feet, speed)
+        angles_speeds = self.kinematics.generateDHAngles(feet, speed)
         self.engine.moveLegsGait4(angles_speeds)
         time.sleep(1)
 
@@ -288,7 +287,7 @@ class RobotTest(object):
     #             )
     #             feet = {}
     #             feet[i] = pt
-    #             angles_speeds = self.leg.generateServoAngles2(feet, speed)
+    #             angles_speeds = self.kinematics.generateServoAngles2(feet, speed)
     #             self.engine.moveLegsGait4(angles_speeds)
     #             time.sleep(1)
     #
@@ -306,7 +305,7 @@ class RobotTest(object):
     #             )
     #             feet = {}
     #             feet[i] = pt
-    #             angles_speeds = self.leg.generateServoAngles2(feet, speed)
+    #             angles_speeds = self.kinematics.generateServoAngles2(feet, speed)
     #             self.engine.moveLegsGait4(angles_speeds)
     #             time.sleep(1)
 

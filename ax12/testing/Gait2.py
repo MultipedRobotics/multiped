@@ -118,12 +118,13 @@ class Discrete(Gait):
         # min/max = 0.75 works for straight
         # min/max = [.25,.5] for 45deg
         ratio = (0.75, 0.75,)  # use this for below, min/max???
+        ratio = (0.25, 0.5,)  # works for all angles
         self.points = {
-            'A': (-x*.25, 0, zd,),  # A - closest point
-            'B': (x*.5, 0, zd,),   # B - farthest point
+            'A': (-x*.75, 0, zd,),  # A - closest point
+            'B': (x*.75, 0, zd,),   # B - farthest point
             'N': (0, 0, zd,),     # N - netural point
-            'a': (-x*.25, 0, zu),   # A lifted up
-            'b': (x*.5, 0, zu,)    # B lifted up
+            'a': (-x*.75, 0, zu),   # A lifted up
+            'b': (x*.75, 0, zu,)    # B lifted up
         }
 
         # A,a',b',B,N,n,n,N,n,n,N,A,a,a,a

@@ -10,7 +10,7 @@ from math import sin, cos, acos, atan2, sqrt, pi
 from math import radians as d2r
 # from math import degrees as r2d
 # import logging
-from quadruped.Servo import Servo
+# from quadruped.Servo import Servo
 
 # logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(level=logging.ERROR)
@@ -21,29 +21,29 @@ from quadruped.Servo import Servo
 # Leg4Info = namedtuple('Leg4Info', 'coxa femur tibia fibia tarsus')
 
 
-def ramp(val, length):
-    """
-    Simple triangle for scaling speed. it always returns 0.5 at the lowest
-    and is 1.0 at max in the middle
+# def ramp(val, length):
+#     """
+#     Simple triangle for scaling speed. it always returns 0.5 at the lowest
+#     and is 1.0 at max in the middle
+#
+#     in: val - step
+#         length - number of steps
+#     out: 0.5 - 1.0
+#     """
+#     val = val % length
+#     # print("ramp: {} {} {}".format(val, length/2, length))
+#     slope = 0.5/(length/2)
+#     if val > length/2:
+#         # since it is symetric, just mirror the answer
+#         val = (length - val)
+#     return slope*val + 0.5
 
-    in: val - step
-        length - number of steps
-    out: 0.5 - 1.0
-    """
-    val = val % length
-    # print("ramp: {} {} {}".format(val, length/2, length))
-    slope = 0.5/(length/2)
-    if val > length/2:
-        # since it is symetric, just mirror the answer
-        val = (length - val)
-    return slope*val + 0.5
 
-
-class LegException(Exception):
+class KinematicsException(Exception):
     pass
 
 
-class Leg4(object):
+class Kinematics4(object):
     """
     Leg class outputs the servo angles for some requested foot location (x,y,z)
 
@@ -69,10 +69,10 @@ class Leg4(object):
         """
         Each leg has 4 servos/channels
         """
-        # setup kinematics and servos
-        self.servos = []
-        for ID, seg in enumerate(['coxa', 'femur', 'tibia', 'tarsus']):
-            self.servos.append(Servo(ID, params[seg][1], params[seg][2]))
+        # # setup kinematics and servos
+        # self.servos = []
+        # for ID, seg in enumerate(['coxa', 'femur', 'tibia', 'tarsus']):
+        #     self.servos.append(Servo(ID, params[seg][1], params[seg][2]))
 
         self.coxaLength = params['coxa'][0]
         self.femurLength = params['femur'][0]
@@ -204,55 +204,7 @@ class Leg4(object):
 
         return (t1, t2, t3, t4)
 
-    def generateServoAngles(self, footLoc, speed):
-        """
-        This is a bulk process and takes all of the foot locations for an entire
-        sequence of a gait cycle. It handles all legs at once.
-
-        speed: this is the max movement speed
-
-        footLoc: locations of feet from gait
-        {      step0      step1   ...
-            0: [(x,y,z), (x,y,z), ...] # leg0
-            2: [(x,y,z), (x,y,z), ...] # leg2
-            ...
-        }
-
-        return
-        {      step 0          step 1         ...
-            0: [[(t1,s1),(t2,s2),(t3,s3),(t4,s4)], [(t1,s1),(t2,s2),(t3,s3),(t4,s4)], ...] # leg0
-            2: [[(t1,s1),(t2,s2),(t3,s3),(t4,s4)], [(t1,s1),(t2,s2),(t3,s3),(t4,s4)], ...] # leg2
-            ...
-        } where t=theta s=speed
-        """
-        # FIXME: fix this to handle N legs, right now it only does 4
-
-        # get the keys and figure out some stuff
-        keys = list(footLoc.keys())
-        angles = {}
-
-        for k in keys:
-            pos = footLoc[k]  # grab foot positions for leg k
-            angles[k] = []
-
-            # calculate the inverse DH angles
-            numStep = len(pos)
-            for step, p in enumerate(pos):
-                s = self.inverse(*p)  # s0,s1,s2,s3
-                tmp = self.DH2Servo(s)
-                # scaled_speed = int(speed*ramp(step, numStep))
-                # if p[2] > -70: scaled_speed = speed
-                # else: scaled_speed = int(0.6*speed)
-                scaled_speed = speed
-                tmp2 = [(x, scaled_speed) for x in tmp]
-                angles[k].append(tmp2)
-                # print("speed", speed)
-                # print("tmp", tmp)
-                # exit(0)
-
-        return angles
-
-    def generateServoAngles2(self, footLoc, speed):
+    def generateDHAngles(self, footLoc, speed):
         """
         This is a bulk process and takes all of the foot locations for an entire
         sequence of a gait cycle. It handles all legs at once.
@@ -271,7 +223,7 @@ class Leg4(object):
             0: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg0
             2: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg2
             ...
-        } where t=theta
+        } where t=theta in DH space
         """
 
         # get the keys and figure out some stuff
@@ -283,34 +235,125 @@ class Leg4(object):
             print("Leg[{}]-------------".format(legNum))
             pos = footLoc[legNum]  # grab foot positions for leg k
             angles[legNum] = []
-            # print('pos', pos)
 
             # calculate the inverse DH angles
-            # numStep = len(pos)
             for step, p in enumerate(pos):
-                # print('  {:2}: {:7.2f} {:7.2f} {:7.2f}'.format(i, *pt))
-                # print('step: {} p: {}'.format(step, p))
                 s = self.inverse(*p)  # s0,s1,s2,s3
-                tmp = self.DH2Servo(s)
-                # scaled_speed = int(speed*ramp(step, numStep))
-                # if p[2] > -70: scaled_speed = speed
-                # else: scaled_speed = int(0.6*speed)
-                # tmp2 = [(x, scaled_speed) for x in tmp]
                 scaled_speed = speed
-                angles[legNum].append(tmp + (scaled_speed,))
-                # print("speed", speed)
-                # print("tmp", tmp)
-                # # exit(0)
-                # print("  {:2}: {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, *tmp))
-                print("  {:2}: {} {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, scaled_speed, *tmp))
+                angles[legNum].append(s + (scaled_speed,))
+                print("  {:2}: {} {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, scaled_speed, *s))
 
         return angles
 
-    def DH2Servo(self, angles):
-        tmp = []
-        for s, a in list(zip(self.servos, angles)):
-            tmp.append(s.DH2Servo(a))
-        return tuple(tmp)
+
+    # def generateServoAngles(self, footLoc, speed):
+    #     """
+    #     This is a bulk process and takes all of the foot locations for an entire
+    #     sequence of a gait cycle. It handles all legs at once.
+    #
+    #     speed: this is the max movement speed
+    #
+    #     footLoc: locations of feet from gait
+    #     {      step0      step1   ...
+    #         0: [(x,y,z), (x,y,z), ...] # leg0
+    #         2: [(x,y,z), (x,y,z), ...] # leg2
+    #         ...
+    #     }
+    #
+    #     return
+    #     {      step 0          step 1         ...
+    #         0: [[(t1,s1),(t2,s2),(t3,s3),(t4,s4)], [(t1,s1),(t2,s2),(t3,s3),(t4,s4)], ...] # leg0
+    #         2: [[(t1,s1),(t2,s2),(t3,s3),(t4,s4)], [(t1,s1),(t2,s2),(t3,s3),(t4,s4)], ...] # leg2
+    #         ...
+    #     } where t=theta s=speed
+    #     """
+    #     # FIXME: fix this to handle N legs, right now it only does 4
+    #
+    #     # get the keys and figure out some stuff
+    #     keys = list(footLoc.keys())
+    #     angles = {}
+    #
+    #     for k in keys:
+    #         pos = footLoc[k]  # grab foot positions for leg k
+    #         angles[k] = []
+    #
+    #         # calculate the inverse DH angles
+    #         numStep = len(pos)
+    #         for step, p in enumerate(pos):
+    #             s = self.inverse(*p)  # s0,s1,s2,s3
+    #             tmp = self.DH2Servo(s)
+    #             # scaled_speed = int(speed*ramp(step, numStep))
+    #             # if p[2] > -70: scaled_speed = speed
+    #             # else: scaled_speed = int(0.6*speed)
+    #             scaled_speed = speed
+    #             tmp2 = [(x, scaled_speed) for x in tmp]
+    #             angles[k].append(tmp2)
+    #             # print("speed", speed)
+    #             # print("tmp", tmp)
+    #             # exit(0)
+    #
+    #     return angles
+
+
+    # def generateServoAngles2(self, footLoc, speed):
+    #     """
+    #     This is a bulk process and takes all of the foot locations for an entire
+    #     sequence of a gait cycle. It handles all legs at once.
+    #
+    #     speed: this is the max movement speed
+    #
+    #     footLoc: locations of feet from gait
+    #     {      step0      step1   ...
+    #         0: [(x,y,z), (x,y,z), ...] # leg0
+    #         2: [(x,y,z), (x,y,z), ...] # leg2
+    #         ...
+    #     }
+    #
+    #     return
+    #     {      step 0          step 1         ...
+    #         0: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg0
+    #         2: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg2
+    #         ...
+    #     } where t=theta
+    #     """
+    #
+    #     # get the keys and figure out some stuff
+    #     keys = list(footLoc.keys())
+    #     angles = {}
+    #
+    #     print("=[generateServoAngles2 speed servo[0-3]]===================")
+    #     for legNum in keys:
+    #         print("Leg[{}]-------------".format(legNum))
+    #         pos = footLoc[legNum]  # grab foot positions for leg k
+    #         angles[legNum] = []
+    #         # print('pos', pos)
+    #
+    #         # calculate the inverse DH angles
+    #         # numStep = len(pos)
+    #         for step, p in enumerate(pos):
+    #             # print('  {:2}: {:7.2f} {:7.2f} {:7.2f}'.format(i, *pt))
+    #             # print('step: {} p: {}'.format(step, p))
+    #             s = self.inverse(*p)  # s0,s1,s2,s3
+    #             tmp = self.DH2Servo(s)
+    #             # scaled_speed = int(speed*ramp(step, numStep))
+    #             # if p[2] > -70: scaled_speed = speed
+    #             # else: scaled_speed = int(0.6*speed)
+    #             # tmp2 = [(x, scaled_speed) for x in tmp]
+    #             scaled_speed = speed
+    #             angles[legNum].append(tmp + (scaled_speed,))
+    #             # print("speed", speed)
+    #             # print("tmp", tmp)
+    #             # # exit(0)
+    #             # print("  {:2}: {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, *tmp))
+    #             print("  {:2}: {} {:7.2f} {:7.2f} {:7.2f} {:7.2f}".format(step, scaled_speed, *tmp))
+    #
+    #     return angles
+
+    # def DH2Servo(self, angles):
+    #     tmp = []
+    #     for s, a in list(zip(self.servos, angles)):
+    #         tmp.append(s.DH2Servo(a))
+    #     return tuple(tmp)
 
     def pprint(self, step):
         print('*'*25)

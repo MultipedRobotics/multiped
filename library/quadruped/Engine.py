@@ -8,6 +8,7 @@ from __future__ import print_function
 from __future__ import division
 from pyservos import ServoSerial
 from pyservos import Packet
+# from pyservos import ServoTypes
 from pyservos.packet import angle2int
 from pyservos.utils import le
 from quadruped.Servo import Servo
@@ -83,7 +84,7 @@ class Engine(object):
 
     last_move = None
 
-    def __init__(self, data, servoType, curr_pos, bcm_pin=None, wait=0.1):
+    def __init__(self, data, servoType, curr_pos):
         """
         data: serial port to use, if none, then use dummy port
         servoType: AX12 or XL320 or other servo type
@@ -96,7 +97,12 @@ class Engine(object):
                 3: [...]
             }
         """
-        self.wait = wait
+        if 'bcm_pin' in data:
+            bcm_pin = data['bcm_pin']
+        else:
+            bcm_pin = None
+
+        # self.wait = wait
         # determine serial port
         # default to fake serial port
         if 'serialPort' in data:
@@ -107,17 +113,18 @@ class Engine(object):
 
             except Exception as e:
                 print(e)
-                print('bye ...')
+                print('Engine::init(): bye ...')
                 exit(1)
         else:
             print('*** Using dummy serial port!!! ***')
             self.serial = ServoSerial('dummy')
             # raise Exception('No serial port given')
 
-
+        # handle servos ... how does it know how many servos???
         self.servos = []
         for ID, seg in enumerate(['coxa', 'femur', 'tibia', 'tarsus']):
-            self.servos.append(Servo(ID, data[seg][2]))
+            length, offset = data[seg]
+            self.servos.append(Servo(ID, offset))
 
         self.packet = Packet(servoType)
 
@@ -128,6 +135,15 @@ class Engine(object):
             2: curr_pos[2][0],
             3: curr_pos[3][0]
         }
+
+    # def DH2Servo(self, angles):
+    #     tmp = []
+    #     for s, a in list(zip(self.servos, angles)):
+    #         tmp.append(s.DH2Servo(a))
+    #     return tuple(tmp)
+    def DH2Servo(self, angle, num):
+        return self.servos[num].DH2Servo(angle)
+
 
     def moveLegsGait4(self, legs):
         """
@@ -202,7 +218,7 @@ class Engine(object):
                 speed = leg_angles_speed[4]
                 # print("Speed:", speed, "wait", max_wait)
 
-                for i, angle in enumerate(angles):
+                for i, DH_angle in enumerate(angles):
                     # oldangle = self.last_move[legNum][i]
                     # due to rounding errors, to ensure the other servers finish
                     # BEFORE time.sleep(max_wait) ends, the the function it
@@ -214,7 +230,8 @@ class Engine(object):
                     # spd = spd if spd <= speed else speed
                     # sl, sh = le(spd)
                     sl, sh = le(servo_speeds[i])
-                    al, ah = angle2int(angle)  # angle
+                    servo_angle = self.DH2Servo(DH_angle, i)
+                    al, ah = angle2int(servo_angle)  # angle
                     data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
                     # data.append([legNum*numServos + i+1, al, ah])  # ID, low angle, high angle, low speed, high speed
 

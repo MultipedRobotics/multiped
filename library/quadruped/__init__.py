@@ -3,7 +3,7 @@ from __future__ import division
 from .Engine import Engine
 from .Gait import DiscreteRippleGait
 # from .Leg3 import Leg3, LegException
-from .Leg4 import Leg4
+from quadruped.kinematics4 import Kinematics4
 # from .Servo import Servo  # don't need
 from .Robot import Robot
 

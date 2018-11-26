@@ -88,7 +88,7 @@ def rplot2(angles, pause=1, degrees=True):
     # plt.subplot(1,2,1,projection='polar')
     # plt.ion()
 
-    for t1,t2,t3,t4 in angles:
+    for t1,t2,t3,t4,speed in angles:
 
         ptsx = [0]
         ptsy = [0]

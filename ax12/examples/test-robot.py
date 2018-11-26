@@ -79,8 +79,8 @@ class RobotTest(object):
             # 'femur':  [90, [-90, 90], 123],   # fixme
             # 'tibia':  [89, [-90, 120], 194],  # fixme
             # 'tarsus': [90, [-90, 90], 167],
-
-            'numServos': 4,  # helps?
+            'numLegs': 4,  # helps?
+            'numServosPerLeg': 4,  # helps?
             'coxa':   [52, 150],
             'femur':  [90, 123],   # fixme
             'tibia':  [89, 194],  # fixme

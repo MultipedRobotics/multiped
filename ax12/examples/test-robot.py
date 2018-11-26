@@ -17,6 +17,7 @@ import platform
 import sys
 sys.path.insert(0,'../testing')
 from Gait2 import Discrete
+from plotting import rplot, rplot2,plot_body_frame
 
 
 class RobotTest(object):
@@ -106,48 +107,47 @@ class RobotTest(object):
         self.engine.moveLegsGait3(angles)
         time.sleep(1)
 
-    def angleCheckLeg(self, legNum, speed):
-        """
-        speed = 1 - 1023 (scalar, all servos move at same rate)
-        {      step 0          step 1         ...
-            0: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg0
-            2: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg2
-            ...
-        } where t=theta
-        """
-        cmds = {}
-        dh_cmds = [
-            [0, 0, 0, 0],
-            [0, 0, 0, 45],
-            [0, 0, 0, -45],
-            [0, 0, 0, 0],
-            [0, 0, 90, 0],
-            [0, 0, 0, 0],
-            [0, 90, 0, 0],
-            [0, 0, 0, 0],
-            [80, 0, 0, 0],
-            [-80, 0, 0, 0],
-            [0, 0, 0, 0],
-        ]
-
-        move = []
-        for angles in dh_cmds:
-            s_cmds = []
-            for a, s in zip(angles, self.leg.servos):
-                s_cmds.append(s.DH2Servo(a))
-            s_cmds.append(speed)
-            move.append(s_cmds)
-        cmds[legNum] = move
-        print(cmds)
-        self.engine.moveLegsGait3(cmds)
+    # def angleCheckLeg(self, legNum, speed):
+    #     """
+    #     speed = 1 - 1023 (scalar, all servos move at same rate)
+    #     {      step 0          step 1         ...
+    #         0: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg0
+    #         2: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg2
+    #         ...
+    #     } where t=theta
+    #     """
+    #     cmds = {}
+    #     dh_cmds = [
+    #         [0, 0, 0, 0],
+    #         [0, 0, 0, 45],
+    #         [0, 0, 0, -45],
+    #         [0, 0, 0, 0],
+    #         [0, 0, 90, 0],
+    #         [0, 0, 0, 0],
+    #         [0, 90, 0, 0],
+    #         [0, 0, 0, 0],
+    #         [80, 0, 0, 0],
+    #         [-80, 0, 0, 0],
+    #         [0, 0, 0, 0],
+    #     ]
+    #
+    #     move = []
+    #     for angles in dh_cmds:
+    #         s_cmds = []
+    #         for a, s in zip(angles, self.leg.servos):
+    #             s_cmds.append(s.DH2Servo(a))
+    #         s_cmds.append(speed)
+    #         move.append(s_cmds)
+    #     cmds[legNum] = move
+    #     print(cmds)
+    #     self.engine.moveLegsGait3(cmds)
 
     def walk(self):
         print(" <<< Walk >>>")
         # predefined walking path
         # x, y, rotation
         path = [
-            [1.0, 0, 0],
-            [1.0, 0, 0],
+            # [1.0, 0.0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
@@ -156,7 +156,8 @@ class RobotTest(object):
             # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
-            # [0, 0, pi/4],
+            # [1.0, 0, 0],
+            [0, 0, pi/4],
             # [0, 0, pi/4],
             # [0, 0, pi/4],
             # [0, 0, -pi/4],
@@ -175,8 +176,9 @@ class RobotTest(object):
         ]
 
         for cmd in path:
-            pts = self.gait.oneCycle(*cmd)        # get 3d feet points
+            pts = self.gait.command(cmd)        # get 3d feet points
             # pts = self.gait.command(cmd)        # get 3d feet points
+            plot_body_frame(pts,1)
 
             # pts = (x,y,z) for each leg for the whole cycle
             # speed = max speed seen by any joint, most likely it will be lower
@@ -251,39 +253,39 @@ class RobotTest(object):
         self.engine.moveLegsGait4(angles_speeds)
         time.sleep(1)
 
-    def moveToNeutral(self):
-        curr = ??
-        for i in range(4):
-            if curr[i] != self.positions['stand'][i]:
-                n = self.positions['stand'][i]
-                pt = (
-                    (curr[0], curr[1], 0,),
-                    (n[0],n[1],0),
-                    n
-                )
-                feet = {}
-                feet[i] = pt
-                angles_speeds = self.leg.generateServoAngles2(feet, speed)
-                self.engine.moveLegsGait4(angles_speeds)
-                time.sleep(1)
-
-    def moveToStart(self):
-        curr = ??
-        start = self.gait.points
-        for i in range(4):
-            index = ['A', 'N','N','A']
-            if curr[i] != start[index[i]]:
-                n = self.positions['stand'][i]
-                pt = (
-                    (curr[0], curr[1], 0,),
-                    (n[0],n[1],0),
-                    n
-                )
-                feet = {}
-                feet[i] = pt
-                angles_speeds = self.leg.generateServoAngles2(feet, speed)
-                self.engine.moveLegsGait4(angles_speeds)
-                time.sleep(1)
+    # def moveToNeutral(self):
+    #     curr = ??
+    #     for i in range(4):
+    #         if curr[i] != self.positions['stand'][i]:
+    #             n = self.positions['stand'][i]
+    #             pt = (
+    #                 (curr[0], curr[1], 0,),
+    #                 (n[0],n[1],0),
+    #                 n
+    #             )
+    #             feet = {}
+    #             feet[i] = pt
+    #             angles_speeds = self.leg.generateServoAngles2(feet, speed)
+    #             self.engine.moveLegsGait4(angles_speeds)
+    #             time.sleep(1)
+    #
+    # def moveToStart(self):
+    #     curr = ??
+    #     start = self.gait.points
+    #     for i in range(4):
+    #         index = ['A', 'N','N','A']
+    #         if curr[i] != start[index[i]]:
+    #             n = self.positions['stand'][i]
+    #             pt = (
+    #                 (curr[0], curr[1], 0,),
+    #                 (n[0],n[1],0),
+    #                 n
+    #             )
+    #             feet = {}
+    #             feet[i] = pt
+    #             angles_speeds = self.leg.generateServoAngles2(feet, speed)
+    #             self.engine.moveLegsGait4(angles_speeds)
+    #             time.sleep(1)
 
 def main():
     test = RobotTest()

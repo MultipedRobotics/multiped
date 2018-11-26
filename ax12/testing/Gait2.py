@@ -1,4 +1,4 @@
-from math import cos, sin, sqrt, pi
+from math import cos, sin, sqrt, pi, atan2
 
 
 debug = False
@@ -78,8 +78,8 @@ class Gait(object):
         elif 0.1 < d:
             x /= d
             y /= d
-        else:
-            return None
+        # else:
+        #     return None
 
         angle_limit = pi/2
         if rz > angle_limit:
@@ -87,9 +87,9 @@ class Gait(object):
         elif rz < -angle_limit:
             rz = -angle_limit
 
-        return self.oneCycle_alt(x, y, rz)
+        return self.oneCycle(x, y, rz)
 
-    def oneCycle_alt(self, x, y, rz):
+    def oneCycle(self, x, y, rz):
         raise NotImplementedError('*** Gait: wrong function, this is base class! ***')
 
 
@@ -109,25 +109,21 @@ class Discrete(Gait):
         rest: the neutral foot position
         """
         Gait.__init__(self, rest)
-        # x = 120  # 135
-        # zu = 70    # z lift height
-        # zd = 0  # z on the ground
-        # # dx = x/sqrt(2)
-        #
-        # self.rest = (x, 0, -zu,)
 
         self.rest = rest
         zd = 0
         zu = -self.rest[2]
         x = self.rest[0]
 
-        ratio = 0.75  # use this for below???
+        # min/max = 0.75 works for straight
+        # min/max = [.25,.5] for 45deg
+        ratio = (0.75, 0.75,)  # use this for below, min/max???
         self.points = {
-            'A': (-x*.75, 0, zd,),  # A - closest point
-            'B': (x*.75, 0, zd,),   # B - farthest point
+            'A': (-x*.25, 0, zd,),  # A - closest point
+            'B': (x*.5, 0, zd,),   # B - farthest point
             'N': (0, 0, zd,),     # N - netural point
-            'a': (-x*.75, 0, zu),   # A lifted up
-            'b': (x*.75, 0, zu,)    # B lifted up
+            'a': (-x*.25, 0, zu),   # A lifted up
+            'b': (x*.5, 0, zu,)    # B lifted up
         }
 
         # self.current_position = ['N','N','N','N']
@@ -166,20 +162,26 @@ class Discrete(Gait):
         self.legOffset = [0, 0, 14, 14]
         self.frame = [pi/4, -pi/4, -3*pi/4, 3*pi/4]  # frame 0, 1, 2, 3
 
-    def eachLeg(self, index, cmd, legNum):
+    def eachLeg(self, step, index, cmd, legNum):
         """
         interpolates the foot position of each leg
         cmd:
             linear (mm)
             angle (rads)
         """
+        x,y,rz = cmd
+        mag = abs(x**2 + y**2)
+        angle = atan2(y,x)
 
         # this gets a delta from neutral
         if legNum in [0,3]:
             cmd = self.steps[index]
         else:
             cmd = self.steps2[index]
-        rcmd = rot_z_tuple(self.frame[legNum], cmd)
+
+        print(cmd)
+
+        rcmd = rot_z_tuple(self.frame[legNum]+angle, cmd)
         rest = self.rest
         newpos = [0, 0, 0]
         if legNum in [2,3]:
@@ -193,13 +195,13 @@ class Discrete(Gait):
         print('  [{}](x,y,z): {:.2f} {:.2f} {:.2f}'.format(legNum, newpos[0], newpos[1], newpos[2]))
         return newpos
 
-    def ready(self):
-        ret = {
-            0: [],
-            1: [],
-            2: [],
-            3: []
-        }  # 4 leg foot positions for the entire 12 count cycle is returned
+    # def ready(self):
+    #     ret = {
+    #         0: [],
+    #         1: [],
+    #         2: [],
+    #         3: []
+    #     }  # 4 leg foot positions for the entire 12 count cycle is returned
 
 
     def oneCycle(self, x, y, rz):
@@ -233,7 +235,7 @@ class Discrete(Gait):
                     index = (num - (i - self.legOffset[legNum])) % num
                 # print("  0: {}".format(index))
 
-                pos = self.eachLeg(index, None, legNum)  # move each leg appropriately
+                pos = self.eachLeg(i,index, (x,y,rz), legNum)  # move each leg appropriately
                 # print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
 
                 ret[legNum].append(pos)

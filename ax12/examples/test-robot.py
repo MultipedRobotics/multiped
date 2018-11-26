@@ -44,34 +44,50 @@ class RobotTest(object):
             # 'stand': [0, 75, -120, -45],
             # 'stand': [0, 37, -139, -45],
             # 'standUnits': 'deg',
-            'stand': [0, 160-123, 130-194, 100-167],
-            'sit': [0, 250-123, 80-194, 60-167],
+            # 'stand': [0, 160-123, 130-194, 100-167],
+            # 'sit': [0, 250-123, 80-194, 60-167],
 
             # engine
             'serialPort': ser,
             # 'write': 'bulk'
         }
-        self.leg = Leg4(data)
-        neutral = self.leg.getNeutralPos()
-        self.gait = Discrete(55.0, neutral)
-        # self.gait.setLegLift(20)
-        self.gait.scale = 65
-        self.engine = Engine(data, AX12, wait=0.3, bcm_pin=bcm_pin)
 
         self.positions = {
-            'stand': None,
-            'sit': None
+            'stand': (120, 0, -70),
+            'sit': (80, 0, 1,)
         }
 
-        for key in ['stand', 'sit']:
-            if key in data:
-                angles = []
-                for a, s in zip(data[key], self.leg.servos):
-                    angles.append(s.DH2Servo(a))
-                self.positions[key] = angles
+        self.leg = Leg4(data)
+        # neutral = self.leg.getNeutralPos()
+        self.gait = Discrete(self.positions['stand'])
+        # self.gait.setLegLift(20)
+        # self.gait.scale = 65
+
+        pt = (self.positions['sit'],)
+        feet = {
+            0: pt,
+            1: pt,
+            2: pt,
+            3: pt,
+        }
+        angles_speeds = self.leg.generateServoAngles2(feet, 100)
+        # print(">> ", angles_speeds)
+        self.engine = Engine(data, AX12, curr_pos=angles_speeds, wait=0.3, bcm_pin=bcm_pin)
+
+        # self.positions = {
+        #     'stand': (120, 0, -70),
+        #     'sit': (80, 0, 1,)
+        # }
+
+        # for key in ['stand', 'sit']:
+        #     if key in data:
+        #         angles = []
+        #         for a, s in zip(data[key], self.leg.servos):
+        #             angles.append(s.DH2Servo(a))
+        #         self.positions[key] = angles
 
         self.stand()
-        time.sleep(3)
+        # time.sleep(3)
 
 
     def __del__(self):
@@ -195,7 +211,7 @@ class RobotTest(object):
         #     x,y,z,s = self.engine.last_move[leg]
         #     feet[leg] = ((x,y,0),(80, 0, 1),)  # foot position in mm
 
-        pt = ((130,0,0),(80, 0, 1),)  # foot position in mm
+        pt = ((self.gait.rest[0],0,0,),(80, 0, 1,),)  # foot position in mm
         feet = {
             0: pt,
             1: pt,
@@ -203,7 +219,7 @@ class RobotTest(object):
             3: pt,
         }
         angles_speeds = self.leg.generateServoAngles2(feet, speed)
-        self.engine.moveLegsGait3(angles_speeds)
+        self.engine.moveLegsGait4(angles_speeds)
 
     def stand(self, speed=100):
         """
@@ -223,7 +239,7 @@ class RobotTest(object):
         #
         # self.engine.moveLegsGait3(feet)
         # time.sleep(1)
-        pt = ((130, 0, -70),)  # foot position in mm
+        # pt = ((130, 0, -70),)  # foot position in mm
         pt = (self.gait.rest,)
         feet = {
             0: pt,
@@ -232,9 +248,42 @@ class RobotTest(object):
             3: pt,
         }
         angles_speeds = self.leg.generateServoAngles2(feet, speed)
-        self.engine.moveLegsGait3(angles_speeds)
+        self.engine.moveLegsGait4(angles_speeds)
         time.sleep(1)
 
+    def moveToNeutral(self):
+        curr = ??
+        for i in range(4):
+            if curr[i] != self.positions['stand'][i]:
+                n = self.positions['stand'][i]
+                pt = (
+                    (curr[0], curr[1], 0,),
+                    (n[0],n[1],0),
+                    n
+                )
+                feet = {}
+                feet[i] = pt
+                angles_speeds = self.leg.generateServoAngles2(feet, speed)
+                self.engine.moveLegsGait4(angles_speeds)
+                time.sleep(1)
+
+    def moveToStart(self):
+        curr = ??
+        start = self.gait.points
+        for i in range(4):
+            index = ['A', 'N','N','A']
+            if curr[i] != start[index[i]]:
+                n = self.positions['stand'][i]
+                pt = (
+                    (curr[0], curr[1], 0,),
+                    (n[0],n[1],0),
+                    n
+                )
+                feet = {}
+                feet[i] = pt
+                angles_speeds = self.leg.generateServoAngles2(feet, speed)
+                self.engine.moveLegsGait4(angles_speeds)
+                time.sleep(1)
 
 def main():
     test = RobotTest()

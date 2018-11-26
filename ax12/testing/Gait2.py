@@ -103,26 +103,34 @@ class Discrete(Gait):
     """
     steps = 0
 
-    def __init__(self, height, rest):
+    def __init__(self, rest):
         """
         height: added to z
         rest: the neutral foot position
         """
         Gait.__init__(self, rest)
-        x = 110  # 135
-        zu = 70    # z lift height
-        zd = 0  # z on the ground
-        dx = x/sqrt(2)
+        # x = 120  # 135
+        # zu = 70    # z lift height
+        # zd = 0  # z on the ground
+        # # dx = x/sqrt(2)
+        #
+        # self.rest = (x, 0, -zu,)
 
-        self.rest = (x, 0, -zu,)
+        self.rest = rest
+        zd = 0
+        zu = -self.rest[2]
+        x = self.rest[0]
 
+        ratio = 0.75  # use this for below???
         self.points = {
-            'A': (-x*.85, 0, zd,),  # A - closest point
+            'A': (-x*.75, 0, zd,),  # A - closest point
             'B': (x*.75, 0, zd,),   # B - farthest point
             'N': (0, 0, zd,),     # N - netural point
-            'a': (-x*.85, 0, zu),   # A lifted up
+            'a': (-x*.75, 0, zu),   # A lifted up
             'b': (x*.75, 0, zu,)    # B lifted up
         }
+
+        # self.current_position = ['N','N','N','N']
 
 
         # self.points = {
@@ -185,6 +193,14 @@ class Discrete(Gait):
         print('  [{}](x,y,z): {:.2f} {:.2f} {:.2f}'.format(legNum, newpos[0], newpos[1], newpos[2]))
         return newpos
 
+    def ready(self):
+        ret = {
+            0: [],
+            1: [],
+            2: [],
+            3: []
+        }  # 4 leg foot positions for the entire 12 count cycle is returned
+
 
     def oneCycle(self, x, y, rz):
         """
@@ -196,8 +212,8 @@ class Discrete(Gait):
         # the last cycle response, else, calculate a new response
         # ???
 
-        scale = self.scale
-        cmd = (scale*x, scale*y, rz)
+        # scale = self.scale
+        # cmd = (scale*x, scale*y, rz)
         ret = {
             0: [],
             1: [],
@@ -208,7 +224,7 @@ class Discrete(Gait):
         num = len(self.steps)
         for i in range(num):
             print("Step[{}]-----------".format(i))
-            for legNum in [0, 1, 2, 3]:  # order them diagonally
+            for legNum in [0, 1, 2, 3]:
                 # rcmd = cmd
                 # rcmd = rot_z_tuple(self.frame[legNum], cmd)
                 if legNum in [0,1]:
@@ -220,10 +236,6 @@ class Discrete(Gait):
                 pos = self.eachLeg(index, None, legNum)  # move each leg appropriately
                 # print('Foot[{}]: {:.2f} {:.2f} {:.2f}'.format(legNum, *(pos)))
 
-                # shift cg
-                # fist and last shouldn't move cg??
-                # pos = self.move_cg(legNum, 40, pos, leg_lift[i])
-
                 ret[legNum].append(pos)
 
         # if debug:
@@ -232,5 +244,8 @@ class Discrete(Gait):
         #         print('Leg[{}]---------'.format(legNum))
         #         for i, pt in enumerate(ret[legNum]):
         #             print('  {:2}: {:7.2f} {:7.2f} {:7.2f}'.format(i, *pt))
+
+        # update leg positions
+        # self.current_position = ['A','N','N','A']
 
         return ret

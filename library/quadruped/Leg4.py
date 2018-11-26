@@ -74,10 +74,10 @@ class Leg4(object):
         self.tibiaLength = params['tibia'][0]
         self.tarsusLength = params['tarsus'][0]
 
-        if 'stand' in params:
-            self.positions['neutral'] = self.forward(*params['stand'])
-        else:
-            raise Exception('Need to have "stand" angles in params file')
+        # if 'stand' in params:
+        #     self.positions['neutral'] = self.forward(*params['stand'])
+        # else:
+        #     raise Exception('Need to have "stand" angles in params file')
 
     def __del__(self):
         pass
@@ -312,8 +312,8 @@ class Leg4(object):
         for leg in step:
             print('  DH: [{:.0f} {:.0f} {:.0f} {:.0f}]'.format(*leg))
 
-    def getNeutralPos(self):
-        return self.positions['neutral']
+    # def getNeutralPos(self):
+    #     return self.positions['neutral']
 
     # def generateServoAngles_DH(self, angles):
     #     """

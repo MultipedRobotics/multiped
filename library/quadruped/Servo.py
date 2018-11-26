@@ -39,5 +39,5 @@ class Servo(object):
 		# 		# angle = self.maxAngle
 		sangle = angle+self.offset
 		if sangle > 300 or sangle < 0:
-			raise Exception('{} angle out of range DH: {:.1f}   Servo: {:.1f} deg'.format(self.id, angle, sangle))
+			raise Exception('{} angle out of range DH[-150,150]: {:.1f}   Servo[0,300]: {:.1f} deg'.format(self.id, angle, sangle))
 		return sangle

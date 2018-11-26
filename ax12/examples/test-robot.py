@@ -28,6 +28,10 @@ robot --> gait -----> legs --------> engine -----------> servos
 robot:
 - sensors
 - AI
+- Holds:
+    - kinematics
+    - gait
+    - engine
 - knows:
     - command
     - 3d points
@@ -46,6 +50,13 @@ Engine:
 - serial connection
 - servo protocol (ax12, xl430, rcservo, etc)
 - DH2ServoAngles
+
+Issues:
+--------
+- gait should drive speed, right now kinematics sets all movements the same
+- transition from N->A and A->N
+    - which class knows what
+    - need to shift body CM
 """
 
 

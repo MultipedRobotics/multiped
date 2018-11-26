@@ -121,10 +121,17 @@ class Engine(object):
             # raise Exception('No serial port given')
 
         # handle servos ... how does it know how many servos???
+        self.servos_up = {}  # check servos are operating
         self.servos = []
         for ID, seg in enumerate(['coxa', 'femur', 'tibia', 'tarsus']):
             length, offset = data[seg]
             self.servos.append(Servo(ID, offset))
+            # resp = self.pingServo(ID)  # return: (T/F, servo_angle)
+            # self.servos[ID] = resp[0]
+            curr_angle[ID] = 
+        # for s, val in self.servos.items():
+        #     if val is False:
+        #         print("*** Engine.__init__(): servo[{}] has failed".format(s))
 
         self.packet = Packet(servoType)
 

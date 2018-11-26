@@ -19,6 +19,43 @@ sys.path.insert(0,'../testing')
 from Gait2 import Discrete
 from plotting import rplot, rplot2,plot_body_frame
 
+"""
+need:
+
+- last move (x,y,z)
+
+      cmd      3d pts      servo angles        servo packet
+robot --> gait -----> legs -----------> engine -----------> servos
+
+      cmd      3d pts      DH angles        servo packet
+robot --> gait -----> legs --------> engine -----------> servos
+
+robot:
+- sensors
+- AI
+- knows:
+    - command
+
+Leg model
+- init: link lengths
+- F/I Kinematics
+- DH2ServoAngles [move to engine]
+- knows:
+    - nothing???
+
+Gait:
+- init: neutral pos
+- step sequence
+- knows:
+    - current leg pos (x,y,z)
+
+Engine:
+- init: servoType, current pos, servoOffsets, serial port
+- serial connection
+- AX12 protocol
+- DH2ServoAngles [move Servo offsets here]
+"""
+
 
 class RobotTest(object):
     def __init__(self):
@@ -35,27 +72,25 @@ class RobotTest(object):
 
         data = {
             # [ length, (limit_angles), offset_angle] - units:mm or degrees
-            'coxa':   [52, [-90, 90], 150],
-            'femur':  [90, [-90, 90], 123],   # fixme
-            'tibia':  [89, [-90, 120], 194],  # fixme
-            'tarsus': [90, [-90, 90], 167],
+            # 'coxa':   [52, [-90, 90], 150],
+            # 'femur':  [90, [-90, 90], 123],   # fixme
+            # 'tibia':  [89, [-90, 120], 194],  # fixme
+            # 'tarsus': [90, [-90, 90], 167],
+            'coxa':   [52, 150],
+            'femur':  [90, 123],   # fixme
+            'tibia':  [89, 194],  # fixme
+            'tarsus': [90, 167],
 
-            # gait
-            # Angles: 0.00 75.60 -120.39 -45.22
-            # 'stand': [0, 75, -120, -45],
-            # 'stand': [0, 37, -139, -45],
-            # 'standUnits': 'deg',
-            # 'stand': [0, 160-123, 130-194, 100-167],
-            # 'sit': [0, 250-123, 80-194, 60-167],
+            'sit': (80, 0, 1,),
+            'stand': (120, 0, -70),
 
             # engine
             'serialPort': ser,
-            # 'write': 'bulk'
         }
 
         self.positions = {
-            'stand': (120, 0, -70),
-            'sit': (80, 0, 1,)
+            'stand': data['stand'],
+            'sit': data['sit']
         }
 
         self.leg = Leg4(data)
@@ -75,18 +110,6 @@ class RobotTest(object):
         # print(">> ", angles_speeds)
         self.engine = Engine(data, AX12, curr_pos=angles_speeds, wait=0.3, bcm_pin=bcm_pin)
 
-        # self.positions = {
-        #     'stand': (120, 0, -70),
-        #     'sit': (80, 0, 1,)
-        # }
-
-        # for key in ['stand', 'sit']:
-        #     if key in data:
-        #         angles = []
-        #         for a, s in zip(data[key], self.leg.servos):
-        #             angles.append(s.DH2Servo(a))
-        #         self.positions[key] = angles
-
         self.stand()
         # time.sleep(3)
 
@@ -94,18 +117,18 @@ class RobotTest(object):
     def __del__(self):
         self.sit()
 
-    def pose_pt(self, leg, pt, speed):
-        """
-        Moves 1 leg to a position
-        value?
-        """
-        pts = {
-            leg: [pt]
-        }
-        angles = self.leg.generateServoAngles2(pts, speed)
-        print(angles)
-        self.engine.moveLegsGait3(angles)
-        time.sleep(1)
+    # def pose_pt(self, leg, pt, speed):
+    #     """
+    #     Moves 1 leg to a position
+    #     value?
+    #     """
+    #     pts = {
+    #         leg: [pt]
+    #     }
+    #     angles = self.leg.generateServoAngles2(pts, speed)
+    #     print(angles)
+    #     self.engine.moveLegsGait3(angles)
+    #     time.sleep(1)
 
     # def angleCheckLeg(self, legNum, speed):
     #     """
@@ -147,7 +170,7 @@ class RobotTest(object):
         # predefined walking path
         # x, y, rotation
         path = [
-            # [1.0, 0.0, 0],
+            [1.0, 0.0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
@@ -157,7 +180,7 @@ class RobotTest(object):
             # [1.0, 0, 0],
             # [1.0, 0, 0],
             # [1.0, 0, 0],
-            [0, 0, pi/4],
+            # [0, 0, pi/4],
             # [0, 0, pi/4],
             # [0, 0, pi/4],
             # [0, 0, -pi/4],
@@ -178,7 +201,7 @@ class RobotTest(object):
         for cmd in path:
             pts = self.gait.command(cmd)        # get 3d feet points
             # pts = self.gait.command(cmd)        # get 3d feet points
-            plot_body_frame(pts,1)
+            # plot_body_frame(pts,1)
 
             # pts = (x,y,z) for each leg for the whole cycle
             # speed = max speed seen by any joint, most likely it will be lower

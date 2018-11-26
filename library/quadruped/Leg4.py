@@ -10,10 +10,15 @@ from math import sin, cos, acos, atan2, sqrt, pi
 from math import radians as d2r
 # from math import degrees as r2d
 # import logging
-from .Servo import Servo
+from quadruped.Servo import Servo
 
 # logging.basicConfig(level=logging.DEBUG)
 # logging.basicConfig(level=logging.ERROR)
+
+# from collections import namedtuple
+#
+# Link = namedtuple('Link', 'length offset')
+# Leg4Info = namedtuple('Leg4Info', 'coxa femur tibia fibia tarsus')
 
 
 def ramp(val, length):
@@ -54,11 +59,11 @@ class Leg4(object):
     femurLength = None
     tarsusLength = None
 
-    positions = {
-        'stand': None,
-        # 'sit': None,
-        # 'neutral': None
-    }
+    # positions = {
+    #     'stand': None,
+    #     # 'sit': None,
+    #     # 'neutral': None
+    # }
 
     def __init__(self, params):
         """

@@ -1,7 +1,7 @@
 from math import cos, sin, sqrt, pi, atan2
 
 
-debug = False
+# debug = False
 
 
 def rot_z_tuple(t, c):
@@ -48,17 +48,17 @@ class Gait(object):
     - leg stride (neutral position)
     """
     # these are the offsets of each leg
-    legOffset = [0, 3, 3, 0]
+    # legOffset = [0, 3, 3, 0]
     # frame rotations for each leg
     # frame = [pi/4, -pi/4, -3*pi/4, 3*pi/4]  # frame 0, 1, 2, 3
-    frame = [0, -pi/4, -3*pi/4, 3*pi/4]  # frame 0, 1, 2, 3
-    moveFoot = None
+    # frame = [0, -pi/4, -3*pi/4, 3*pi/4]  # frame 0, 1, 2, 3
+    # moveFoot = None
     rest = None
-    scale = 50.0
+    # scale = 50.0
 
     def __init__(self, rest):
         # the resting or idle position/orientation of a leg
-        self.rest = rest
+        self.rest = rest # (x,y,z,)
 
     def command(self, cmd):
         """
@@ -126,17 +126,6 @@ class Discrete(Gait):
             'b': (x*.5, 0, zu,)    # B lifted up
         }
 
-        # self.current_position = ['N','N','N','N']
-
-
-        # self.points = {
-        #     'A': (-x/2, 0, zd,),  # A - closest point
-        #     'B': (x/2, 0, zd,),   # B - farthest point
-        #     'N': (0, 0, zd,),     # N - netural point
-        #     'a': (-x/2, 0, zu),   # A lifted up
-        #     'b': (x/2, 0, zu,)    # B lifted up
-        # }
-
         # A,a',b',B,N,n,n,N,n,n,N,A,a,a,a
         # 0/3
         self.steps = [
@@ -152,13 +141,7 @@ class Discrete(Gait):
             self.points['A'],self.points['a'],self.points['b'],
             self.points['B'],self.points['N'],self.points['N'],self.points['N'],self.points['N']
         ]
-        # self.steps2 = [
-        #     self.points2['N'],self.points2['N'],self.points2['N'],
-        #     self.points2['N'],self.points2['B'],self.points2['b'],self.points2['a'],
-        #     self.points2['A'],self.points2['A'],self.points2['A'],
-        #     self.points2['A'],self.points2['N'],self.points2['N'],self.points2['N'],
-        # ]
-        # self.setLegLift(height)
+
         self.legOffset = [0, 0, 14, 14]
         self.frame = [pi/4, -pi/4, -3*pi/4, 3*pi/4]  # frame 0, 1, 2, 3
 
@@ -179,7 +162,7 @@ class Discrete(Gait):
         else:
             cmd = self.steps2[index]
 
-        print(cmd)
+        # print(cmd)
 
         rcmd = rot_z_tuple(self.frame[legNum]+angle, cmd)
         rest = self.rest
@@ -194,15 +177,6 @@ class Discrete(Gait):
 
         print('  [{}](x,y,z): {:.2f} {:.2f} {:.2f}'.format(legNum, newpos[0], newpos[1], newpos[2]))
         return newpos
-
-    # def ready(self):
-    #     ret = {
-    #         0: [],
-    #         1: [],
-    #         2: [],
-    #         3: []
-    #     }  # 4 leg foot positions for the entire 12 count cycle is returned
-
 
     def oneCycle(self, x, y, rz):
         """

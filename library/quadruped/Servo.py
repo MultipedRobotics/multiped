@@ -11,10 +11,10 @@ class Servo(object):
     class does the conversion between DH angles to real servo angles
     """
 
-    def __init__(self, ID, minmax, offset=150):
+    def __init__(self, ID, offset=150):
         self.offset = offset
-        self.minAngle = minmax[0]  # DH space
-        self.maxAngle = minmax[1]  # DH space
+        # self.minAngle = minmax[0]  # DH space
+        # self.maxAngle = minmax[1]  # DH space
         self.id = ID
 
     def DH2Servo(self, angle):

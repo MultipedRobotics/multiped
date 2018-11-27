@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name ksmd)(type KiCad)(uri ${KIPRJMOD}/SOT_SMD.pretty)(options "")(descr ""))
-)

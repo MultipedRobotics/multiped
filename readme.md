@@ -5,12 +5,16 @@
 .. image:: https://img.shields.io/pypi/l/quadruped.svg
 	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
 
-My robot software.
+My walking robot software.
+
+[Robot based on Robotis XL320 Servos](https://github.com/MultipedRobotics/quadruped-XL320):
 
 * `YouTube <https://www.youtube.com/watch?v=kH2hlxUfCNg>`_
 * `Vimeo <https://player.vimeo.com/video/194676675>`_
 
-**this isn't really working right now**
+[Robot based on Robotis AX12 Servos](https://github.com/MultipedRobotics/quadruped-AX12)
+
+* Not fully working yet
 
 ## Required Software
 

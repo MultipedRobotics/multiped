@@ -1,9 +1,7 @@
 # Quadruped
 
-.. image:: https://img.shields.io/pypi/v/quadruped.svg
-	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
-.. image:: https://img.shields.io/pypi/l/quadruped.svg
-	:target: https://github.com/MomsFriendlyRobotCompany/quadruped
+[![](https://img.shields.io/pypi/v/quadruped.svg)](https://github.com/MultipedRobotics/multiped)
+[![](https://img.shields.io/pypi/l/quadruped.svg)](https://github.com/MultipedRobotics/multiped)
 
 My walking robot software.
 
@@ -204,7 +202,7 @@ servos (9 g's), they didn't work that great.
 
 # Change Log
 
-| | |
+| Date | Version | Notes |
 |---|---|---|
 | 2018-11-27 | 0.6.0 | Reorg'd, moved robots to own repo |
 | 2017-12-25 | 0.5.0 | Clean up and reorg, removed unnecessary libraries |

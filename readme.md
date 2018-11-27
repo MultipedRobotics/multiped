@@ -7,8 +7,8 @@ My walking robot software.
 
 [Robot based on Robotis XL320 Servos](https://github.com/MultipedRobotics/quadruped-XL320):
 
-* `YouTube <https://www.youtube.com/watch?v=kH2hlxUfCNg>`_
-* `Vimeo <https://player.vimeo.com/video/194676675>`_
+* [YouTube](https://www.youtube.com/watch?v=kH2hlxUfCNg)
+* [Vimeo](https://player.vimeo.com/video/194676675)
 
 [Robot based on Robotis AX12 Servos](https://github.com/MultipedRobotics/quadruped-AX12)
 

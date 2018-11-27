@@ -1,16 +1,17 @@
 from __future__ import print_function
 from setuptools import setup
-from quadruped import __version__ as VERSION
+from multiped import __version__ as VERSION
 from build_utils import BuildCommand
 from build_utils import PublishCommand
 from build_utils import BinaryDistribution
 
 
-PACKAGE_NAME = 'quadruped'
+PACKAGE_NAME = 'multiped'
 BuildCommand.pkg = PACKAGE_NAME
 PublishCommand.pkg = PACKAGE_NAME
 PublishCommand.version = VERSION
-README = open('readme.rst').read()
+README = open('readme.md').read()
+BuildCommand.py2 = False
 
 setup(
 	name=PACKAGE_NAME,
@@ -40,7 +41,7 @@ setup(
 		'pyserial',
 		'build_utils'
 	],
-	url="https://github.com/MomsFriendlyRobotCompany/{}".format(PACKAGE_NAME),
+	url="https://github.com/MultipedRobotics/{}".format(PACKAGE_NAME),
 	long_description=README,
 	packages=[PACKAGE_NAME],
 	cmdclass={

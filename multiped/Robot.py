@@ -9,8 +9,8 @@
 
 from __future__ import print_function
 from __future__ import division
-from quadruped import Engine
-from quadruped import DiscreteRippleGait
+from multiped import Engine
+from multiped import DiscreteRippleGait
 # import time
 ##########################
 

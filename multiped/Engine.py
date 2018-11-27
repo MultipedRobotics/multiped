@@ -11,7 +11,7 @@ from pyservos import Packet
 # from pyservos import ServoTypes
 from pyservos.packet import angle2int
 from pyservos.utils import le
-from quadruped.Servo import Servo
+from multiped.Servo import Servo
 import time
 
 debug = True

@@ -1,11 +1,10 @@
 from __future__ import print_function
 from __future__ import division
-from quadruped.Engine import Engine
-from quadruped.Gait import DiscreteRippleGait
-# from quadruped.kinematics3 import Kinematics3
-from quadruped.kinematics4 import Kinematics4
-# from .Servo import Servo  # don't need
-from quadruped.Robot import Robot
+from multiped.Engine import Engine
+from multiped.Gait import DiscreteRippleGait
+# from multiped.kinematics3 import Kinematics3
+from multiped.kinematics4 import Kinematics4
+from multiped.Robot import Robot
 
 # do I put exceptions here?
 

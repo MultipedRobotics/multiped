@@ -12,7 +12,7 @@ python:
 #             - sox
 install:
     - pip install -U pip setuptools
-    - pip install -U -r requirements.txt
+    - pip install -U pyserial build_utils pyservos simplejson
 # command to run tests
 # script: cd tests && nosetests -v *.py
 # script: nosetests -v -w test/

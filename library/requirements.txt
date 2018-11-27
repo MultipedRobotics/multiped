@@ -1,4 +1,0 @@
-pyxl320
-simplejson
-pyserial
-build_utils

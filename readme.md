@@ -1,9 +1,43 @@
-# Quadruped
+# Multiped
 
 [![](https://img.shields.io/pypi/v/quadruped.svg)](https://github.com/MultipedRobotics/multiped)
 [![](https://img.shields.io/pypi/l/quadruped.svg)](https://github.com/MultipedRobotics/multiped)
 
 My walking robot software.
+
+Nature loves animals/insects with legs. Even birds have legs! Legs allow for easier
+navigation across rough terrain. The more legs you have, the more redundant and
+robust you are. If you are a centipede and you break a few legs, no big deal.
+However, if you are a human and break one leg, then walking (forget running)
+becomes extremely difficult.
+
+In robotics you see many different types of walking robots. Common ones are:
+2 legs, four legs, and 6 legs. There are advantages and disadvantages for each
+of these types of robots.
+
+- 2 legs
+    - balancing and shifting the body's center of mass is critical to the
+robot not falling over
+    - the 2 legs are generally need to be more powerful to lift the body mass
+- 4 legs:
+    - there is an inherent stability with this configuration. You only need 3
+    legs (tripod) to keep the robot standing, leaving one leg to move freely
+    as needed
+    - each of the legs can be weaker than its 2 legged counter part
+    - However, there is still a lot of motors, data lines, coordination complexity
+    than if you only had 2 legs
+- 6 (or more) legs:
+    - having more than 4 legs contains all of the same advantages/disadvantages
+    of 4 legs
+    - you also have more redundancy, essentially able to loose 2 legs and keep
+    walking
+    - there are also more types of gaits available to you, which is a fancy word
+    for how you control your leg moves when walking, trotting, running, etc
+    - You can even use some of your lets as arms to move objects around while still
+    maintaining a stable tripod stance
+    - However, more motors, more weight, more power consumption drives you to needing
+    larger and more expensive batteries
+    - at some point (maybe a centipede) more legs doesn't really add any advantage
 
 [Robot based on Robotis XL320 Servos](https://github.com/MultipedRobotics/quadruped-XL320):
 
@@ -20,6 +54,8 @@ This software requires [`pyservos`](https://github.com/MomsFriendlyRobotCompany/
 to run. This software talks to both the XL-320 and AX-12A servos from Robotis.
 
 # Class Layout
+
+![](pics/quad-movement.png)
 
 Here is *sort* of the layout of the code:
 
@@ -79,13 +115,13 @@ port which does nothing but is useful for testing.
 
 Normally, you would send an individual command to each servo and get a response
 back from it. That creates a lot of back an forth communications. Instead,
-this uses a bulk write to send commands to all 12 servos at once with no reply.
+this library uses a bulk write to send commands to all servos at once with no reply.
 This results in smoother motion and greatly reduced data transmission.
 
 ## Building and Documentation
 
 Details for how to build the robot and other information are in the `docs` folder
-in the [git repo](https://github.com/MomsFriendlyRobotCompany/quadruped/tree/master/docs)
+in the [git repo](https://github.com/MultipedRobotics/multiped/tree/master/docs)
 
 # Tools
 
@@ -174,23 +210,25 @@ Voltage [V]  7.1     Temperature [F]:  84.2
 <img src="pics/rc-spider.jpg" width="400px">
 
 This was the original version, shown above around Aug 2016. It used toy RC
-servos (9 g's), they didn't work that great.
+servos (9 g's), they didn't work that great. I think I lost the code, because
+I can't find it.
 
 ### XL-320 Servos
 
 <img src="pics/xl-320-spider.jpg" width="400px">
 
-**work on this robot has stopped**
+**work on this robot has stopped** This worked OK, see the movie above.
+The servos were not very strong and the lego like rivets were kind of
+a pain to use. The rivets also didn't hold things together very tight
+so there was a lot of wiggle. Overall, I prefer nuts/bolts.
 
 ### AX-12A Servos
 
 <img src="pics/ax-12a-spider.jpg" width="400px">
 
-**this is the current robot I am focusing on**
-
-## Software
-
-![](pics/quad-movement.png)
+**this is the current robot I am focusing on** All of the current code
+is designed for this robot. I *sort of* maintain backwards compatability
+with the XL-320, but I don't guarentee it.
 
 
 # ToDo
@@ -230,12 +268,3 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
----
-
-<p align="center">
-    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
-        <img alt="Creative Commons License"  src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
-    </a>
-    <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-</p>

@@ -1,10 +1,13 @@
-from __future__ import print_function
-from __future__ import division
 from multiped.Engine import Engine
 from multiped.Gait import DiscreteRippleGait
 # from multiped.kinematics3 import Kinematics3
 from multiped.kinematics4 import Kinematics4
 from multiped.Robot import Robot
+
+try:
+    from importlib_metadata import version # type: ignore
+except ImportError:
+    from importlib.metadata import version # type: ignore
 
 # do I put exceptions here?
 
@@ -16,4 +19,5 @@ from multiped.Robot import Robot
 
 __author__ = 'Kevin J. Walchko'
 __license__ = 'MIT'
-__version__ = '0.5.0'
+# __version__ = '0.5.0'
+__version__ = version("multiped")

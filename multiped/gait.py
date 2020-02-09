@@ -43,6 +43,20 @@ def rot_z(t, c):
     return ans
 
 
+class Tripod:
+    def __init__(self, neutral, forward, back, count):
+        self.build_forward()
+
+    def build_forward(self, n,f,b, c):
+        
+
+    # @classmethod
+    # def from_params(cls, neutral, forward, back):
+    #     tri = cls()
+    #
+    #     return tri
+
+
 class Gait(object):
     """
     Base class for gaits. Gait only plan all foot locations for 1 complete cycle

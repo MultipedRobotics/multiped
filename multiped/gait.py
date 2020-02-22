@@ -43,12 +43,12 @@ def rot_z(t, c):
     return ans
 
 
-class Tripod:
-    def __init__(self, neutral, forward, back, count):
-        self.build_forward()
-
-    def build_forward(self, n,f,b, c):
-        
+# class Tripod:
+#     def __init__(self, neutral, forward, back, count):
+#         self.build_forward()
+#
+#     def build_forward(self, n,f,b, c):
+#
 
     # @classmethod
     # def from_params(cls, neutral, forward, back):

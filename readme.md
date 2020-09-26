@@ -3,6 +3,8 @@
 [![](https://img.shields.io/pypi/v/quadruped.svg)](https://github.com/MultipedRobotics/multiped)
 [![](https://img.shields.io/pypi/l/quadruped.svg)](https://github.com/MultipedRobotics/multiped)
 
+**Still Under Development**
+
 My walking robot software.
 
 Nature loves animals/insects with legs. Even birds have legs! Legs allow for easier

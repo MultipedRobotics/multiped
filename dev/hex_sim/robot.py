@@ -12,7 +12,6 @@ class Tripod:
     def __init__(self, neutral, stride, count):
         self.gait = self.build_forward(neutral, stride, count)
         self.orientations = [-30, -90, -120, 120, 90, 30]
-        self.
 
     def build_stride(self, n, dist, steps):
         """
@@ -72,7 +71,7 @@ class Tripod:
 
     def gait_world(self):
         ret = []
-        for i in range(6):
+        # for i in range(6):
 
         return ret
 

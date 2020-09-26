@@ -4,8 +4,6 @@
 # see LICENSE for full details
 ##############################################
 
-from __future__ import print_function
-from __future__ import division
 from pyservos import ServoSerial
 from pyservos import Packet
 # from pyservos import ServoTypes
@@ -23,57 +21,57 @@ def dprint(s):
         print(s)
 
 
-def calc_rpm(da, wait):
-    """
-    Given an angular delta and a wait time, calculate the rpm needed to achieve
+# def calc_rpm(da, wait):
+#     """
+#     Given an angular delta and a wait time, calculate the rpm needed to achieve
+#
+#     [Join Mode]
+#     0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
+#     If it is set to 0, it means the maximum rpm of the motor is used
+#     without controlling the speed. If it is 1023, it is about 114rpm.
+#     For example, if it is set to 300, it is about 33.3 rpm.
+#
+#     AX12 max rmp is 59 (max speed 532)
+#     rev  min     360 deg      deg
+#     --- -------  ------- = 6 ----
+#     min  60 sec    rev        sec
+#
+#     rpm = abs(new_angle - old_angle)/(0.111 * wait * 6)
+#     """
+#     return int(abs(da)/(0.111*wait*6))
 
-    [Join Mode]
-    0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
-    If it is set to 0, it means the maximum rpm of the motor is used
-    without controlling the speed. If it is 1023, it is about 114rpm.
-    For example, if it is set to 300, it is about 33.3 rpm.
 
-    AX12 max rmp is 59 (max speed 532)
-    rev  min     360 deg      deg
-    --- -------  ------- = 6 ----
-    min  60 sec    rev        sec
-
-    rpm = abs(new_angle - old_angle)/(0.111 * wait * 6)
-    """
-    return int(abs(da)/(0.111*wait*6))
-
-
-def calc_wait(da, speed):
-    """
-    Given an angular delta and the speed (servo counts), calculate the how long
-    to wait for the servo to complete the movement
-
-    [Join Mode]
-    0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
-    If it is set to 0, it means the maximum rpm of the motor is used
-    without controlling the speed. If it is 1023, it is about 114rpm.
-    For example, if it is set to 300, it is about 33.3 rpm.
-
-    AX12 max rmp is 59 (max speed 532)
-    rev  min     360 deg      deg
-    --- -------  ------- = 6 ----
-    min  60 sec    rev        sec
-
-                            da deg
-    wait = ----------------------------------------
-                 rpm                360 deg    min
-           0.111 --- * speed_cnt *  ------- * ------
-                 cnt                   rev    60 sec
-
-    wait = abs(new_angle - old_angle)/(0.111 * speed * 6)
-    """
-    try:
-        w = abs(da)/(0.111*speed*6)
-    except ZeroDivisionError:
-        w = 1
-        print("*** calc_wait() div error: {}".format(speed))
-
-    return w
+# def calc_wait(da, speed):
+#     """
+#     Given an angular delta and the speed (servo counts), calculate the how long
+#     to wait for the servo to complete the movement
+#
+#     [Join Mode]
+#     0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
+#     If it is set to 0, it means the maximum rpm of the motor is used
+#     without controlling the speed. If it is 1023, it is about 114rpm.
+#     For example, if it is set to 300, it is about 33.3 rpm.
+# 
+#     AX12 max rmp is 59 (max speed 532)
+#     rev  min     360 deg      deg
+#     --- -------  ------- = 6 ----
+#     min  60 sec    rev        sec
+#
+#                             da deg
+#     wait = ----------------------------------------
+#                  rpm                360 deg    min
+#            0.111 --- * speed_cnt *  ------- * ------
+#                  cnt                   rev    60 sec
+#
+#     wait = abs(new_angle - old_angle)/(0.111 * speed * 6)
+#     """
+#     try:
+#         w = abs(da)/(0.111*speed*6)
+#     except ZeroDivisionError:
+#         w = 1
+#         print("*** calc_wait() div error: {}".format(speed))
+#
+#     return w
 
 
 class Engine(object):
@@ -267,6 +265,52 @@ class Engine(object):
             time.sleep(max_wait)
 
             # time.sleep(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

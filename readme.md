@@ -62,8 +62,8 @@ to run. This software talks to both the XL-320 and AX-12A servos from Robotis.
 Here is *sort* of the layout of the code:
 
 ```
-      cmd      3d pts      DH angles        servo packet
-robot --> gait -----> legs --------> engine -----------> servos
+      cmd      3d foot pts      servo angles        servo packet
+robot --> gait -----------> legs ----------> engine -----------> servos
 ```
 
 - **Robot(data):**

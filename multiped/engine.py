@@ -3,22 +3,345 @@
 # Copyright (c) 2016 Kevin Walchko
 # see LICENSE for full details
 ##############################################
-
-from pyservos import ServoSerial
-from pyservos import Packet
-# from pyservos import ServoTypes
-from pyservos.packet import angle2int
-from pyservos.utils import le
-from multiped.Servo import Servo
+# from pyservos.utils import angle2int
+from multiped.kinematics3 import Leg3
 import time
+from colorama import Fore
+from pprint import pprint
+from math import pi
 
-debug = True
+
+def printError(e):
+    print(f"{Fore.RED}*** {e} ***{Fore.RESET}")
+
+def printWarn(w):
+    print(f"{Fore.YELLOW}*** {w} ***{Fore.RESET}")
+
+def printInfo(i):
+    print(f">>{Fore.CYAN} {i} {Fore.RESET}")
+
+def pprintInfo(i):
+    print(f">>{Fore.CYAN}")
+    pprint(i)
+    print(f"{Fore.RESET}", end="")
 
 
-def dprint(s):
-    global debug
-    if debug:
-        print(s)
+
+class DummySerial:
+    enable = True
+    def write(self, pkt):
+        if not self.enable:
+            return
+
+        print(f">>{Fore.CYAN} serial.write[{len(pkt)}]: {Fore.YELLOW}[",end="")
+        for p in pkt:
+            print(int(p),end=",")
+        print(f"]{Fore.RESET}")
+
+
+
+class Engine(object):
+    """
+    This class holds the serial port and talks to the hardware. Other classes (
+    e.g., gait, legs and servos) do the calculations for walking.
+    """
+    current_move = None
+    last_move = None
+    gait = None
+    serial = None
+    packet = None
+    legs = [0]*6
+
+    def __init__(self, data, serialPort, packet):
+        """
+        data: various info
+        serialPort: serial port object
+        """
+        self.serial = serialPort
+        if self.serial:
+            self.serial.open()
+        else:
+            self.serial = DummySerial()
+            self.serial.enable = False
+
+        self.packet = packet()
+
+        try:
+            for leg in range(6):
+                self.legs[leg] = Leg3(data["legs"][leg])
+        except Exception as e:
+            # print(f"{Fore.RED}*** {e} ***{Fore.RESET}")
+            printError(e)
+            raise
+
+    def setGait(self, gait):
+        self.gait = gait()
+
+    def wait(self, start):
+        """
+        This will wait until the farthest move is done
+        """
+        diff = [0]*18
+        for i, (a, b) in enumerate(zip(self.current_move, self.last_move)):
+            diff[i] = abs(a - b)
+        mag = max(diff)
+        speed = 180/pi*1023/300*1/1207.14 # FIXME: this is wrong
+
+        stop = time.time()
+        delay = mag*speed
+        dt = stop - start
+
+        # if we haven't taken too much time already, sleep, else return
+        if delay > dt:
+            time.sleep(delay - dt)
+            # printInfo(f"engin.wait(): {1000*delay-dt:.2f} msec")
+        else:
+            # print(f"{Fore.RED}Too quick on engine.wait() {Fore.RESET}")
+            printError("Too quick on engine.wait()")
+
+        self.last_move = self.current_move.copy()
+
+    def move(self, x, y, z, theta):
+        # get the foot (x,y,z) locations for one cycle
+        feet = self.gait.command(x,y,z,theta)
+        pprintInfo(feet[0])
+        info = [0]*18 # [[ID, angle], [ID, angle], ...]
+        if self.current_move is None:
+            self.current_move = [pi*0.5]*18
+        if self.last_move is None:
+            self.last_move = self.current_move.copy()
+
+        for step in range(len(feet[0])):
+            start = time.time()
+            for leg in range(6):
+                angles = self.legs[leg].inverse(*feet[leg][step]) # (angle, angle, angle)
+                ids = self.legs[leg].ids
+                for id, angle in zip(ids, angles):
+                    info[id-1] = (id,) + tuple(angle2int(angle))      # data for servo sync write
+                    self.current_move[id-1] = angle # calc wait time
+
+            # printInfo(self.current_move)
+            pkt = self.packet.makeSyncWritePacket(self.packet.GOAL_POSITION, info)
+            self.serial.write(pkt)
+            self.wait(start) # wait for motors to complete move
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # def moveLegsGait(self, legs):
+    #     """
+    #     gait or sequence?
+    #     speed = 1 - 1023 (scalar, all servos move at same rate)
+    #     {      step 0          step 1         ...
+    #         0: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg0
+    #         2: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg2
+    #         ...
+    #     } where t=theta
+    #     NOTE: each leg needs the same number of steps and servos per leg
+    #     WARNING: these angles are in servo space [0-300 deg]
+    #
+    #     [Join Mode]
+    #     0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
+    #     If it is set to 0, it means the maximum rpm of the motor is used
+    #     without controlling the speed. If it is 1023, it is about 114rpm.
+    #     For example, if it is set to 300, it is about 33.3 rpm.
+    #
+    #     AX12 max rmp is 59 (max speed 532)
+    #     rev  min     360 deg      deg
+    #     --- -------  ------- = 6 ----
+    #     min  60 sec    rev        sec
+    #
+    #     sleep time = | (new_angle - old_angle) /(0.111 * min_speed * 6) |
+    #     """
+    #     # get the keys and figure out some stuff
+    #     keys = list(legs.keys())  # which legs are we moving
+    #     numSteps = len(legs[keys[0]])  # how many steps in the cycle
+    #     numServos = len(legs[keys[0]][0])-1  # how many servos per leg, -1 because speed there
+    #
+    #     # if self.last_move is None:
+    #     #     # assume we just turned on and was in the sit position
+    #     #     # need a better solution
+    #     #     self.last_move = {
+    #     #         0: legs[0][0],
+    #     #         1: legs[1][0],
+    #     #         2: legs[2][0],
+    #     #         3: legs[3][0]
+    #     #     }
+    #
+    #     # curr_move = {}
+    #     # for each step in legs
+    #     for step in range(numSteps):
+    #         # dprint("\nStep[{}]===============================================".format(step))
+    #         data = []
+    #
+    #         # find max time we have to wait for all 4 legs to reach their end
+    #         # point.
+    #         max_wait = 0
+    #         for legNum in keys:
+    #             angles = legs[legNum][step][:4]
+    #             speed = legs[legNum][step][4]
+    #             # print(" speed", speed)
+    #             for a, oa in zip(angles, self.last_move[legNum][:4]):
+    #                 da = abs(a-oa)
+    #                 w = calc_wait(da, speed)
+    #                 # print(" calc_wait: {:.3f}".format(w))
+    #                 # print("calc_wait: {}".format(w))
+    #                 max_wait = w if w > max_wait else max_wait
+    #
+    #         # print(">> found wait", max_wait, " speed:", speed)
+    #
+    #         servo_speeds = [100,125,150,200]
+    #
+    #         # for legNum in [0,3,1,2]:
+    #         for legNum in keys:
+    #             # dprint("  leg[{}]--------------".format(legNum))
+    #             leg_angles_speed = legs[legNum][step]
+    #             # print(leg_angles_speed)
+    #             angles = leg_angles_speed[:4]  # 4 servo angles
+    #             speed = leg_angles_speed[4]
+    #             # print("Speed:", speed, "wait", max_wait)
+    #
+    #             for i, DH_angle in enumerate(angles):
+    #                 # oldangle = self.last_move[legNum][i]
+    #                 # due to rounding errors, to ensure the other servers finish
+    #                 # BEFORE time.sleep(max_wait) ends, the the function it
+    #                 # has less time
+    #                 # spd = calc_rpm((angle - oldangle), 0.9*max_wait)
+    #                 # now that i am scaling the spd parameter above, I sometimes
+    #                 # exceed the original speed number, so saturate it if
+    #                 # necessary
+    #                 # spd = spd if spd <= speed else speed
+    #                 # sl, sh = le(spd)
+    #                 sl, sh = le(servo_speeds[i])
+    #                 servo_angle = self.DH2Servo(DH_angle, i)
+    #                 al, ah = angle2int(servo_angle)  # angle
+    #                 data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
+    #                 # data.append([legNum*numServos + i+1, al, ah])  # ID, low angle, high angle, low speed, high speed
+    #
+    #             self.last_move[legNum] = leg_angles_speed
+    #
+    #         pkt = self.packet.makeSyncWritePacket(self.packet.base.GOAL_POSITION, data)
+    #         self.serial.write(pkt)
+    #         dprint("sent serial packet leg: {}".format(legNum))
+    #         data = []
+    #         print('max_wait', max_wait)
+    #         time.sleep(max_wait)
+    #
+    #         # time.sleep(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # def calc_rpm(da, wait):
@@ -51,7 +374,7 @@ def dprint(s):
 #     If it is set to 0, it means the maximum rpm of the motor is used
 #     without controlling the speed. If it is 1023, it is about 114rpm.
 #     For example, if it is set to 300, it is about 33.3 rpm.
-# 
+#
 #     AX12 max rmp is 59 (max speed 532)
 #     rev  min     360 deg      deg
 #     --- -------  ------- = 6 ----
@@ -72,247 +395,6 @@ def dprint(s):
 #         print("*** calc_wait() div error: {}".format(speed))
 #
 #     return w
-
-
-class Engine(object):
-    """
-    This class holds the serial port and talks to the hardware. Other classes (
-    e.g., gait, legs and servos) do the calculations for walking.
-    """
-
-    last_move = None
-
-    def __init__(self, data, servoType):
-        """
-        data: serial port to use, if none, then use dummy port
-        servoType: AX12 or XL320 or other servo type
-        curr_pos: current leg position
-        bcm_pin: which gpio pin is used for the comm
-            {
-                0: [(t0,t1,t2,t3,speed), ...]
-                1: [...]
-                ...
-                3: [...]
-            }
-        """
-        if 'bcm_pin' in data:
-            bcm_pin = data['bcm_pin']
-        else:
-            bcm_pin = None
-
-        # self.wait = wait
-        # determine serial port
-        # default to fake serial port
-        if 'serialPort' in data:
-            try:
-                self.serial = ServoSerial(data['serialPort'], pi_pin=bcm_pin)
-                print('Using servo serial port: {}'.format(data['serialPort']))
-                self.serial.open()
-
-            except Exception as e:
-                print(e)
-                print('Engine::init(): bye ...')
-                exit(1)
-        else:
-            print('*** Using dummy serial port!!! ***')
-            self.serial = ServoSerial('dummy')
-            # raise Exception('No serial port given')
-
-        # handle servos ... how does it know how many servos???
-        self.servos_up = {}  # check servos are operating
-        self.servos = []
-        for ID, seg in enumerate(['coxa', 'femur', 'tibia', 'tarsus']):
-            length, offset = data[seg]
-            self.servos.append(Servo(ID, offset))
-            # resp = self.pingServo(ID)  # return: (T/F, servo_angle)
-            # self.servos[ID] = resp[0]
-            # curr_angle[ID] =
-        # for s, val in self.servos.items():
-        #     if val is False:
-        #         print("*** Engine.__init__(): servo[{}] has failed".format(s))
-
-        self.packet = Packet(servoType)
-
-        # keep track of last location, this is servo angle space
-        # self.last_move = {
-        #     0: curr_pos[0][0],
-        #     1: curr_pos[1][0],
-        #     2: curr_pos[2][0],
-        #     3: curr_pos[3][0]
-        # }
-        self.last_move = self.getCurrentAngles()
-
-    def getCurrentAngles(self):
-        """
-        Returns the current angles for all servos in DH space as a dictionary.
-        angles = {
-            0: [0.0, 130.26, -115.73, -104.52],
-            1: [0.0, 130.26, -115.73, -104.52],
-            2: [0.0, 130.26, -115.73, -104.52],
-            3: [0.0, 130.26, -115.73, -104.52],
-        }
-
-        FIXME: actually query the servos and get there angles in DH space
-        """
-        angles = {
-            0: [0.0, 130.26, -115.73, -104.52],
-            1: [0.0, 130.26, -115.73, -104.52],
-            2: [0.0, 130.26, -115.73, -104.52],
-            3: [0.0, 130.26, -115.73, -104.52],
-        }
-        return angles
-
-    def DH2Servo(self, angle, num):
-        return self.servos[num].DH2Servo(angle)
-
-    def moveLegsGait4(self, legs):
-        """
-        gait or sequence?
-        speed = 1 - 1023 (scalar, all servos move at same rate)
-        {      step 0          step 1         ...
-            0: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg0
-            2: [(t1,t2,t3,t4,speed), (t1,t2,t3,t4,speed), ...] # leg2
-            ...
-        } where t=theta
-        NOTE: each leg needs the same number of steps and servos per leg
-        WARNING: these angles are in servo space [0-300 deg]
-
-        [Join Mode]
-        0 ~ 1,023(0x3FF) can be used, and the unit is about 0.111rpm.
-        If it is set to 0, it means the maximum rpm of the motor is used
-        without controlling the speed. If it is 1023, it is about 114rpm.
-        For example, if it is set to 300, it is about 33.3 rpm.
-
-        AX12 max rmp is 59 (max speed 532)
-        rev  min     360 deg      deg
-        --- -------  ------- = 6 ----
-        min  60 sec    rev        sec
-
-        sleep time = | (new_angle - old_angle) /(0.111 * min_speed * 6) |
-        """
-        # get the keys and figure out some stuff
-        keys = list(legs.keys())  # which legs are we moving
-        numSteps = len(legs[keys[0]])  # how many steps in the cycle
-        numServos = len(legs[keys[0]][0])-1  # how many servos per leg, -1 because speed there
-
-        # if self.last_move is None:
-        #     # assume we just turned on and was in the sit position
-        #     # need a better solution
-        #     self.last_move = {
-        #         0: legs[0][0],
-        #         1: legs[1][0],
-        #         2: legs[2][0],
-        #         3: legs[3][0]
-        #     }
-
-        # curr_move = {}
-        # for each step in legs
-        for step in range(numSteps):
-            # dprint("\nStep[{}]===============================================".format(step))
-            data = []
-
-            # find max time we have to wait for all 4 legs to reach their end
-            # point.
-            max_wait = 0
-            for legNum in keys:
-                angles = legs[legNum][step][:4]
-                speed = legs[legNum][step][4]
-                # print(" speed", speed)
-                for a, oa in zip(angles, self.last_move[legNum][:4]):
-                    da = abs(a-oa)
-                    w = calc_wait(da, speed)
-                    # print(" calc_wait: {:.3f}".format(w))
-                    # print("calc_wait: {}".format(w))
-                    max_wait = w if w > max_wait else max_wait
-
-            # print(">> found wait", max_wait, " speed:", speed)
-
-            servo_speeds = [100,125,150,200]
-
-            # for legNum in [0,3,1,2]:
-            for legNum in keys:
-                # dprint("  leg[{}]--------------".format(legNum))
-                leg_angles_speed = legs[legNum][step]
-                # print(leg_angles_speed)
-                angles = leg_angles_speed[:4]  # 4 servo angles
-                speed = leg_angles_speed[4]
-                # print("Speed:", speed, "wait", max_wait)
-
-                for i, DH_angle in enumerate(angles):
-                    # oldangle = self.last_move[legNum][i]
-                    # due to rounding errors, to ensure the other servers finish
-                    # BEFORE time.sleep(max_wait) ends, the the function it
-                    # has less time
-                    # spd = calc_rpm((angle - oldangle), 0.9*max_wait)
-                    # now that i am scaling the spd parameter above, I sometimes
-                    # exceed the original speed number, so saturate it if
-                    # necessary
-                    # spd = spd if spd <= speed else speed
-                    # sl, sh = le(spd)
-                    sl, sh = le(servo_speeds[i])
-                    servo_angle = self.DH2Servo(DH_angle, i)
-                    al, ah = angle2int(servo_angle)  # angle
-                    data.append([legNum*numServos + i+1, al, ah, sl, sh])  # ID, low angle, high angle, low speed, high speed
-                    # data.append([legNum*numServos + i+1, al, ah])  # ID, low angle, high angle, low speed, high speed
-
-                self.last_move[legNum] = leg_angles_speed
-
-            pkt = self.packet.makeSyncWritePacket(self.packet.base.GOAL_POSITION, data)
-            self.serial.write(pkt)
-            dprint("sent serial packet leg: {}".format(legNum))
-            data = []
-            print('max_wait', max_wait)
-            time.sleep(max_wait)
-
-            # time.sleep(1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     # def pprint(self, i, step):
     #     print('***', i, '*'*25)
